@@ -5,81 +5,118 @@ import axios from 'axios';
 import * as S from './MemberManage.styles';
 
 const MemberManage = () => {
-  const { auth } = useContext(AuthContext); // AuthContext에서 auth 가져오기
+  const { auth } = useContext(AuthContext);
   const [members, setMembers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [loadingAuth, setLoadingAuth] = useState(true); // auth 로딩 상태
+  const [loadingAuth, setLoadingAuth] = useState(true);
   const navigate = useNavigate();
   const itemsPerPage = 10;
 
   useEffect(() => {
-  if (auth.isAuthenticated === null) return; // auth 초기화 대기
+    console.log('useEffect 실행 - auth:', auth);
+    
+    if (auth.isAuthenticated === null) {
+      console.log('auth 초기화 대기 중...');
+      return;
+    }
 
-  if (!auth.isAuthenticated) {
-    alert("로그인이 필요합니다.");
-    navigate("/login");
-    return;
-  }
+    setLoadingAuth(false);
+    console.log('loadingAuth false로 설정');
 
-  if (!auth.role?.includes("ADMIN") && !auth.role?.includes("OPERATOR")) {
-    alert("접근 권한이 없습니다.");
-    navigate("/");
-    return;
-  }
+    if (!auth.isAuthenticated) {
+      console.log('인증되지 않음 - 로그인 페이지로 이동');
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return;
+    }
 
-  fetchMembers();
-}, [auth]);
+    console.log('현재 role:', auth.role);
+    
+    if (!auth.role?.includes("ADMIN") && !auth.role?.includes("OPERATOR")) {
+      console.log('권한 없음 - 메인으로 이동');
+      alert("접근 권한이 없습니다.");
+      navigate("/");
+      return;
+    }
 
-  // 회원 목록 조회
+    console.log('fetchMembers 호출');
+    fetchMembers();
+  }, [auth]);
+
   const fetchMembers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/operator/member-manage', {
+      console.log('API 요청 시작');
+      console.log('AccessToken:', auth.accessToken);
+      
+      const res = await axios.get('http://localhost:8081/member/operator/member-manage', {
         headers: {
           Authorization: `Bearer ${auth.accessToken}`,
         },
       });
-      setMembers(res.data);
-      setTotalPages(Math.ceil(res.data.length / itemsPerPage));
+      
+      console.log('API 응답:', res.data);
+      console.log('응답 타입:', typeof res.data);
+      console.log('배열 여부:', Array.isArray(res.data));
+      
+      const data = Array.isArray(res.data) ? res.data : [];
+      console.log('처리된 데이터:', data);
+      console.log('데이터 길이:', data.length);
+      
+      setMembers(data);
+      setTotalPages(Math.ceil(data.length / itemsPerPage));
     } catch (err) {
-      console.error(err);
-      alert('회원 목록 조회 실패');
+      console.error('API 에러 상세:', err);
+      console.error('에러 응답:', err.response);
+      alert('회원 목록 조회 실패: ' + (err.response?.data?.message || err.message));
+      setMembers([]);
+      setTotalPages(0);
     } finally {
       setLoading(false);
     }
   };
 
   const getCurrentPageMembers = () => {
+    if (!Array.isArray(members)) return [];
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
     return members.slice(start, end);
   };
 
   const handleAssignOperator = async (member) => {
+    console.log('현재 auth.role:', auth.role);
+    console.log('ADMIN 포함 여부:', auth.role.includes('ADMIN'));
+    
     if (!auth.role.includes('ADMIN')) {
       alert('관리자 지정은 ADMIN만 가능합니다.');
       return;
     }
 
-    if (member.roleStatus === 'OPERATOR' || member.roleStatus === 'ADMIN') {
+    if (member.roleStatus === 'ROLE_OPERATOR' || member.roleStatus === 'ROLE_ADMIN') {
       alert('이미 관리자 권한을 가진 회원입니다.');
       return;
     }
 
     if (window.confirm(`${member.memberName}(${member.memberId})님을 OPERATOR로 지정하시겠습니까?`)) {
       try {
-        await axios.patch(
-          `/api/operator/member/${member.memberNo}/role`,
-          { roleStatus: 'OPERATOR' },
+        console.log('API 요청 시작:', {
+          url: `http://localhost:8081/member/admin/change-role/${member.memberNo}`,
+          data: { memberNo: member.memberNo, newRole: 'ROLE_OPERATOR' }
+        });
+        
+        await axios.post(
+          `http://localhost:8081/member/admin/change-role/${member.memberNo}`,
+          { memberNo: member.memberNo, newRole: 'ROLE_OPERATOR' },
           { headers: { Authorization: `Bearer ${auth.accessToken}` } }
         );
         alert('관리자로 지정되었습니다.');
         fetchMembers();
       } catch (err) {
-        console.error(err);
-        alert('관리자 지정에 실패했습니다.');
+        console.error('API 에러:', err);
+        console.error('에러 응답:', err.response);
+        alert('관리자 지정에 실패했습니다: ' + (err.response?.data || err.message));
       }
     }
   };
@@ -96,7 +133,7 @@ const MemberManage = () => {
 
     if (window.confirm(`${member.memberName}(${member.memberId}) 회원을 탈퇴시키겠습니까?`)) {
       try {
-        await axios.delete(`/api/operator/member/${member.memberNo}`, {
+        await axios.delete(`http://localhost:8081/member/operator/member-manage/${member.memberNo}`, {
           headers: { Authorization: `Bearer ${auth.accessToken}` },
         });
         alert('회원 탈퇴가 완료되었습니다.');
@@ -122,7 +159,6 @@ const MemberManage = () => {
     return pages;
   };
 
-  // auth 로딩 중이면 로딩 화면
   if (loadingAuth) {
     return (
       <S.Container>
@@ -162,36 +198,44 @@ const MemberManage = () => {
                   </S.TableRow>
                 </S.TableHead>
                 <S.TableBody>
-                  {getCurrentPageMembers().map((member) => (
-                    <S.TableRow key={member.memberNo}>
-                      <S.TableCell>{member.memberNo}</S.TableCell>
-                      <S.TableCell>{member.memberId}</S.TableCell>
-                      <S.TableCell>{member.memberName}</S.TableCell>
-                      <S.TableCell $secondary>
-                        {new Date(member.enrollDate).toLocaleDateString('ko-KR')}
-                      </S.TableCell>
-                      <S.TableCell>
-                        <S.Badge $variant={member.roleStatus?.toLowerCase() || 'user'}>
-                          {member.roleStatus || 'USER'}
-                        </S.Badge>
-                      </S.TableCell>
-                      <S.TableCell>
-                        <S.Badge $variant={member.status === 'Y' ? 'active' : 'inactive'}>
-                          {member.status === 'Y' ? '활성' : '비활성'}
-                        </S.Badge>
-                      </S.TableCell>
-                      <S.TableCell>
-                        <S.ButtonGroup>
-                          {auth.role.includes('ADMIN') && (
-                            <S.AssignButton onClick={() => handleAssignOperator(member)}>
-                              관리자지정
-                            </S.AssignButton>
-                          )}
-                          <S.DeleteButton onClick={() => handleDeleteMember(member)}>회원탈퇴</S.DeleteButton>
-                        </S.ButtonGroup>
+                  {getCurrentPageMembers().length === 0 ? (
+                    <S.TableRow>
+                      <S.TableCell colSpan="7" style={{ textAlign: 'center', padding: '40px' }}>
+                        조회된 회원이 없습니다.
                       </S.TableCell>
                     </S.TableRow>
-                  ))}
+                  ) : (
+                    getCurrentPageMembers().map((member) => (
+                      <S.TableRow key={member.memberNo}>
+                        <S.TableCell>{member.memberNo}</S.TableCell>
+                        <S.TableCell>{member.memberId}</S.TableCell>
+                        <S.TableCell>{member.memberName}</S.TableCell>
+                        <S.TableCell $secondary>
+                          {new Date(member.enrollDate).toLocaleDateString('ko-KR')}
+                        </S.TableCell>
+                        <S.TableCell>
+                          <S.Badge $variant={member.roleStatus?.toLowerCase() || 'user'}>
+                            {member.roleStatus || 'USER'}
+                          </S.Badge>
+                        </S.TableCell>
+                        <S.TableCell>
+                          <S.Badge $variant={member.status === 'Y' ? 'active' : 'inactive'}>
+                            {member.status === 'Y' ? '활성' : '비활성'}
+                          </S.Badge>
+                        </S.TableCell>
+                        <S.TableCell>
+                          <S.ButtonGroup>
+                            {auth.role.includes('ADMIN') && (
+                              <S.AssignButton onClick={() => handleAssignOperator(member)}>
+                                관리자지정
+                              </S.AssignButton>
+                            )}
+                            <S.DeleteButton onClick={() => handleDeleteMember(member)}>회원탈퇴</S.DeleteButton>
+                          </S.ButtonGroup>
+                        </S.TableCell>
+                      </S.TableRow>
+                    ))
+                  )}
                 </S.TableBody>
               </S.Table>
 
