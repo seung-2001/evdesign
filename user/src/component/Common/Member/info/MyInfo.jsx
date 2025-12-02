@@ -128,7 +128,7 @@ const MyInfo = () => {
 
                 <InfoGroup>
                     <FullWidthButton 
-                        onClick={() => navi("/license")}
+                        onClick={() => navi("/infoLicense")}
                         disabled={hasLicense}
                         $primary={!hasLicense} 
                     >
@@ -142,6 +142,9 @@ const MyInfo = () => {
 
                     <FullWidthButton onClick={() => navi("/mypage/comments")}>
                         내 댓글 보기
+                    </FullWidthButton>
+                    <FullWidthButton onClick={() => navi("/mypage/comments")}>
+                        내 리뷰 보기
                     </FullWidthButton>
                 </InfoGroup>
 

@@ -46,9 +46,9 @@ const Join = () => {
                 })
                 .then((result) => {
                     if (result.status === 201) {
-                        alert("회원가입이 완료되었습니다. 운전면허 인증페이지로 갑니다.");
+                        alert("회원가입이 완료되었습니다. 환영합니다!");
                         setTimeout(() => {
-                            navigate("/license");
+                            navigate("/");
                         }, 1000);
                     }
                 })

@@ -12,11 +12,13 @@ import CarDetail from "./component/Common/Car/CarDetail/CarDetail";
 import SaveCar from "./component/Common/Car/SaveCar/SaveCar";
 import Join from "./component/Common/Member/Join/Join";
 import License from "./component/Common/Member/License/License";
+import InfoLicenseCertification from "./component/Common/Member/License/InfoLicense";
 import MyInfo from "./component/Common/Member/info/Myinfo";
 import MyReports from "./component/Common/Member/MyReports/MyReports";
 import StationInfo from "./component/Common/Station/StationInfo";
 import Report from "./component/Common/Report/Report";
 import { AuthProvider } from "./component/context/AuthContext";
+
 
 
 
@@ -35,6 +37,7 @@ const App = () => {
           <Route path="/carDetail" element={<CarDetail />} />
           <Route path="/saveCar" element={<SaveCar />} />
           <Route path="/join" element={<Join />} />
+          <Route path="infoLicense" element={<InfoLicenseCertification/>} />
           <Route path="/license" element={<License />} />
           <Route path="/info" element={<MyInfo />} />
           <Route path="/myreports" element={<MyReports />} />
