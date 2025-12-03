@@ -183,6 +183,10 @@ const SEARCH_CONFIG = {
         placeholder: "결제 내역 검색...",
         type: "payment",
     },
+    "/member-manage" :{
+        placeholder:"회원 검색...",
+        type:"payment",
+    },
     default: {
         placeholder: "검색...",
         type: "default",
@@ -211,6 +215,7 @@ const Header = () => {
     // 검색어 입력 핸들러
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
+        setSearchKeyword(e.target.value.trim());
     };
 
     // Enter 키 또는 검색 실행

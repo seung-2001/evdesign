@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
+import { useSearch } from '../../../context/SearchContext';
 import axios from 'axios';
 import * as S from './MemberManage.styles';
 
 const MemberManage = () => {
   const { auth } = useContext(AuthContext);
+  const { searchKeyword } = useSearch();
   const [members, setMembers] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
@@ -14,98 +16,73 @@ const MemberManage = () => {
   const navigate = useNavigate();
   const itemsPerPage = 10;
 
+  // 전체 members에서 검색 적용
+  const filteredMembers = members.filter((m) =>
+    m.memberName?.includes(searchKeyword) ||
+    m.memberId?.includes(searchKeyword) ||
+    m.memberNo?.toString().includes(searchKeyword)
+  );
+
+  // filteredMembers 기반으로 페이지네이션 계산
   useEffect(() => {
-    console.log('useEffect 실행 - auth:', auth);
-    
-    if (auth.isAuthenticated === null) {
-      console.log('auth 초기화 대기 중...');
-      return;
-    }
+    setTotalPages(Math.ceil(filteredMembers.length / itemsPerPage));
+    setCurrentPage(1); // 검색어 바뀌면 1페이지로 초기화
+  }, [filteredMembers]);
+
+  useEffect(() => {
+    if (auth.isAuthenticated === null) return;
 
     setLoadingAuth(false);
-    console.log('loadingAuth false로 설정');
 
     if (!auth.isAuthenticated) {
-      console.log('인증되지 않음 - 로그인 페이지로 이동');
       alert("로그인이 필요합니다.");
       navigate("/login");
       return;
     }
 
-    console.log('현재 role:', auth.role);
-    
     if (!auth.role?.includes("ADMIN") && !auth.role?.includes("OPERATOR")) {
-      console.log('권한 없음 - 메인으로 이동');
       alert("접근 권한이 없습니다.");
       navigate("/");
       return;
     }
 
-    console.log('fetchMembers 호출');
     fetchMembers();
   }, [auth]);
 
   const fetchMembers = async () => {
     setLoading(true);
     try {
-      console.log('API 요청 시작');
-      console.log('AccessToken:', auth.accessToken);
-      
       const res = await axios.get('http://localhost:8081/member/operator/member-manage', {
-        headers: {
-          Authorization: `Bearer ${auth.accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${auth.accessToken}` },
       });
-      
-      console.log('API 응답:', res.data);
-      console.log('응답 타입:', typeof res.data);
-      console.log('배열 여부:', Array.isArray(res.data));
-      
       const data = Array.isArray(res.data) ? res.data : [];
-      console.log('처리된 데이터:', data);
-      console.log('데이터 길이:', data.length);
-      
       setMembers(data);
-      setTotalPages(Math.ceil(data.length / itemsPerPage));
     } catch (err) {
-      console.error('API 에러 상세:', err);
-      console.error('에러 응답:', err.response);
+      console.error(err);
       alert('회원 목록 조회 실패: ' + (err.response?.data?.message || err.message));
       setMembers([]);
-      setTotalPages(0);
     } finally {
       setLoading(false);
     }
   };
 
   const getCurrentPageMembers = () => {
-    if (!Array.isArray(members)) return [];
     const start = (currentPage - 1) * itemsPerPage;
     const end = start + itemsPerPage;
-    return members.slice(start, end);
+    return filteredMembers.slice(start, end);
   };
 
   const handleAssignOperator = async (member) => {
-    console.log('현재 auth.role:', auth.role);
-    console.log('ADMIN 포함 여부:', auth.role.includes('ADMIN'));
-    
     if (!auth.role.includes('ADMIN')) {
       alert('관리자 지정은 ADMIN만 가능합니다.');
       return;
     }
-
     if (member.roleStatus === 'ROLE_OPERATOR' || member.roleStatus === 'ROLE_ADMIN') {
       alert('이미 관리자 권한을 가진 회원입니다.');
       return;
     }
-
     if (window.confirm(`${member.memberName}(${member.memberId})님을 OPERATOR로 지정하시겠습니까?`)) {
       try {
-        console.log('API 요청 시작:', {
-          url: `http://localhost:8081/member/admin/change-role/${member.memberNo}`,
-          data: { memberNo: member.memberNo, newRole: 'ROLE_OPERATOR' }
-        });
-        
         await axios.post(
           `http://localhost:8081/member/admin/change-role/${member.memberNo}`,
           { memberNo: member.memberNo, newRole: 'ROLE_OPERATOR' },
@@ -114,9 +91,8 @@ const MemberManage = () => {
         alert('관리자로 지정되었습니다.');
         fetchMembers();
       } catch (err) {
-        console.error('API 에러:', err);
-        console.error('에러 응답:', err.response);
-        alert('관리자 지정에 실패했습니다: ' + (err.response?.data || err.message));
+        console.error(err);
+        alert('관리자 지정에 실패했습니다.');
       }
     }
   };
@@ -130,7 +106,6 @@ const MemberManage = () => {
       alert('ADMIN 계정은 탈퇴시킬 수 없습니다.');
       return;
     }
-
     if (window.confirm(`${member.memberName}(${member.memberId}) 회원을 탈퇴시키겠습니까?`)) {
       try {
         await axios.delete(`http://localhost:8081/member/operator/member-manage/${member.memberNo}`, {
@@ -185,6 +160,12 @@ const MemberManage = () => {
             </S.LoadingWrapper>
           ) : (
             <>
+              <S.PaginationInfo>
+                전체 <S.InfoNumber>{filteredMembers.length}</S.InfoNumber>개 중{' '}
+                <S.InfoNumber>{filteredMembers.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}</S.InfoNumber>-
+                <S.InfoNumber>{Math.min(currentPage * itemsPerPage, filteredMembers.length)}</S.InfoNumber> 표시
+              </S.PaginationInfo>
+
               <S.Table>
                 <S.TableHead>
                   <S.TableRow>
@@ -240,25 +221,17 @@ const MemberManage = () => {
               </S.Table>
 
               <S.PaginationWrapper>
-                <S.PaginationInfo>
-                  전체 <S.InfoNumber>{members.length}</S.InfoNumber>개 중{' '}
-                  <S.InfoNumber>{(currentPage - 1) * itemsPerPage + 1}</S.InfoNumber>-
-                  <S.InfoNumber>{Math.min(currentPage * itemsPerPage, members.length)}</S.InfoNumber>{' '}
-                  표시
-                </S.PaginationInfo>
-                <S.Pagination>
-                  <S.PageButton onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                    ‹
+                <S.PageButton onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
+                  ‹
+                </S.PageButton>
+                {getPageNumbers().map((page) => (
+                  <S.PageButton key={page} onClick={() => handlePageChange(page)} $active={currentPage === page}>
+                    {page}
                   </S.PageButton>
-                  {getPageNumbers().map((page) => (
-                    <S.PageButton key={page} onClick={() => handlePageChange(page)} $active={currentPage === page}>
-                      {page}
-                    </S.PageButton>
-                  ))}
-                  <S.PageButton onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                    ›
-                  </S.PageButton>
-                </S.Pagination>
+                ))}
+                <S.PageButton onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
+                  ›
+                </S.PageButton>
               </S.PaginationWrapper>
             </>
           )}
