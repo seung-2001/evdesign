@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { deleteNotice, getNoticeDetail } from '../../../api/notice';
+import { getNoticeDetail } from '../../../api/notice';
 import {
   ButtonGroup,
   Container,
@@ -25,11 +25,7 @@ const NoticeDetail = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // ✅ 로그인한 사용자 정보 (추후 Context나 Redux로 관리)
-  const currentMemberNo = parseInt(localStorage.getItem('memberNo') || '0');
-  const isAdmin = localStorage.getItem('role') === 'ADMIN'; // 관리자 여부
-
-  useEffect(() => {
+    useEffect(() => {
     fetchNoticeDetail();
   }, [noticeNo]);
 
@@ -55,36 +51,6 @@ const NoticeDetail = () => {
   const handleTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
-
-  // ✅ 수정 버튼 클릭
-  const handleEdit = () => {
-    navigate(`/notice/update/${noticeNo}`);
-  };
-
-  // ✅ 삭제 버튼 클릭
-  const handleDelete = async () => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) {
-      return;
-    }
-
-    try {
-      setLoading(true);
-      await deleteNotice(noticeNo);
-      alert('공지사항이 삭제되었습니다.');
-      navigate('/notice');
-    } catch (err) {
-      console.error('공지사항 삭제 실패:', err);
-      alert('공지사항 삭제에 실패했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ✅ 수정/삭제 권한 체크 (작성자 본인 또는 관리자만)
-  const canModify = notice && (
-    isAdmin || 
-    currentMemberNo === notice.memberNo
-  );
 
   if (loading) {
     return (
@@ -176,23 +142,6 @@ const NoticeDetail = () => {
             목록
           </ListButton>
 
-          {/* ✅ 수정/삭제 버튼 (권한 있을 때만 표시) */}
-          {canModify && (
-            <>
-              <ListButton 
-                onClick={handleEdit}
-                style={{ background: '#4CAF50' }}
-              >
-                수정
-              </ListButton>
-              <ListButton 
-                onClick={handleDelete}
-                style={{ background: '#f44336' }}
-              >
-                삭제
-              </ListButton>
-            </>
-          )}
 
           <TopButton onClick={handleTop}>
             <TopIcon>▲</TopIcon>

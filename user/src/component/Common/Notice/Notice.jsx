@@ -24,11 +24,24 @@ import {
 const Notice = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchInput, setSearchInput] = useState('');      // ✅ 입력값
+  const [searchKeyword, setSearchKeyword] = useState(''); // 검색에 쓰이는 값
   const [notices, setNotices] = useState([]);
   const [pageInfo, setPageInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchKeyword(searchInput);
+      setCurrentPage(1);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
 
   useEffect(() => {
     fetchNotices();
@@ -57,11 +70,11 @@ const Notice = () => {
   };
 
   const handleSearchChange = (e) => {
-    setSearchKeyword(e.target.value);
-    setCurrentPage(1);
+    setSearchInput(e.target.value);
   };
 
   const handleClearSearch = () => {
+    setSearchInput('');
     setSearchKeyword('');
     setCurrentPage(1);
   };
@@ -120,7 +133,7 @@ return (
             <input
               type="text"
               placeholder="검색어를 입력하세요"
-              value={searchKeyword}
+              value={searchInput}
               onChange={handleSearchChange}
               style={{
                 border: 'none',
@@ -129,7 +142,7 @@ return (
                 background: 'transparent'
               }}
             />
-            {searchKeyword && (
+            {searchInput && (
               <ClearButton onClick={handleClearSearch}>×</ClearButton>
             )}
           </SearchBox>
