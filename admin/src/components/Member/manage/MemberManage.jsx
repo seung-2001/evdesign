@@ -73,26 +73,21 @@ const MemberManage = () => {
   };
 
   const handleAssignOperator = async (member) => {
-    if (!auth.role.includes('ADMIN')) {
-      alert('관리자 지정은 ADMIN만 가능합니다.');
-      return;
-    }
-    if (member.roleStatus === 'ROLE_OPERATOR' || member.roleStatus === 'ROLE_ADMIN') {
-      alert('이미 관리자 권한을 가진 회원입니다.');
-      return;
-    }
     if (window.confirm(`${member.memberName}(${member.memberId})님을 OPERATOR로 지정하시겠습니까?`)) {
       try {
-        await axios.post(
+        await axios.put(
           `http://localhost:8081/member/admin/change-role/${member.memberNo}`,
-          { memberNo: member.memberNo, newRole: 'ROLE_OPERATOR' },
+          { newRole: 'ROLE_OPERATOR',
+            currentRole: member.roleStatus,
+            status: member.status
+           },
           { headers: { Authorization: `Bearer ${auth.accessToken}` } }
         );
         alert('관리자로 지정되었습니다.');
         fetchMembers();
       } catch (err) {
-        console.error(err);
-        alert('관리자 지정에 실패했습니다.');
+        alert(err.response?.data || '관리자 지정에 실패했습니다.');
+        
       }
     }
   };

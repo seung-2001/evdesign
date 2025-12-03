@@ -11,7 +11,14 @@ import {
     ButtonGroup,
     UpdateButton,
     CancelButton,
-    FullWidthButton
+    FullWidthButton,
+    Modal,
+    ModalContent,
+    ModalTitle,
+    ModalInput,
+    ModalButtonGroup,
+    ModalButton,
+    ModalCancelButton
 } from './MyInfo.styles';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -22,6 +29,8 @@ const MyInfo = () => {
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [hasLicense, setHasLicense] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
+    const [password, setPassword] = useState("");
 
     useEffect(() => {
         console.log("어스는!:",auth);
@@ -55,7 +64,38 @@ const MyInfo = () => {
         fetchLicense();
     }, []);
 
-    const handleUpdate = () => navi("/mypage/edit");
+    const handleUpdate = () => {
+        setShowPasswordModal(true);
+    };
+
+    const handlePasswordConfirm = async () => {
+        try {
+            // 비밀번호 확인 API 호출
+            const result = await axios.post(
+                "http://localhost:8081/member/verify-password",
+                { password },
+                { headers: { Authorization: `Bearer ${auth.accessToken}` } }
+            );
+            
+            if (result.data.success) {
+                setShowPasswordModal(false);
+                setPassword("");
+                alert("회원확인이 완료되었습니다.");
+                navi("/update");
+            } else {
+                alert("비밀번호가 일치하지 않습니다.");
+            }
+        } catch (error) {
+            console.error("비밀번호 확인 실패:", error);
+            alert("비밀번호 확인에 실패했습니다.");
+        }
+    };
+
+    const handleModalClose = () => {
+        setShowPasswordModal(false);
+        setPassword("");
+    };
+
     const handleCancel = () => navi("/");
 
     if (loading) {
@@ -135,7 +175,6 @@ const MyInfo = () => {
                         {hasLicense ? "운전면허 인증완료" : "운전면허 인증하기"}
                     </FullWidthButton>
 
-
                     <FullWidthButton onClick={() => navi("/mypage/posts")}>
                         내 게시물 보기
                     </FullWidthButton>
@@ -153,6 +192,33 @@ const MyInfo = () => {
                     <CancelButton onClick={handleCancel}>취소</CancelButton>
                 </ButtonGroup>
             </FormWrapper>
+
+            {/* 비밀번호 확인 모달 */}
+            {showPasswordModal && (
+                <Modal onClick={handleModalClose}>
+                    <ModalContent onClick={(e) => e.stopPropagation()}>
+                        <ModalTitle>비밀번호 확인</ModalTitle>
+                        <p style={{ marginBottom: '20px', color: '#666' }}>
+                            정보 수정을 위해 비밀번호를 입력해주세요.
+                        </p>
+                        <ModalInput
+                            type="password"
+                            placeholder="비밀번호를 입력하세요"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    handlePasswordConfirm();
+                                }
+                            }}
+                        />
+                        <ModalButtonGroup>
+                            <ModalButton onClick={handlePasswordConfirm}>확인</ModalButton>
+                            <ModalCancelButton onClick={handleModalClose}>취소</ModalCancelButton>
+                        </ModalButtonGroup>
+                    </ModalContent>
+                </Modal>
+            )}
         </Container>
     );
 };
