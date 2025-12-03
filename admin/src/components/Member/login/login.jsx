@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom"; 
-import { Container } from "../../Styles/Styles";
 import axios from "axios";
-import { SubContainer, Form, Title, Input, Button } from "./login.styles";
-import { AuthContext } from "../../../context/AuthContext.jsx"
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../context/AuthContext.jsx";
+import { Container } from "../../Styles/Styles";
+import { Button, Form, Input, SubContainer, Title } from "./login.styles";
 
 const Login = () => {
   const [memberId, setMemberId] = useState("");
@@ -32,6 +32,9 @@ const Login = () => {
     })
     .then(result => {
       const data = result.data;
+      console.log('🔍 로그인 응답 전체:', data);  // ✅ 추가
+      console.log('🔍 role 값:', data.role);  // ✅ 추가
+      console.log('🔍 role 타입:', typeof data.role);  // ✅ 추가
       const roles = data.role.split(',').map(r => r.trim());
       
       // 권한 체크: ROLE_OPERATOR 또는 ROLE_ADMIN만 로그인 가능
@@ -54,7 +57,10 @@ const Login = () => {
       });
       
       alert("로그인 성공!");
-      window.location.href = "/";
+
+setTimeout(() => {
+  window.location.href = "/";
+}, 100);
     })
     .catch(error => {
       if (error.response) {

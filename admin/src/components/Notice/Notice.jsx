@@ -1,24 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getNoticeList, getNoticeSearch } from '../../../api/notice';
+import { getNoticeList, getNoticeSearch } from '../../api/notice';
 import { Container } from '../Styles/Styles';
 import {
-  ClearButton,
-  ContentWrapper,
-  ImagePlaceholder,
-  NoticeBody,
-  NoticeCard,
-  NoticeContent,
-  NoticeList,
-  NoticeTitle,
-  PageNumber,
-  Pagination,
-  PaginationButton,
-  SearchBox,
-  SearchLabel,
-  SearchSection,
-  Subtitle,
-  Title,
+    ClearButton,
+    ContentWrapper,
+    ImagePlaceholder,
+    NoticeBody,
+    NoticeCard,
+    NoticeContent,
+    NoticeList,
+    NoticeTitle,
+    PageNumber,
+    Pagination,
+    PaginationButton,
+    SearchBox,
+    SearchLabel,
+    SearchSection,
+    Subtitle,
+    Title,
+    WriteButton
 } from './Notice.styles';
 
 const Notice = () => {
@@ -71,6 +72,10 @@ const Notice = () => {
       setCurrentPage(page);
     }
   };
+
+  const handleWriteClick = () => {
+  navigate('/notice/insert');
+};
 
 
   const handleNoticeClick = (noticeNo) => {
@@ -135,7 +140,11 @@ return (
           </SearchBox>
         </SearchSection>
 
-        </div>
+        {/* 글쓰기 버튼 */}
+        <WriteButton onClick={handleWriteClick}>
+          글쓰기
+        </WriteButton>
+      </div>
 
             
 
