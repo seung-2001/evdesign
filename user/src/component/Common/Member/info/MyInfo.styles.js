@@ -102,3 +102,22 @@ export const DeleteButton = styled.button`
         background-color: #c82333;
     }
 `;
+
+export const FullWidthButton = styled.button`
+    width: 100%;
+    padding: 14px;
+    background-color: ${props => props.$primary ? "#93c5fd" : props.disabled ? "#bbb" : "#444"};
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: ${props => props.$primary ? "#60a5fa" : props.disabled ? "#bbb" : "#666"};
+    }
+`;
+

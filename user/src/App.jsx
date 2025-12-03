@@ -9,7 +9,12 @@ import MainContent from "./component/Common/MainContent/MainContent";
 import MyInfo from "./component/Common/Member/info/Myinfo";
 import Join from "./component/Common/Member/Join/Join";
 import License from "./component/Common/Member/License/License";
+<<<<<<< HEAD
 import Login from "./component/Common/Member/login/login";
+=======
+import InfoLicenseCertification from "./component/Common/Member/License/InfoLicense";
+import MyInfo from "./component/Common/Member/info/Myinfo";
+>>>>>>> feature/newFeature
 import MyReports from "./component/Common/Member/MyReports/MyReports";
 import Notice from "./component/Common/Notice/Notice";
 import NoticeDetail from "./component/Common/Notice/NoticeDetail";
@@ -17,6 +22,7 @@ import Report from "./component/Common/Report/Report";
 import StationInfo from "./component/Common/Station/StationInfo";
 import { AuthProvider } from "./component/context/AuthContext";
 
+<<<<<<< HEAD
 const App = () => {
   return (
     <AuthProvider>
@@ -56,6 +62,37 @@ const App = () => {
         <Route path="/report" element={<Report />} />
       </Routes>
       <Footer />
+=======
+
+
+
+
+const App = () => {
+  return (
+    <AuthProvider>
+    <> 
+        <Header />
+        <Routes>
+          <Route path="/" element={<MainContent />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/boardList" element={<BoardList />} />
+          <Route path="/notice" element={<Notice />} />
+          <Route path="/car" element={<Car />} />
+          <Route path="/carDetail" element={<CarDetail />} />
+          <Route path="/saveCar" element={<SaveCar />} />
+          <Route path="/join" element={<Join />} />
+          <Route path="infoLicense" element={<InfoLicenseCertification/>} />
+          <Route path="/license" element={<License />} />
+          <Route path="/info" element={<MyInfo />} />
+          <Route path="/myreports" element={<MyReports />} />
+          <Route path="/station/info" element={<StationInfo />} />
+          <Route path="/report" element={<Report />} />
+          
+        </Routes>
+        <Footer />
+      
+    </>
+>>>>>>> feature/newFeature
     </AuthProvider>
   );
 }; 
