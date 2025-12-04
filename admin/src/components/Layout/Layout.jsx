@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Routes, Route, Router } from "react-router-dom";
 import Header from "../Header/Header";
 import Sidebar from "../Sidebar/Sidebar";
-import CarReservation from "../CarReservation/CarReservation";
+// import CarReservation from "../CarReservation/CarReservation";
 import ChargingStation from "../ChargingStation/ChargingStation";
 import Inquiry from "../Inquiry/Inquiry";
 import Message from "../Message/Message";
@@ -13,6 +13,7 @@ import Help from "../Help/Help";
 import MemberManage from "../Member/manage/MemberManage";
 import Login from "../Member/login/login";
 import MyInfo from "../Member/info/MyInfo";
+import SaveCar from "../Cars/SaveCar/SaveCar";
 
 const StyledLayout = styled.div`
     display: flex;
@@ -28,7 +29,8 @@ const Layout = () => {
             <Sidebar />
             <Routes>
                 <Route path="/" element={<MemberManage />} />
-                <Route path="/car-reservation" element={<CarReservation />} />
+                {/* <Route path="/car-reservation" element={<CarReservation />} /> */}
+                <Route path="/cars" element={<SaveCar />} />
                 <Route path="/charging-station" element={<ChargingStation />} />
                 <Route path="/inquiry" element={<Inquiry />} />
                 <Route path="/message" element={<Message />} />

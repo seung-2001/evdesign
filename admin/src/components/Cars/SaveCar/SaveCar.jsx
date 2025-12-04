@@ -21,7 +21,7 @@ import {
   SubmitButton,
   CancelButton,
   DeleteButton
-} from './CarDetails/SaveCar/SaveCar.styles';
+} from './SaveCar.styles.js';
 
 const SaveCar = () => {
   const [formData, setFormData] = useState({
@@ -40,12 +40,30 @@ const SaveCar = () => {
     }));
   };
 
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null); // 미리보기용
+
   const handleImageRegistration = () => {
     console.log('사진 등록');
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const maxSize = 1024 * 1024 * 10; // 백엔드에 제한한 파일크기
+
+    if(file && file.size > maxSize) {
+      alert("파일 용량을 초과하였습니다");
+      return;
+    }
+
+    setImageFile(file);
+    const previewUrl = URL.createObjectURL(file);
+    setImagePreview(previewUrl);
+
+  }
+
   const handleSubmit = () => {
-    console.log('수정하기', formData);
+    console.log('등록/수정하기', formData);
   };
 
   const handleCancel = () => {
@@ -56,24 +74,48 @@ const SaveCar = () => {
     console.log('삭제하기');
   };
 
+  const [file, setFile] = useState(null);
+
+  const handleFileRegistration = () => {
+    console.log('파일 등록');
+  };
+
   return (
     <Container>
-      <PageTitle>공유차량 등록</PageTitle>
-      <PageSubtitle>Save New Car</PageSubtitle>
+      <PageTitle>공유차량 등록/수정</PageTitle>
+      <PageSubtitle>Save New Car / Edit Car</PageSubtitle>
 
       <ContentWrapper>
         <LeftSection>
-          <SectionTitle>공유차량 등록</SectionTitle>
+          <SectionTitle>공유차량 등록/수정</SectionTitle>
           
           <ImageUploadArea>
-            <div style={{ textAlign: 'center', color: '#999' }}>
-              이미지 업로드 영역
-            </div>
+            
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{ display: 'none'}}
+                id="image-upload"
+              />
+              <label htmlFor="image-upload"
+                style={{cursor: 'pointer', textAlign: 'center', color: '#999'}}>
+                {
+                  imagePreview
+                  ?
+                  (<img src={imagePreview} alt="차량 이미지 미리보기" style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}} />)
+                  :
+                  (<div style={{ textAlign: 'center', color: '#999'}}>이미지를 선택하세요</div>)
+                }
+              </label>
+            
           </ImageUploadArea>
 
           <FormSection>
             <FormTitle>첨부파일</FormTitle>
-            <div style={{ fontSize: '14px', color: '#666' }}>파일명</div>
+            <div style={{ fontSize: '14px', color: '#666' }}>
+              파일명
+            </div>
           </FormSection>
 
           <FormSection>
@@ -131,7 +173,7 @@ const SaveCar = () => {
 
           <ButtonGroup>
             <ImageButton onClick={handleImageRegistration}>사진 등록</ImageButton>
-            <SubmitButton onClick={handleSubmit}>수정하기</SubmitButton>
+            <SubmitButton onClick={handleSubmit}>등록/수정하기</SubmitButton>
             <CancelButton onClick={handleCancel}>취소</CancelButton>
           </ButtonGroup>
 

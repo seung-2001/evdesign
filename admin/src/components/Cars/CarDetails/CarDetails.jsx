@@ -29,7 +29,7 @@ import {
   PrimaryButton,
   SecondaryButton,
   DangerButton,
-} from "./CarDetails.styles";
+} from "./CarDetails.styles.js";
 
 const CarDetails = () => {
   return (
