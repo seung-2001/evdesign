@@ -27,7 +27,8 @@ const NoticeDetail = () => {
 
   // ✅ 로그인한 사용자 정보 (추후 Context나 Redux로 관리)
   const currentMemberNo = parseInt(localStorage.getItem('memberNo') || '0');
-  const isAdmin = localStorage.getItem('role').includes === 'ADMIN'; // 관리자 여부
+  const role = localStorage.getItem('role') || '';
+  const isAdmin = role.includes('ADMIN');
 
   useEffect(() => {
     fetchNoticeDetail();
@@ -80,11 +81,13 @@ const NoticeDetail = () => {
     }
   };
 
-  // ✅ 수정/삭제 권한 체크 (작성자 본인 또는 관리자만)
-  const canModify = notice && (
-    isAdmin || 
-    currentMemberNo === notice.memberNo
-  );
+//  수정 권한: 작성자 본인만*
+
+const canEdit = notice && currentMemberNo === notice.memberNo;
+
+//  삭제 권한: 관리자 OR 작성자 본인*
+
+const canDelete = notice && (isAdmin || currentMemberNo === notice.memberNo);
 
   if (loading) {
     return (
@@ -176,23 +179,24 @@ const NoticeDetail = () => {
             목록
           </ListButton>
 
-          {/* ✅ 수정/삭제 버튼 (권한 있을 때만 표시) */}
-          {canModify && (
-            <>
-              <ListButton 
-                onClick={handleEdit}
-                style={{ background: '#4CAF50' }}
-              >
-                수정
-              </ListButton>
-              <ListButton 
-                onClick={handleDelete}
-                style={{ background: '#f44336' }}
-              >
-                삭제
-              </ListButton>
-            </>
-          )}
+          {/* ✅ 수정 버튼 (작성자 본인만) */}
+{canEdit && (
+  <ListButton 
+    onClick={handleEdit}
+    style={{ background: '#4CAF50' }}
+  >
+    수정
+  </ListButton>
+)}
+              {/* ✅ 삭제 버튼 (관리자 OR 작성자 본인) */}
+{canDelete && (
+  <ListButton 
+    onClick={handleDelete}
+    style={{ background: '#f44336' }}
+  >
+    삭제
+  </ListButton>
+)}
 
           <TopButton onClick={handleTop}>
             <TopIcon>▲</TopIcon>
