@@ -19,7 +19,7 @@ import axios from "axios";
 
 const UpdateMember = () => {
     const navi = useNavigate();
-    const { auth } = useContext(AuthContext);
+    const { auth, logout } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({
         memberId: '',
@@ -95,25 +95,21 @@ const UpdateMember = () => {
 };
 
     const handleDelete = async () => {
-    if (!password) {
-        alert('비밀번호를 입력해주세요.');
-        return;
-    }
-
-    if (window.confirm('정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-        try {
-            await axios.delete('http://localhost:8081/member/info/delete', {
-                headers: { Authorization: `Bearer ${auth.accessToken}` },
-                data: { password }
-            });
-            alert('회원 탈퇴가 완료되었습니다.');
-            navi('/'); // 메인 페이지로 이동
-        } catch (error) {
-            console.error('탈퇴 실패:', error);
-            alert(error.response?.data || '회원 탈퇴에 실패했습니다.');
+        if (window.confirm('정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+            try {
+                await axios.delete('http://localhost:8081/member/info/delete', {
+                    headers: { Authorization: `Bearer ${auth.accessToken}` },
+                    data:{}
+                });
+                alert('회원 탈퇴가 완료되었습니다.');
+                logout();
+                navi('/');
+            } catch (error) {
+                console.error('탈퇴 실패:', error);
+                alert(error.response?.data || '회원 탈퇴에 실패했습니다.');
+            }
         }
-    }
-};
+    };
 
     const handleCancel = () => {
         navi('/mypage');

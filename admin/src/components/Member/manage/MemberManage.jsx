@@ -93,14 +93,6 @@ const MemberManage = () => {
   };
 
   const handleDeleteMember = async (member) => {
-    if (auth.role.includes('OPERATOR') && member.roleStatus === 'ADMIN') {
-      alert('OPERATOR는 ADMIN 회원을 탈퇴시킬 수 없습니다.');
-      return;
-    }
-    if (member.roleStatus === 'ADMIN') {
-      alert('ADMIN 계정은 탈퇴시킬 수 없습니다.');
-      return;
-    }
     if (window.confirm(`${member.memberName}(${member.memberId}) 회원을 탈퇴시키겠습니까?`)) {
       try {
         await axios.delete(`http://localhost:8081/member/operator/member-manage/${member.memberNo}`, {
@@ -110,7 +102,7 @@ const MemberManage = () => {
         fetchMembers();
       } catch (err) {
         console.error(err);
-        alert('회원 탈퇴에 실패했습니다.');
+        alert(err.response.data["error-message"] || '회원탈퇴에 실패했습니다.');
       }
     }
   };
