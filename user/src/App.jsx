@@ -17,6 +17,9 @@ import MyReports from "./component/Common/Member/MyReports/MyReports";
 import StationInfo from "./component/Common/Station/StationInfo";
 import Report from "./component/Common/Report/Report";
 import { AuthProvider } from "./component/context/AuthContext";
+import BoardInsert from "./component/Common/Board/BoardInsert";
+import BoardDetail from "./component/Common/Board/BoardDetail";
+import BoardUpdate from "./component/Common/Board/BoardUpdate";
 
 
 
@@ -24,12 +27,16 @@ import { AuthProvider } from "./component/context/AuthContext";
 const App = () => {
   return (
     <AuthProvider>
-    <> 
+      <> 
         <Header />
         <Routes>
           <Route path="/" element={<MainContent />} />
           <Route path="/login" element={<Login />} />
           <Route path="/boardList" element={<BoardList />} />
+          <Route path="/boardInsert" element={<BoardInsert />} />
+          <Route path="/boardUpdate/:boardNo" element={<BoardUpdate />} />
+          <Route path="/boardDetail/:boardNo" element={<BoardDetail />} />
+          <Route path="/report/:id" element={<Report />} />
           <Route path="/notice" element={<Notice />} />
           <Route path="/car" element={<Car />} />
           <Route path="/carDetail" element={<CarDetail />} />
@@ -39,12 +46,11 @@ const App = () => {
           <Route path="/info" element={<MyInfo />} />
           <Route path="/myreports" element={<MyReports />} />
           <Route path="/station/info" element={<StationInfo />} />
-          <Route path="/report" element={<Report />} />
-          
+          <Route path="/report" element={<Report />} />          
         </Routes>
         <Footer />
       
-    </>
+      </>
     </AuthProvider>
   );
 }; 

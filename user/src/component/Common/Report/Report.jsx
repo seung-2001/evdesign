@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 import {
@@ -104,7 +104,7 @@ const ReportPage = () => {
 
     // URL에서 전달받은 게시글 정보 (예: /report?postId=123&postTitle=제목&type=REPORT)
     const searchParams = new URLSearchParams(location.search);
-    const postId = searchParams.get("postId") || "";
+    const {postId}= useParams();
     const postTitle = searchParams.get("postTitle") || "{게시글 제목}";
     const initialType = searchParams.get("type") || "REPORT";
 
@@ -173,7 +173,7 @@ const ReportPage = () => {
         try {
             await axios.post(`${API_BASE_URL}/reports`, {
                 memberNo: auth.memberNo,
-                boardNo: activeTab === "REPORT" ? postId || 3 : 0, // 문의 시 0
+                boardNo: activeTab === "REPORT" ? postId || 0 : 0, // 문의 시 0
                 reportCategory: activeTab, // 'REPORT' or 'INQUIRY'
                 reportTitle:
                     activeTab === "REPORT"

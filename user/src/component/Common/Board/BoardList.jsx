@@ -1,85 +1,120 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { Search, MessageSquare, Eye, Clock, ThumbsUp } from "lucide-react";
-import { Container } from "../Styles/Styles";
+import { Button, Container } from "../Styles/Styles";
 import * as S from "./BoardList.styles";
+import { boardApi } from "../../../api/boardApi";
+import { AuthContext } from "../../context/AuthContext";
+
+
 
 export default function BoardList() {
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { auth, isAuthLoading } = useContext(AuthContext);
+  // 게시글 목록 불러오기
+  useEffect(() => {
+    fetchBoards();
+  }, [currentPage]);
 
-  const posts = [
-    {
-      id: 1,
-      title: "테슬라 모델 3 장거리 주행 후기",
-      content: "서울에서 부산까지 다녀왔는데 충전 인프라가 생각보다 잘 되어있더라구요. 고속도로 휴게소마다 급속충전기가 있어서 편하게 다녀왔습니다.",
-      author: "EV러버",
-      image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=200&h=150&fit=crop",
-      category: "후기",
-      views: 256,
-      time: "2시간 전"
-    },
-    {
-      id: 2,
-      title: "전기차 충전 요금 할인 팁 공유합니다",
-      content: "심야 시간대 충전하면 최대 50% 할인되는 거 알고 계셨나요? 밤 11시부터 아침 7시까지 충전하면 엄청 저렴해요!",
-      author: "충전마스터",
-      image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=200&h=150&fit=crop",
-      category: "정보",
-      views: 512,
-      time: "5시간 전"
-    },
-    {
-      id: 3,
-      title: "겨울철 전기차 배터리 관리 어떻게 하시나요?",
-      content: "요즘 추워져서 주행거리가 확 줄더라구요. 좋은 방법 있을까요? 히터 때문에 배터리 소모가 심한 것 같아요.",
-      author: "겨울운전자",
-      image: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=200&h=150&fit=crop",
-      category: "질문",
-      views: 189,
-      time: "1일 전"
-    },
-    {
-      id: 4,
-      title: "전기차 보조금 신청 완료했어요!",
-      content: "생각보다 절차가 간단하더라구요. 필요하신 분들 참고하세요. 서류 준비만 잘하면 금방 끝나요.",
-      author: "행복한오너",
-      image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=200&h=150&fit=crop",
-      category: "정보",
-      views: 342,
-      time: "1일 전"
-    },
-    {
-      id: 5,
-      title: "오늘 드라이브 코스 추천해요",
-      content: "제주도 해안도로 달리는데 전기차로 너무 좋네요. 조용하고 부드러운 승차감이 최고입니다!",
-      author: "여행러버",
-      image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=200&h=150&fit=crop",
-      category: "자유",
-      views: 156,
-      time: "2일 전"
+  const fetchBoards = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const data = await boardApi.getBoards(currentPage);
+      
+      console.log('받은 데이터:', data);  // 디버깅용
+      
+      // 데이터가 배열인지 확인
+      if (Array.isArray(data)) {
+        setPosts(data);
+      } else if (data && Array.isArray(data.content)) {
+        // 페이징 객체로 온 경우
+        setPosts(data.content);
+      } else {
+        console.error('올바르지 않은 데이터 형식:', data);
+        setPosts([]);
+      }
+      
+    } catch (err) {
+      console.error('게시글 목록 조회 실패:', err);
+      setError('게시글을 불러오는데 실패했습니다.');
+      setPosts([]);  // 에러 시에도 빈 배열
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const categories = ["all", "정보", "질문", "후기", "자유"];
+  // 게시글 상세로 이동
+  const handlePostClick = async (boardNo) => {
+  try {
+    await boardApi.increaseViewCount(boardNo);  // 조회수 증가 API 호출
+  } catch (error) {
+    console.error("조회수 증가 실패:", error);
+  }
 
-  const filteredPosts = posts.filter(post => {
-    const matchesFilter = activeFilter === "all" || post.category === activeFilter;
-    const matchesSearch =
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.content.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  navigate(`/boardDetail/${boardNo}`);
+};
 
-  const totalPages = 88;
-  const pageNumbers = [];
-  
-  if (currentPage <= 3) {
-    pageNumbers.push(1, 2, 3, '...', 87, 88);
-  } else if (currentPage >= totalPages - 2) {
-    pageNumbers.push(1, 2, '...', 86, 87, 88);
+  // 글쓰기 페이지로 이동
+const handleWriteClick = () => {
+  if (isAuthLoading) return;
+
+  if (!auth.isAuthenticated) {
+    alert("로그인이 필요합니다.");
+    navigate("/login");
   } else {
-    pageNumbers.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', 88);
+    navigate("/boardInsert");
+  }
+};
+
+  // posts가 배열인지 확인 후 filter 실행
+  const filteredPosts = Array.isArray(posts) ? posts.filter(post => {
+    const matchesSearch =
+      post.boardTitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.boardContent?.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesSearch;
+  }) : [];
+
+  if (loading) {
+    return (
+      <Container>
+        <S.BoardListWrapper>
+          <p style={{ textAlign: 'center', padding: '2rem' }}>로딩 중...</p>
+        </S.BoardListWrapper>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <S.BoardListWrapper>
+          <p style={{ textAlign: 'center', color: 'red', padding: '2rem' }}>{error}</p>
+          <button 
+            onClick={fetchBoards}
+            style={{
+              display: 'block',
+              margin: '1rem auto',
+              padding: '0.5rem 1rem',
+              background: '#3b82f6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            다시 시도
+          </button>
+        </S.BoardListWrapper>
+      </Container>
+    );
   }
 
   return (
@@ -90,15 +125,24 @@ export default function BoardList() {
           <S.Subtitle>community board</S.Subtitle>
         </S.Header>
 
-        {/* Search and Filter */}
+        <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
+          <button
+            onClick={handleWriteClick}
+            style={{
+              padding: '0.75rem 1.5rem',
+              background: '#111',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '0.95rem'
+            }}
+          >
+            글쓰기
+          </button>
+        </div>
+
         <S.SearchFilterWrapper>
-          <S.FilterSelect value={activeFilter} onChange={(e) => setActiveFilter(e.target.value)}>
-            <option value="all">전체</option>
-            {categories.filter(cat => cat !== "all").map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </S.FilterSelect>
-          
           <S.SearchInputWrapper>
             <S.SearchInput
               type="text"
@@ -112,72 +156,67 @@ export default function BoardList() {
           </S.SearchInputWrapper>
         </S.SearchFilterWrapper>
 
-        {/* Posts List */}
         <S.PostList>
-          {filteredPosts.map(post => (
-            <S.PostItem key={post.id}>
-              <S.PostImage src={post.image} alt={post.title} />
-              <S.PostContent>
-                <S.PostHeader>
-                  <S.BadgeWrapper>
-                    <S.CategoryBadge>{post.category}</S.CategoryBadge>
-                  </S.BadgeWrapper>
-                  <S.PostMeta>
-                    <S.AuthorInfo>
-                      <S.AuthorName>{post.author}</S.AuthorName>
-                    </S.AuthorInfo>
-                    <S.TimeInfo>
-                      <Clock size={12} />
-                      {post.time}
-                    </S.TimeInfo>
-                  </S.PostMeta>
-                </S.PostHeader>
-                
-                <S.PostTitle>{post.title}</S.PostTitle>
-                <S.PostDescription>{post.content}</S.PostDescription>
-                
-                <S.StatsWrapper>
-                  <S.StatItem>
-                    <Eye size={14} /> {post.views}
-                  </S.StatItem>
-                </S.StatsWrapper>
-              </S.PostContent>
-            </S.PostItem>
-          ))}
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map(post => (
+              <S.PostItem 
+                key={post.boardNo}
+                onClick={() => handlePostClick(post.boardNo)}
+              >
+                {post.imageUrl && (
+                  <S.PostImage src={post.imageUrl} alt={post.boardTitle} />
+                )}
+                <S.PostContent>
+                  <S.PostHeader>
+                    <S.PostMeta>
+                      <S.AuthorInfo>
+                        <S.AuthorName>{post.memberName || '익명'}</S.AuthorName>
+                      </S.AuthorInfo>
+                      <S.TimeInfo>
+                        {post.createDate ? new Date(post.createDate).toLocaleDateString('ko-KR') : ''}
+                      </S.TimeInfo>
+                    </S.PostMeta>
+                  </S.PostHeader>
+                  
+                  <S.PostTitle>{post.boardTitle || '제목 없음'}</S.PostTitle>
+                  <S.PostDescription>{post.boardContent || ''}</S.PostDescription>
+                  
+                  <S.StatsWrapper>
+                    <S.StatItem>
+                      조회 {post.count || 0}
+                    </S.StatItem>
+                  </S.StatsWrapper>
+                </S.PostContent>
+              </S.PostItem>
+            ))
+          ) : (
+            <S.EmptyState>
+              <Search size={48} style={{ color: "#d1d5db", marginBottom: "1rem" }} />
+              <p>게시글이 없습니다.</p>
+            </S.EmptyState>
+          )}
         </S.PostList>
 
-        {/* Pagination */}
         {filteredPosts.length > 0 && (
           <S.Pagination>
-            <S.PageButton onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}>
+            <S.PageButton 
+              onClick={() => setCurrentPage(prev => Math.max(0, prev - 1))}
+              disabled={currentPage === 0}
+            >
               ← Previous
             </S.PageButton>
             
-            {pageNumbers.map((num, idx) => (
-              typeof num === 'number' ? (
-                <S.PageNumber
-                  key={idx}
-                  $active={currentPage === num}
-                  onClick={() => setCurrentPage(num)}
-                >
-                  {num}
-                </S.PageNumber>
-              ) : (
-                <S.PageDots key={idx}>...</S.PageDots>
-              )
-            ))}
+            <S.PageNumber $active={true}>
+              {currentPage + 1}
+            </S.PageNumber>
             
-            <S.PageButton onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}>
+            <S.PageButton 
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              disabled={filteredPosts.length < 3}
+            >
               Next →
             </S.PageButton>
           </S.Pagination>
-        )}
-
-        {filteredPosts.length === 0 && (
-          <S.EmptyState>
-            <Search size={48} style={{ color: "#d1d5db", marginBottom: "1rem" }} />
-            <p>검색 결과가 없습니다.</p>
-          </S.EmptyState>
         )}
       </S.BoardListWrapper>
     </Container>
