@@ -131,7 +131,7 @@ cd admin && npm run build
 `user/index.html`에 Kakao Map API 스크립트 추가:
 
 ```html
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services,clusterer"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY(JavaScript SDK)&libraries=services,clusterer"></script>
 ```
 
 ---
