@@ -57,8 +57,11 @@ const SaveCar = () => {
     }
 
     setImageFile(file);
+
     const previewUrl = URL.createObjectURL(file);
     setImagePreview(previewUrl);
+
+    console.log("미리보기 URL:", previewUrl);
 
   }
 
@@ -98,16 +101,32 @@ const SaveCar = () => {
                 style={{ display: 'none'}}
                 id="image-upload"
               />
-              <label htmlFor="image-upload"
-                style={{cursor: 'pointer', textAlign: 'center', color: '#999'}}>
                 {
                   imagePreview
                   ?
-                  (<img src={imagePreview} alt="차량 이미지 미리보기" style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}} />)
+                  (
+                    <label htmlFor="image-upload" style={{cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%', color: '#999'}}>
+                      <img src={imagePreview} alt="차량 이미지 미리보기" style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}} />
+                    </label>
+                  )
                   :
-                  (<div style={{ textAlign: 'center', color: '#999'}}>이미지를 선택하세요</div>)
+                  (
+                  <label 
+                    htmlFor="image-upload"
+                    style={{
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '100%',
+                      height: '100%',
+                      color: '#999'
+                    }}
+                  >
+                    이미지를 선택하세요
+                  </label>
+                  )
                 }
-              </label>
             
           </ImageUploadArea>
 
