@@ -11,7 +11,7 @@ import Car from "./component/Common/Car/Car";
 import CarDetail from "./component/Common/Car/CarDetail/CarDetail";
 import SaveCar from "./component/Common/Car/SaveCar/SaveCar";
 import Join from "./component/Common/Member/Join/Join";
-import License from "./component/Common/Member/License/License";
+import InfoLicenseCertification from "./component/Common/Member/License/InfoLicense";
 import MyInfo from "./component/Common/Member/info/Myinfo";
 import MyReports from "./component/Common/Member/MyReports/MyReports";
 import StationInfo from "./component/Common/Station/StationInfo";
@@ -20,6 +20,9 @@ import { AuthProvider } from "./component/context/AuthContext";
 import BoardInsert from "./component/Common/Board/BoardInsert";
 import BoardDetail from "./component/Common/Board/BoardDetail";
 import BoardUpdate from "./component/Common/Board/BoardUpdate";
+import UpdateMember from "./component/Common/Member/updateMember/updateMember";
+import ChangePassword from "./component/Common/Member/changePassword/ChangePassword";
+
 
 
 
@@ -42,11 +45,14 @@ const App = () => {
           <Route path="/carDetail" element={<CarDetail />} />
           <Route path="/saveCar" element={<SaveCar />} />
           <Route path="/join" element={<Join />} />
-          <Route path="/license" element={<License />} />
+          <Route path="infoLicense" element={<InfoLicenseCertification/>} />
           <Route path="/info" element={<MyInfo />} />
           <Route path="/myreports" element={<MyReports />} />
           <Route path="/station/info" element={<StationInfo />} />
-          <Route path="/report" element={<Report />} />          
+          <Route path="/report" element={<Report />} />
+          <Route path="/update" element={<UpdateMember />} />
+          <Route path="/changePwd" element={<ChangePassword />} />
+          
         </Routes>
         <Footer />
       

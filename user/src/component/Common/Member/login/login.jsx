@@ -24,34 +24,17 @@ const Login = () => {
         } else{
             setMsg("");
         }
-        axios.post("http://localhost:8081/auth/login", {
-              memberId,
-              memberPwd
-          })
-          .then(result => {
-              const data = result.data;
-
-              login({
-                  memberNo: data.memberNo,
-                  memberName: data.memberName,
-                  memberId: data.memberId,
-                  nickname: data.nickname,
-                  address: data.address,
-                  phone: data.phone,
-                  email: data.email,
-                  role: data.roleStatus,
-
-                  accessToken: data.accessToken,       // 토큰 서버에서 주면
-                  refreshToken: data.refreshToken
-              });
-
-              alert("추카포카");
-              window.location.href = "/";
-          })
-          .catch(error => {
-              alert(error.response.data["error-message"]);
-          });
-
+        axios.post("http://localhost:8081/auth/login",{
+            memberId,
+            memberPwd
+        }).then(result =>{
+            const { memberNo, memberName, accessToken, refreshToken, role} = result.data;
+            login({memberNo, memberName, accessToken, refreshToken, role});
+            alert("추카포카");
+            window.location.href="/";
+        }).catch(error => {
+            alert(error.response.data["error-message"]);
+        })
   };
 
   const handleSignup = () => {

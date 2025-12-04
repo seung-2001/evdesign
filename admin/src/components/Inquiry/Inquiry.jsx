@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useSearch } from "../../context/SearchContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const Container = styled.div`
     margin-left: 250px;
@@ -212,6 +213,9 @@ const Inquiry = () => {
 
     // 검색 컨텍스트 사용
     const { searchKeyword } = useSearch();
+    
+    // 인증 컨텍스트 사용
+    const { auth } = useContext(AuthContext);
 
     // 필터링된 목록
     const filteredInquiries = inquiries.filter((inquiry) => {
@@ -347,6 +351,10 @@ const Inquiry = () => {
             await axios.put(`${API_BASE_URL}/reports`, {
                 reportNo: inquiry.reportNo,
                 status: newStatus,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${auth.accessToken}`,
+                },
             });
             alert("상태가 변경되었습니다.");
             // 목록 새로고침
