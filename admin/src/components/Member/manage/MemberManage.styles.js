@@ -2,9 +2,11 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  min-height: 100vh;
-  background-color: #f9fafb;
+  margin-left: 250px;
   padding: 2rem;
+  min-height: calc(100vh - 70px);
+  background-color: #f9fafb;
+  width: calc(100% - 250px);
 `;
 
 export const ContentWrapper = styled.div`
