@@ -42,28 +42,54 @@ const SaveCar = () => {
 
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null); // 미리보기용
+  const [attachedFile, setAttachedFile] = useState(null); // 파일 첨부용
 
   const handleImageRegistration = () => {
     console.log('사진 등록');
   };
 
   const handleImageChange = (e) => {
+    const imageFile = e.target.files[0];
+    const maxSize = 1024 * 1024 * 10; // 백엔드에 제한한 파일크기
+
+    if(!imageFile) {
+      setImageFile(null);
+      setImagePreview(null);
+      return;
+    }
+
+    if(imageFile && imageFile.size > maxSize) {
+      alert("파일 용량을 초과하였습니다");
+      e.target.value = '';
+      return;
+    }
+
+    setImageFile(imageFile);
+
+    const previewUrl = URL.createObjectURL(imageFile);
+    setImagePreview(previewUrl);
+
+    console.log("미리보기 URL:", previewUrl);
+
+  };
+
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     const maxSize = 1024 * 1024 * 10; // 백엔드에 제한한 파일크기
+
+    if(!file) {
+      setAttachedFile(null);
+      return;
+    }
 
     if(file && file.size > maxSize) {
       alert("파일 용량을 초과하였습니다");
       return;
     }
 
-    setImageFile(file);
-
-    const previewUrl = URL.createObjectURL(file);
-    setImagePreview(previewUrl);
-
-    console.log("미리보기 URL:", previewUrl);
-
-  }
+    setAttachedFile(file);
+    console.log("첨부된 파일:", file.name);
+  };
 
   const handleSubmit = () => {
     console.log('등록/수정하기', formData);
@@ -132,9 +158,23 @@ const SaveCar = () => {
 
           <FormSection>
             <FormTitle>첨부파일</FormTitle>
-            <div style={{ fontSize: '14px', color: '#666' }}>
-              파일명
-            </div>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              style={{ display: 'none'}}
+              id="file-upload"
+            />
+            <label 
+              htmlFor="file-upload" 
+              style={{ 
+                fontSize: '14px', 
+                color: attachedFile ? '#333' : '#666',
+                cursor: 'pointer',
+                textDecoration: 'underline'
+              }}
+            >
+              {attachedFile ? attachedFile.name : '파일을 선택하세요'}
+            </label>
           </FormSection>
 
           <FormSection>
