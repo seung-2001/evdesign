@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { useSearch } from "../../context/SearchContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const Container = styled.div`
     margin-left: 250px;
@@ -323,6 +324,9 @@ const ChargingStation = () => {
 
     // 검색 컨텍스트 사용
     const { searchKeyword } = useSearch();
+    
+    // 인증 컨텍스트 사용
+    const { auth } = useContext(AuthContext);
 
     // 충전소 목록 조회 함수
     const fetchStations = async () => {
@@ -454,7 +458,11 @@ const ChargingStation = () => {
                     : null,
             };
 
-            await axios.post(`${API_BASE_URL}/station`, stationData);
+            await axios.post(`${API_BASE_URL}/station`, stationData, {
+                headers: {
+                    Authorization: `Bearer ${auth.accessToken}`,
+                },
+            });
             alert("충전소가 등록되었습니다.");
             setIsModalOpen(false);
 
@@ -487,7 +495,12 @@ const ChargingStation = () => {
 
         try {
             await axios.delete(
-                `${API_BASE_URL}/station?stationNo=${stationNo}`
+                `${API_BASE_URL}/station?stationNo=${stationNo}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${auth.accessToken}`,
+                    },
+                }
             );
             alert("충전소가 삭제되었습니다.");
 

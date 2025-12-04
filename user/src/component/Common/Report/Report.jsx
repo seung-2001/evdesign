@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 import {
@@ -101,10 +101,10 @@ const ReportPage = () => {
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
+    const { postId } = useParams();
 
     // URL에서 전달받은 게시글 정보 (예: /report?postId=123&postTitle=제목&type=REPORT)
     const searchParams = new URLSearchParams(location.search);
-    const postId = searchParams.get("postId") || "";
     const postTitle = searchParams.get("postTitle") || "{게시글 제목}";
     const initialType = searchParams.get("type") || "REPORT";
 
@@ -138,6 +138,10 @@ const ReportPage = () => {
     };
 
     const handleSubmit = async () => {
+        // 디버깅용 로그
+        console.log("현재 auth 상태:", auth);
+        console.log("accessToken:", auth.accessToken);
+
         // 로그인 체크
         if (!auth.isAuthenticated || !auth.accessToken) {
             alert("로그인이 필요합니다.");
@@ -171,21 +175,25 @@ const ReportPage = () => {
         );
 
         try {
-            await axios.post(`${API_BASE_URL}/reports`, {
-                memberNo: auth.memberNo,
-                boardNo: activeTab === "REPORT" ? postId || 3 : 0, // 문의 시 0
-                reportCategory: activeTab, // 'REPORT' or 'INQUIRY'
-                reportTitle:
-                    activeTab === "REPORT"
-                        ? selectedReasonData.title
-                        : inquiryTitle.trim(),
-                reportContent:
-                    additionalInfo.trim() || selectedReasonData.description,
-            }, {
-                headers: {
-                    Authorization: `Bearer ${auth.accessToken}`
+            await axios.post(
+                `${API_BASE_URL}/reports`,
+                {
+                    memberNo: auth.memberNo,
+                    boardNo: activeTab === "REPORT" ? postId || null : null, // 문의 시 null
+                    reportCategory: activeTab, // 'REPORT' or 'INQUIRY'
+                    reportTitle:
+                        activeTab === "REPORT"
+                            ? selectedReasonData.title
+                            : inquiryTitle.trim(),
+                    reportContent:
+                        additionalInfo.trim() || selectedReasonData.description,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${auth.accessToken}`,
+                    },
                 }
-            });
+            );
 
             setIsSuccess(true);
         } catch (err) {
