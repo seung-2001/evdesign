@@ -32,9 +32,9 @@ const Login = () => {
     })
     .then(result => {
       const data = result.data;
-      console.log('🔍 로그인 응답 전체:', data);  // ✅ 추가
-      console.log('🔍 role 값:', data.role);  // ✅ 추가
-      console.log('🔍 role 타입:', typeof data.role);  // ✅ 추가
+      // console.log('🔍 로그인 응답 전체:', data); 
+      // console.log('🔍 role 값:', data.role);  
+      // console.log('🔍 role 타입:', typeof data.role);
       const roles = data.role.split(',').map(r => r.trim());
       
       // 권한 체크: ROLE_OPERATOR 또는 ROLE_ADMIN만 로그인 가능
@@ -56,7 +56,7 @@ const Login = () => {
         refreshToken: data.refreshToken
       });
       
-      alert("로그인 성공!");
+      // alert("로그인 성공!");
 
 setTimeout(() => {
   window.location.href = "/";

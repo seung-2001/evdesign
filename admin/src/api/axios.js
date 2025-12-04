@@ -11,13 +11,12 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
-    alert('Token: ' + token);  // ← 토큰 값 확인
+    // ❌ alert('Token: ' + token);  // 삭제
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      alert('헤더 추가 완료');  // ← 헤더 추가 확인
-    } else {
-      alert('토큰 없음!');
-    }
+      // ❌ alert('헤더 추가 완료');  // 삭제
+    } 
+    // ❌ else { alert('토큰 없음!'); }  // 삭제
     return config;
   },
   (error) => {
