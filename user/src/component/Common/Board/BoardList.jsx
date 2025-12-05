@@ -53,12 +53,6 @@ export default function BoardList() {
 
   // 게시글 상세로 이동
   const handlePostClick = async (boardNo) => {
-  try {
-    await boardApi.increaseViewCount(boardNo);  // 조회수 증가 API 호출
-  } catch (error) {
-    console.error("조회수 증가 실패:", error);
-  }
-
   navigate(`/boardDetail/${boardNo}`);
 };
 
