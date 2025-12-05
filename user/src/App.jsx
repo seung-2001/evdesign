@@ -1,62 +1,71 @@
-// src/App.jsx
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import Header from "./component/Common/Header/Header";
-import Footer from "./component/Common/Footer/Footer";
-import MainContent from "./component/Common/MainContent/MainContent";
-import Login from "./component/Common/Member/login/login";
-import BoardList from "./component/Common/Board/BoardList"
-import Notice from "./component/Common/Notice/Notice";
+import { Route, Routes } from "react-router-dom";
+import BoardDetail from "./component/Common/Board/BoardDetail";
+import BoardInsert from "./component/Common/Board/BoardInsert";
+import BoardList from "./component/Common/Board/BoardList";
+import BoardUpdate from "./component/Common/Board/BoardUpdate";
 import Car from "./component/Common/Car/Car";
 import CarDetail from "./component/Common/Car/CarDetail/CarDetail";
 import SaveCar from "./component/Common/Car/SaveCar/SaveCar";
+import Footer from "./component/Common/Footer/Footer";
+import Header from "./component/Common/Header/Header";
+import MainContent from "./component/Common/MainContent/MainContent";
+import ChangePassword from "./component/Common/Member/changePassword/ChangePassword";
+import MyInfo from "./component/Common/Member/info/Myinfo";
 import Join from "./component/Common/Member/Join/Join";
 import InfoLicenseCertification from "./component/Common/Member/License/InfoLicense";
-import MyInfo from "./component/Common/Member/info/Myinfo";
+import Login from "./component/Common/Member/login/login";
 import MyReports from "./component/Common/Member/MyReports/MyReports";
-import StationInfo from "./component/Common/Station/StationInfo";
-import Report from "./component/Common/Report/Report";
-import { AuthProvider } from "./component/context/AuthContext";
-import BoardInsert from "./component/Common/Board/BoardInsert";
-import BoardDetail from "./component/Common/Board/BoardDetail";
-import BoardUpdate from "./component/Common/Board/BoardUpdate";
 import UpdateMember from "./component/Common/Member/updateMember/updateMember";
-import ChangePassword from "./component/Common/Member/changePassword/ChangePassword";
-
-
-
-
+import Notice from "./component/Common/Notice/Notice";
+import NoticeDetail from "./component/Common/Notice/NoticeDetail";
+import Report from "./component/Common/Report/Report";
+import StationInfo from "./component/Common/Station/StationInfo";
+import { AuthProvider } from "./component/context/AuthContext";
 
 const App = () => {
   return (
     <AuthProvider>
-      <> 
-        <Header />
-        <Routes>
-          <Route path="/" element={<MainContent />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/boardList" element={<BoardList />} />
-          <Route path="/boardInsert" element={<BoardInsert />} />
-          <Route path="/boardUpdate/:boardNo" element={<BoardUpdate />} />
-          <Route path="/boardDetail/:boardNo" element={<BoardDetail />} />
-          <Route path="/report/:id" element={<Report />} />
-          <Route path="/notice" element={<Notice />} />
-          <Route path="/car" element={<Car />} />
-          <Route path="/carDetail" element={<CarDetail />} />
-          <Route path="/saveCar" element={<SaveCar />} />
-          <Route path="/join" element={<Join />} />
-          <Route path="infoLicense" element={<InfoLicenseCertification/>} />
-          <Route path="/info" element={<MyInfo />} />
-          <Route path="/myreports" element={<MyReports />} />
-          <Route path="/station/info" element={<StationInfo />} />
-          <Route path="/report" element={<Report />} />
-          <Route path="/update" element={<UpdateMember />} />
-          <Route path="/changePwd" element={<ChangePassword />} />
-          
-        </Routes>
-        <Footer />
-      
-      </>
+      <Header />
+      <Routes>
+        <Route path="/" element={<MainContent />} />
+        
+        {/* 회원 관련 */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/join" element={<Join />} />
+        <Route path="/infoLicense" element={<InfoLicenseCertification />} />
+        <Route path="/info" element={<MyInfo />} />
+        <Route path="/update" element={<UpdateMember />} />
+        <Route path="/changePwd" element={<ChangePassword />} />
+        <Route path="/myreports" element={<MyReports />} />
+        
+        {/* 게시판 */}
+        <Route path="/boardList" element={<BoardList />} />
+        <Route path="/boardInsert" element={<BoardInsert />} />
+        <Route path="/boardDetail/:boardNo" element={<BoardDetail />} />
+        <Route path="/boardUpdate/:boardNo" element={<BoardUpdate />} />
+        
+        {/* 공지사항 */}
+        <Route path="/notice">
+          <Route index element={<Notice />} />
+          <Route path=":noticeNo" element={<NoticeDetail />} />
+        </Route>
+        
+        {/* 자동차 */}
+        <Route path="/car">
+          <Route index element={<Car />} />
+          <Route path="detail" element={<CarDetail />} />
+          <Route path="save" element={<SaveCar />} />
+        </Route>
+        
+        {/* 충전소 */}
+        <Route path="/station">
+          <Route path="info" element={<StationInfo />} />
+        </Route>
+        
+        {/* 신고 */}
+        <Route path="/report" element={<Report />} />
+      </Routes>
+      <Footer />
     </AuthProvider>
   );
 }; 

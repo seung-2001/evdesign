@@ -1,47 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getNoticeList, getNoticeSearch } from '../../../api/notice';
+import { getNoticeList, getNoticeSearch } from '../../api/notice';
 import { Container } from '../Styles/Styles';
 import {
-  ClearButton,
-  ContentWrapper,
-  ImagePlaceholder,
-  NoticeBody,
-  NoticeCard,
-  NoticeContent,
-  NoticeList,
-  NoticeTitle,
-  PageNumber,
-  Pagination,
-  PaginationButton,
-  SearchBox,
-  SearchLabel,
-  SearchSection,
-  Subtitle,
-  Title,
+    ClearButton,
+    ContentWrapper,
+    ImagePlaceholder,
+    NoticeBody,
+    NoticeCard,
+    NoticeContent,
+    NoticeList,
+    NoticeTitle,
+    PageNumber,
+    Pagination,
+    PaginationButton,
+    SearchBox,
+    SearchLabel,
+    SearchSection,
+    Subtitle,
+    Title,
+    WriteButton
 } from './Notice.styles';
 
 const Notice = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchInput, setSearchInput] = useState('');      // ✅ 입력값
-  const [searchKeyword, setSearchKeyword] = useState(''); // 검색에 쓰이는 값
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [notices, setNotices] = useState([]);
   const [pageInfo, setPageInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
-  
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearchKeyword(searchInput);
-      setCurrentPage(1);
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, [searchInput]);
-
 
   useEffect(() => {
     fetchNotices();
@@ -70,11 +58,11 @@ const Notice = () => {
   };
 
   const handleSearchChange = (e) => {
-    setSearchInput(e.target.value);
+    setSearchKeyword(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleClearSearch = () => {
-    setSearchInput('');
     setSearchKeyword('');
     setCurrentPage(1);
   };
@@ -84,6 +72,10 @@ const Notice = () => {
       setCurrentPage(page);
     }
   };
+
+  const handleWriteClick = () => {
+  navigate('/notice/insert');
+};
 
 
   const handleNoticeClick = (noticeNo) => {
@@ -133,7 +125,7 @@ return (
             <input
               type="text"
               placeholder="검색어를 입력하세요"
-              value={searchInput}
+              value={searchKeyword}
               onChange={handleSearchChange}
               style={{
                 border: 'none',
@@ -142,13 +134,17 @@ return (
                 background: 'transparent'
               }}
             />
-            {searchInput && (
+            {searchKeyword && (
               <ClearButton onClick={handleClearSearch}>×</ClearButton>
             )}
           </SearchBox>
         </SearchSection>
 
-        </div>
+        {/* 글쓰기 버튼 */}
+        <WriteButton onClick={handleWriteClick}>
+          글쓰기
+        </WriteButton>
+      </div>
 
             
 
