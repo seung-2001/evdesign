@@ -31,6 +31,7 @@ const MyInfo = () => {
     const [hasLicense, setHasLicense] = useState(false);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [password, setPassword] = useState("");
+    const [errMsg, setErrMsg] = useState("");
 
     useEffect(() => {
         console.log("어스는!:",auth);
@@ -86,8 +87,13 @@ const MyInfo = () => {
                 alert("비밀번호가 일치하지 않습니다.");
             }
         } catch (error) {
-            console.error("비밀번호 확인 실패:", error);
-            alert("비밀번호 확인에 실패했습니다.");
+            console.error("비밀번호 확인 실패:", error.response);
+            const errorMessage = error.response?.data?.["error-message"] ||
+                                 error.response?.daya?.message ||
+                                 "비밀번호 확인실패"
+            setErrMsg(errorMessage);
+            alert(errorMessage);
+            
         }
     };
 
