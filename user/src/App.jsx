@@ -17,6 +17,9 @@ import MyReports from "./component/Common/Member/MyReports/MyReports";
 import StationInfo from "./component/Common/Station/StationInfo";
 import Report from "./component/Common/Report/Report";
 import { AuthProvider } from "./component/context/AuthContext";
+import BoardInsert from "./component/Common/Board/BoardInsert";
+import BoardDetail from "./component/Common/Board/BoardDetail";
+import BoardUpdate from "./component/Common/Board/BoardUpdate";
 import UpdateMember from "./component/Common/Member/updateMember/updateMember";
 import ChangePassword from "./component/Common/Member/changePassword/ChangePassword";
 
@@ -27,12 +30,16 @@ import ChangePassword from "./component/Common/Member/changePassword/ChangePassw
 const App = () => {
   return (
     <AuthProvider>
-    <> 
+      <> 
         <Header />
         <Routes>
           <Route path="/" element={<MainContent />} />
           <Route path="/login" element={<Login />} />
           <Route path="/boardList" element={<BoardList />} />
+          <Route path="/boardInsert" element={<BoardInsert />} />
+          <Route path="/boardUpdate/:boardNo" element={<BoardUpdate />} />
+          <Route path="/boardDetail/:boardNo" element={<BoardDetail />} />
+          <Route path="/report/:id" element={<Report />} />
           <Route path="/notice" element={<Notice />} />
           <Route path="/car" element={<Car />} />
           <Route path="/carDetail" element={<CarDetail />} />
@@ -49,7 +56,7 @@ const App = () => {
         </Routes>
         <Footer />
       
-    </>
+      </>
     </AuthProvider>
   );
 }; 
