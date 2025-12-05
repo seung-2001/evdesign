@@ -1,7 +1,8 @@
 import { useContext, useState, useEffect } from "react";
-import { Container } from "../../Styles/Styles";
+
 import { AuthContext } from "../../../context/AuthContext";
 import {
+    Container,
     FormWrapper,
     Title,
     Subtitle,
