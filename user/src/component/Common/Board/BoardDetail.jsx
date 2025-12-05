@@ -60,16 +60,14 @@ const BoardDetail = () => {
         ? { Authorization: `Bearer ${auth.accessToken}` }
         : {};
 
+      // 상세 조회 시 자동으로 조회수 증가
       const response = await axios.get(
         `http://localhost:8081/boards/${boardNo}`,
-        {
-          headers: headers,
-        }
+        { headers }
       );
+
       console.log("받은 데이터:", response.data);
       setBoard(response.data);
-      console.log("보드설정되나요:", board);
-      setLoading(true);
     } catch (err) {
       console.error("게시글 조회 실패:", err);
       setError("게시글을 불러오는데 실패했습니다.");
