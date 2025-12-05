@@ -10,12 +10,12 @@ import Footer from "./component/Common/Footer/Footer";
 import Header from "./component/Common/Header/Header";
 import MainContent from "./component/Common/MainContent/MainContent";
 import ChangePassword from "./component/Common/Member/changePassword/ChangePassword";
-import MyInfo from "./component/Common/Member/info/Myinfo";
+import MyInfo from "./component/Common/Member/info/MyInfo";
 import Join from "./component/Common/Member/Join/Join";
 import InfoLicenseCertification from "./component/Common/Member/License/InfoLicense";
 import Login from "./component/Common/Member/login/login";
 import MyReports from "./component/Common/Member/MyReports/MyReports";
-import UpdateMember from "./component/Common/Member/updateMember/updateMember";
+import UpdateMember from "./component/Common/Member/updateMember/UpdateMember";
 import Notice from "./component/Common/Notice/Notice";
 import NoticeDetail from "./component/Common/Notice/NoticeDetail";
 import Report from "./component/Common/Report/Report";
@@ -25,6 +25,7 @@ import { AuthProvider } from "./component/context/AuthContext";
 const App = () => {
   return (
     <AuthProvider>
+      <br />
       <Header />
       <Routes>
         <Route path="/" element={<MainContent />} />
@@ -36,7 +37,7 @@ const App = () => {
         <Route path="/info" element={<MyInfo />} />
         <Route path="/update" element={<UpdateMember />} />
         <Route path="/changePwd" element={<ChangePassword />} />
-        <Route path="/myreports" element={<MyReports />} />
+        <Route path="/myReports" element={<MyReports />} />
         
         {/* 게시판 */}
         <Route path="/boardList" element={<BoardList />} />

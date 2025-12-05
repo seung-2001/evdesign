@@ -15,6 +15,7 @@ import NoticeUpdate from "../Notice/NoticeUpdate";
 import Payment from "../Payment/Payment";
 import Settings from "../Settings/Settings";
 import Sidebar from "../Sidebar/Sidebar";
+import Board from "../Board/Board"
 
 const StyledLayout = styled.div`
     display: flex;
@@ -39,11 +40,13 @@ const Layout = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/info" element={<MyInfo />} />
                 <Route path="/member-manage" element={<MemberManage />} />
+                <Route path="/board" element={<Board />} />
                 <Route path="/notice">
                 <Route index element={<Notice />} />
                 <Route path="insert" element={<NoticeInsert />} />
                 <Route path="update/:noticeNo" element={<NoticeUpdate />} />
                 <Route path=":noticeNo" element={<NoticeDetail />} />
+                
 </Route>
             </Routes>
         </StyledLayout>

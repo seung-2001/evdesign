@@ -65,6 +65,7 @@ const Sidebar = () => {
         { path: "/inquiry", icon: "alert", label: "신고/문의 관리" },
         { path: "/member-manage", icon: "users", label: "회원관리" },
         { path: "/notice", icon: "clipboard", label: "공지사항 관리" },
+        { path: "/board", icon: "clipboard", label: "게시판 관리" },
         { path: "/message", icon: "envelope", label: "Message" },
         { path: "/payment", icon: "credit-card", label: "Payment" },
         { path: "/settings", icon: "gear", label: "Settings" },
