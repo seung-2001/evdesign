@@ -140,5 +140,132 @@ export const SelectRow = styled.div`
 
 export const SelectLabel = styled.label`
   font-size: 13px;
-  font-weight;
+  font-weight: 500;
+`;
+
+export const SelectBox = styled.select`
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  
+  &:focus {
+    border-color: #276ef1;
+  }
+  
+  &:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+  }
+`;
+
+export const TextAreaRow = styled.div`
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+export const TextAreaLabel = styled.label`
+  font-size: 13px;
+  font-weight: 500;
+`;
+
+export const TextArea = styled.textarea`
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  
+  &:focus {
+    border-color: #276ef1;
+  }
+  
+  &:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+  }
+`;
+
+export const ButtonRow = styled.div`
+  margin-top: 24px;
+  display: flex;
+  gap: 10px;
+`;
+
+export const PrimaryButton = styled.button`
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #276ef1;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: #1f56c4;
+  }
+  
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+export const SecondaryButton = styled.button`
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #6c757d;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: #5a6268;
+  }
+`;
+
+export const DangerButton = styled.button`
+  flex: 1;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #dc3545;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  
+  &:hover {
+    background-color: #c82333;
+  }
+`;
+
+export const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 18px;
+  color: #666;
+`;
+
+export const ErrorMessage = styled.div`
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 18px;
+  color: #dc3545;
+  font-weight: 500;
 `;
