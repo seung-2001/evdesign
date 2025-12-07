@@ -206,3 +206,10 @@ export const DeleteButton = styled.button`
     background: #c62828;
   }
 `;
+
+export const ErrorMessage = styled.div`
+  color: #e53935;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+`;
