@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
   Container,
   Sidebar,
@@ -20,69 +21,170 @@ import {
   Card,
   CardImage,
   CardCategory,
-  CardTitle
+  CardTitle,
+  PaginationWrapper,
+  PageButton,
+  LoadingMessage,
+  EmptyMessage,
+  RegisterButton
 } from './Car.styles';
 
 const Car = () => {
-  const [selectedKeywords, setSelectedKeywords] = useState(['태슬라', '현대', '어떤차']);
+  const navigate = useNavigate();
+  
+  // 상태 관리
+  const [cars, setCars] = useState([]);
+  const [pageInfo, setPageInfo] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0); // 백엔드는 0부터 시작
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
+  // 필터 상태
+  const [selectedBrands, setSelectedBrands] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const navigate = useNavigate(); 
+  
+  // 브랜드 목록 (백엔드 데이터 기반으로 동적 생성 가능)
+  const allBrands = ['테슬라', '현대', '기아', '벤츠', 'BMW', 'VOLVO'];
 
-  const allKeywords = ['태슬라', '현대', '어떤차'];
+  // 차량 목록 조회
+  useEffect(() => {
+    fetchCars(currentPage);
+  }, [currentPage]);
 
-  const cards = [
-    { id: 1, category: '태슬라', title: '키로수도 적고 좋음' },
-    { id: 2, category: '현대', title: '국산이라 그런가 산길에 좋음' },
-    { id: 3, category: '현대', title: '어쨌든 좋은 차종임' },
-    { id: 4, category: '태슬라', title: '화성 갈끄니께' },
-    { id: 5, category: '어떤차', title: '중국산 어떤 차라 이거 하지마셈' },
-    { id: 6, category: '태슬라', title: '추천함 이거 이유는 없어 배고파도 음료는 없어 목말라도' }
-  ];
+  const fetchCars = async (page) => {
+    try {
+      setLoading(true);
+      setError(null);
 
-  const handleRemoveKeyword = (keyword) => {
-    setSelectedKeywords(selectedKeywords.filter(k => k !== keyword));
-  };
+      const response = await axios.get(`http://localhost:8081/cars?pageNo=${page}`);
+      
+      setCars(response.data.cars || []);
+      setPageInfo(response.data.pi);
 
-  const handleToggleKeyword = (keyword) => {
-    if (selectedKeywords.includes(keyword)) {
-      setSelectedKeywords(selectedKeywords.filter(k => k !== keyword));
-    } else {
-      setSelectedKeywords([...selectedKeywords, keyword]);
+    } catch (error) {
+      console.error('차량 목록 조회 실패:', error);
+      setError('차량 목록을 불러오는데 실패했습니다.');
+      setCars([]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const filteredCards = cards.filter(card => 
-    selectedKeywords.length === 0 || selectedKeywords.includes(card.category)
-  );
+  // 브랜드 필터 토글
+  const handleToggleBrand = (brand) => {
+    if (selectedBrands.includes(brand)) {
+      setSelectedBrands(selectedBrands.filter(b => b !== brand));
+    } else {
+      setSelectedBrands([...selectedBrands, brand]);
+    }
+  };
+
+  // 브랜드 필터 제거
+  const handleRemoveBrand = (brand) => {
+    setSelectedBrands(selectedBrands.filter(b => b !== brand));
+  };
+
+  // 검색 필터링
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
+  };
+
+  // 필터링된 차량 목록
+  const filteredCars = cars.filter(car => {
+    // 브랜드 필터
+    const brandMatch = selectedBrands.length === 0 || 
+                       selectedBrands.includes(car.carBrand);
+    
+    // 검색어 필터 (차량 이름, 브랜드, 번호판으로 검색)
+    const searchMatch = searchText === '' ||
+                       car.carName?.toLowerCase().includes(searchText.toLowerCase()) ||
+                       car.carBrand?.toLowerCase().includes(searchText.toLowerCase()) ||
+                       car.carPlate?.toLowerCase().includes(searchText.toLowerCase());
+    
+    return brandMatch && searchMatch;
+  });
+
+  // 페이지 이동
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // 차량 상세 페이지로 이동
+  const handleCardClick = (carNo) => {
+    navigate(`/cars/${carNo}`);
+  };
+
+  // 차량 등록 페이지로 이동 (관리자/운영자만)
+  const handleRegister = () => {
+    const token = localStorage.getItem('accessToken');
+    const role = localStorage.getItem('role');
+    
+    if (!token) {
+      alert('로그인이 필요합니다.');
+      navigate('/login');
+      return;
+    }
+
+    if (role !== 'ROLE_OPERATOR' && role !== 'ROLE_ADMIN') {
+      alert('차량 등록 권한이 없습니다.');
+      return;
+    }
+
+    navigate('/cars');
+  };
+
+  // 페이지 번호 생성
+  const renderPageNumbers = () => {
+    if (!pageInfo) return null;
+
+    const pages = [];
+    for (let i = pageInfo.startPage; i <= pageInfo.endPage; i++) {
+      pages.push(
+        <PageButton
+          key={i}
+          active={i === pageInfo.currentPage}
+          onClick={() => handlePageChange(i - 1)} // 화면은 1부터, API는 0부터
+        >
+          {i}
+        </PageButton>
+      );
+    }
+    return pages;
+  };
 
   return (
     <Container>
       <Sidebar>
         <KeywordsSection>
-          <KeywordsTitle>Keywords</KeywordsTitle>
+          <KeywordsTitle>브랜드 필터</KeywordsTitle>
           
-          <SelectedTags>
-            {selectedKeywords.map(keyword => (
-              <Tag key={keyword}>
-                {keyword}
-                <RemoveButton onClick={() => handleRemoveKeyword(keyword)}>
-                  ×
-                </RemoveButton>
-              </Tag>
-            ))}
-          </SelectedTags>
+          {/* 선택된 브랜드 태그 */}
+          {selectedBrands.length > 0 && (
+            <SelectedTags>
+              {selectedBrands.map(brand => (
+                <Tag key={brand}>
+                  {brand}
+                  <RemoveButton onClick={() => handleRemoveBrand(brand)}>
+                    ×
+                  </RemoveButton>
+                </Tag>
+              ))}
+            </SelectedTags>
+          )}
 
+          {/* 브랜드 체크박스 */}
           <CheckboxList>
-            {allKeywords.map(keyword => (
-              <CheckboxItem key={keyword}>
+            {allBrands.map(brand => (
+              <CheckboxItem key={brand}>
                 <Checkbox
                   type="checkbox"
-                  id={keyword}
-                  checked={selectedKeywords.includes(keyword)}
-                  onChange={() => handleToggleKeyword(keyword)}
+                  id={brand}
+                  checked={selectedBrands.includes(brand)}
+                  onChange={() => handleToggleBrand(brand)}
                 />
-                <CheckboxLabel htmlFor={keyword}>
-                  {keyword}
+                <CheckboxLabel htmlFor={brand}>
+                  {brand}
                 </CheckboxLabel>
               </CheckboxItem>
             ))}
@@ -91,29 +193,124 @@ const Car = () => {
       </Sidebar>
 
       <MainContent>
-        <SearchBar>
-          <SearchInput
-            type="text"
-            placeholder="Search"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-          <SearchIcon>🔍</SearchIcon>
-        </SearchBar>
+        {/* 검색바와 등록 버튼 */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
+          <SearchBar>
+            <SearchInput
+              type="text"
+              placeholder="차량 이름, 브랜드, 번호판 검색"
+              value={searchText}
+              onChange={handleSearch}
+            />
+            <SearchIcon>🔍</SearchIcon>
+          </SearchBar>
 
-        <CardGrid>
-          {filteredCards.map(card => (
-            <Card
-              key={card.id}
-              onClick={() => navigate(`/carDetail`)} //  클릭 시 이동 후에 #{carNo}넣어야할거임
-              style={{ cursor: 'pointer' }} // 클릭 가능 표시
-            >
-              <CardImage />
-              <CardCategory>{card.category}</CardCategory>
-              <CardTitle>{card.title}</CardTitle>
-            </Card>
-          ))}
-        </CardGrid>
+          {/* 관리자/운영자만 보이는 등록 버튼 */}
+          {(localStorage.getItem('role') === 'ROLE_OPERATOR' || 
+            localStorage.getItem('role') === 'ROLE_ADMIN') && (
+            <RegisterButton onClick={handleRegister}>
+              + 차량 등록
+            </RegisterButton>
+          )}
+        </div>
+
+        {/* 로딩 상태 */}
+        {loading && <LoadingMessage>차량 목록을 불러오는 중...</LoadingMessage>}
+
+        {/* 에러 상태 */}
+        {error && <EmptyMessage>{error}</EmptyMessage>}
+
+        {/* 차량 목록 */}
+        {!loading && !error && (
+          <>
+            {filteredCars.length === 0 ? (
+              <EmptyMessage>
+                {searchText || selectedBrands.length > 0 
+                  ? '검색 조건에 맞는 차량이 없습니다.'
+                  : '등록된 차량이 없습니다.'}
+              </EmptyMessage>
+            ) : (
+              <CardGrid>
+                {filteredCars.map(car => (
+                  <Card
+                    key={car.carNo}
+                    onClick={() => handleCardClick(car.carNo)}
+                  >
+                    <CardImage>
+                      {car.img && car.img.changeName ? (
+                        <img 
+                          src={`http://localhost:8081/uploads/${car.img.changeName}`}
+                          alt={car.carName}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                      ) : (
+                        <div style={{
+                          width: '100%',
+                          height: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#999',
+                          fontSize: '14px'
+                        }}>
+                          이미지 없음
+                        </div>
+                      )}
+                    </CardImage>
+                    <CardCategory>{ (car.carBrand || '').trim() || '브랜드 미지정' }</CardCategory>
+                    <CardTitle>{car.carName}</CardTitle>
+                    <div style={{ 
+                      padding: '0 16px 16px', 
+                      fontSize: '13px', 
+                      color: '#666' 
+                    }}>
+                      { (car.carPlate || '').trim() || '번호판 미등록' } · {car.maxPassenger}인승
+                      {car.rentalStatus === 'Y' && (
+                        <span style={{ 
+                          marginLeft: '8px',
+                          color: '#dc3545',
+                          fontWeight: '600'
+                        }}>
+                          (예약중)
+                        </span>
+                      )}
+                    </div>
+                  </Card>
+                ))}
+              </CardGrid>
+            )}
+
+            {/* 페이지네이션 */}
+            {pageInfo && pageInfo.maxPage > 1 && (
+              <PaginationWrapper>
+                {/* 이전 버튼 */}
+                {pageInfo.currentPage > 1 && (
+                  <PageButton 
+                    onClick={() => handlePageChange(pageInfo.currentPage - 2)}
+                  >
+                    이전
+                  </PageButton>
+                )}
+
+                {/* 페이지 번호 */}
+                {renderPageNumbers()}
+
+                {/* 다음 버튼 */}
+                {pageInfo.currentPage < pageInfo.maxPage && (
+                  <PageButton 
+                    onClick={() => handlePageChange(pageInfo.currentPage)}
+                  >
+                    다음
+                  </PageButton>
+                )}
+              </PaginationWrapper>
+            )}
+          </>
+        )}
       </MainContent>
     </Container>
   );

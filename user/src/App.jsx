@@ -5,11 +5,11 @@ import Header from "./component/Common/Header/Header";
 import Footer from "./component/Common/Footer/Footer";
 import MainContent from "./component/Common/MainContent/MainContent";
 import Login from "./component/Common/Member/login/login";
-import BoardList from "./component/Common/Board/BoardList"
+import BoardList from "./component/Common/Board/BoardList";
 import Notice from "./component/Common/Notice/Notice";
-import Car from "./component/Common/Car/Car";
-import CarDetail from "./component/Common/Car/CarDetail/CarDetail";
-import SaveCar from "./component/Common/Car/SaveCar/SaveCar";
+import Car from "./component/Common/Car/Car/Car";
+import CarDetail from "./component/Common/Car/CarDetails/CarDetails";
+import SaveCar from "../../admin/src/components/Cars/SaveCar/SaveCar";
 import Join from "./component/Common/Member/Join/Join";
 import License from "./component/Common/Member/License/License";
 import MyInfo from "./component/Common/Member/info/Myinfo";
