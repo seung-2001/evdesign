@@ -2,8 +2,7 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext.jsx";
-import { Container } from "../../Styles/Styles";
-import { Button, Form, Input, SubContainer, Title } from "./login.styles";
+import { Container, Button, Form, Input, SubContainer, Title } from "./login.styles";
 
 const Login = () => {
   const [memberId, setMemberId] = useState("");

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getNoticeList, getNoticeSearch } from '../../api/notice';
-import { Container } from '../Styles/Styles';
 import {
+    Container,
     ClearButton,
     ContentWrapper,
     ImagePlaceholder,

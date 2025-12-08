@@ -183,7 +183,7 @@ const MemberManage = () => {
                         </S.TableCell>
                         <S.TableCell>
                           <S.Badge $variant={member.roleStatus?.toLowerCase() || 'user'}>
-                            {member.roleStatus || 'USER'}
+                            {member.roleStatus || 'ROLE_USER'}
                           </S.Badge>
                         </S.TableCell>
                         <S.TableCell>
@@ -194,11 +194,15 @@ const MemberManage = () => {
                         <S.TableCell>
                           <S.ButtonGroup>
                             {auth.role.includes('ADMIN') && (
-                              <S.AssignButton onClick={() => handleAssignOperator(member)}>
+                              <S.AssignButton $canAssign={member.roleStatus == 'ROLE_USER'} 
+                                              disabled={member.roleStatus !=='ROLE_USER'}
+                                              onClick={() => handleAssignOperator(member)}>
                                 관리자지정
                               </S.AssignButton>
                             )}
-                            <S.DeleteButton onClick={() => handleDeleteMember(member)}>회원탈퇴</S.DeleteButton>
+                            <S.DeleteButton $canDelete={member.status == 'Y'} 
+                                            disabled={member.status == 'N'}
+                                            onClick={() => handleDeleteMember(member)}>회원탈퇴</S.DeleteButton>
                           </S.ButtonGroup>
                         </S.TableCell>
                       </S.TableRow>

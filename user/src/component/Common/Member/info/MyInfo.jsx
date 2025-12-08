@@ -25,20 +25,25 @@ import axios from "axios";
 
 const MyInfo = () => {
     const navi = useNavigate();
-    const { auth } = useContext(AuthContext);
+    const { auth, authLoading } = useContext(AuthContext);
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [hasLicense, setHasLicense] = useState(false);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [password, setPassword] = useState("");
+    const [errMsg, setErrMsg] = useState("");
+    
 
     useEffect(() => {
-        console.log("어스는!:",auth);
+        
+        if(authLoading) return;
+
         if(!auth.isAuthenticated) {
             alert("로그인을 해주세요!");
             navi("../login");
             return;
         }
+
         const fn1 = async () => {
            const result = await axios.get("http://localhost:8081/member/info", {
                 headers: { Authorization: `Bearer ${auth.accessToken}` }
@@ -48,7 +53,7 @@ const MyInfo = () => {
             setLoading(false);   
         }
         fn1();
-    }, [auth.isAuthenticated]);
+    }, [auth.isAuthenticated, authLoading]);
 
     useEffect(() => {
         const fetchLicense = async () => {
@@ -86,8 +91,13 @@ const MyInfo = () => {
                 alert("비밀번호가 일치하지 않습니다.");
             }
         } catch (error) {
-            console.error("비밀번호 확인 실패:", error);
-            alert("비밀번호 확인에 실패했습니다.");
+            console.error("비밀번호 확인 실패:", error.response);
+            const errorMessage = error.response?.data?.["error-message"] ||
+                                 error.response?.daya?.message ||
+                                 "비밀번호 확인실패"
+            setErrMsg(errorMessage);
+            alert(errorMessage);
+            
         }
     };
 
@@ -175,15 +185,18 @@ const MyInfo = () => {
                         {hasLicense ? "운전면허 인증완료" : "운전면허 인증하기"}
                     </FullWidthButton>
 
-                    <FullWidthButton onClick={() => navi("/mypage/posts")}>
+                    <FullWidthButton onClick={() => navi("/info/posts")}>
                         내 게시물 보기
                     </FullWidthButton>
 
-                    <FullWidthButton onClick={() => navi("/mypage/comments")}>
+                    <FullWidthButton onClick={() => navi("/info/comments")}>
                         내 댓글 보기
                     </FullWidthButton>
-                    <FullWidthButton onClick={() => navi("/mypage/comments")}>
+                    <FullWidthButton onClick={() => navi("/info/comments")}>
                         내 리뷰 보기
+                    </FullWidthButton>
+                    <FullWidthButton onClick={() => navi("/myReports")}>
+                        내 신고 보기
                     </FullWidthButton>
                 </InfoGroup>
 
