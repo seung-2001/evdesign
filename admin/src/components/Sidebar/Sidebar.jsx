@@ -60,7 +60,7 @@ const SidebarDivider = styled.div`
 
 const Sidebar = () => {
     const menuItems = [
-        { path: "/car-reservation", icon: "car", label: "차량 예약신청 관리" },
+        { path: "/cars", icon: "car", label: "공유차량 등록/수정" },
         { path: "/charging-station", icon: "charging", label: "충전소 관리" },
         { path: "/inquiry", icon: "alert", label: "신고/문의 관리" },
         { path: "/member-manage", icon: "users", label: "회원관리" },
