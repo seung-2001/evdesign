@@ -1,13 +1,5 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
-  margin-left: 250px;
-  padding: 2rem;
-  min-height: calc(100vh - 70px);
-  background-color: #f9fafb;
-  width: calc(100% - 250px);
-`;
-
 export const FormWrapper = styled.div`
     max-width: 500px;
     margin: 50px auto;
@@ -46,11 +38,22 @@ export const Label = styled.label`
     margin-bottom: 8px;
 `;
 
-export const Input = styled.p`
+export const Input = styled.input`
+    width: 100%;
     font-size: 16px;
     color: #555;
-    margin: 0;
     padding: 8px 0;
+    border: none;
+    background: transparent;
+    outline: none;
+
+    &::placeholder {
+        color: #aaa;
+    }
+
+    &:focus {
+        color: #333;
+    }
 `;
 
 export const ButtonGroup = styled.div`
@@ -62,7 +65,7 @@ export const ButtonGroup = styled.div`
 export const UpdateButton = styled.button`
     flex: 1;
     padding: 14px;
-    background-color: #333;
+    background-color: #93c5fd;
     color: white;
     border: none;
     border-radius: 4px;
@@ -72,14 +75,14 @@ export const UpdateButton = styled.button`
     transition: background-color 0.3s;
 
     &:hover {
-        background-color: #555;
+        background-color: #60a5fa;
     }
 `;
 
 export const CancelButton = styled.button`
     flex: 1;
     padding: 14px;
-    background-color: #999;
+    background-color: #dc3545;
     color: white;
     border: none;
     border-radius: 4px;
@@ -89,24 +92,27 @@ export const CancelButton = styled.button`
     transition: background-color 0.3s;
 
     &:hover {
-        background-color: #777;
-    }
-`;
-
-export const DeleteButton = styled.button`
-    width: 100%;
-    padding: 12px;
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 8px;
-
-    &:hover {
         background-color: #c82333;
     }
 `;
+
+export const ErrorMessage = styled.div`
+    background-color: #fee;
+    color: #c33;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    border-left: 4px solid #c33;
+`;
+
+export const SuccessMessage = styled.div`
+    background-color: #efe;
+    color: #3c3;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    border-left: 4px solid #3c3;
+`;
+

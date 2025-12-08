@@ -1,19 +1,22 @@
-import React from "react";
+import { Route, Routes } from "react-router-dom";
 import styled from "styled-components";
-import { Routes, Route, Router } from "react-router-dom";
-import Header from "../Header/Header";
-import Sidebar from "../Sidebar/Sidebar";
-// import CarReservation from "../CarReservation/CarReservation";
+import CarReservation from "../Reserve/ReserveList/ReserveList";
 import ChargingStation from "../ChargingStation/ChargingStation";
+import Header from "../Header/Header";
 import Inquiry from "../Inquiry/Inquiry";
+import MyInfo from "../Member/info/MyInfo";
+import Login from "../Member/login/login";
+import MemberManage from "../Member/manage/MemberManage";
 import Message from "../Message/Message";
+import Notice from "../Notice/Notice";
+import NoticeDetail from "../Notice/NoticeDetail";
+import NoticeInsert from "../Notice/NoticeInsert";
+import NoticeUpdate from "../Notice/NoticeUpdate";
 import Payment from "../Payment/Payment";
 import Settings from "../Settings/Settings";
-import Help from "../Help/Help";
-import MemberManage from "../Member/manage/MemberManage";
-import Login from "../Member/login/login";
-import MyInfo from "../Member/info/MyInfo";
 import SaveCar from "../Cars/SaveCar/SaveCar";
+import Sidebar from "../Sidebar/Sidebar";
+import Board from "../Board/Board"
 
 const StyledLayout = styled.div`
     display: flex;
@@ -43,7 +46,14 @@ const Layout = () => {
                 <Route path="/login" element={<Login />} />
                 <Route path="/info" element={<MyInfo />} />
                 <Route path="/member-manage" element={<MemberManage />} />
-
+                <Route path="/board" element={<Board />} />
+                <Route path="/notice">
+                <Route index element={<Notice />} />
+                <Route path="insert" element={<NoticeInsert />} />
+                <Route path="update/:noticeNo" element={<NoticeUpdate />} />
+                <Route path=":noticeNo" element={<NoticeDetail />} />
+                
+</Route>
             </Routes>
         </StyledLayout>
     );

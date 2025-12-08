@@ -1,8 +1,9 @@
-import { useState, useEffect, createContext } from "react";
+import { createContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const[authLoading, setLoading] = useState(true);
   const [auth, setAuth] = useState({
     memberNo: null,
     memberName: null,
@@ -12,7 +13,6 @@ export const AuthProvider = ({ children }) => {
     role: null,
     isAuthenticated: false,
   });
-  const [isAuthLoading, setIsAuthLoading] = useState(true); // 로딩 상태 추가
 
   useEffect(() => {
     const storedAuth = {
@@ -27,7 +27,8 @@ export const AuthProvider = ({ children }) => {
     if (storedAuth.memberNo && storedAuth.accessToken) {
       setAuth({ ...storedAuth, isAuthenticated: true });
     }
-    setIsAuthLoading(false); // 로딩 완료
+
+    setLoading(false);
   }, []);
 
   const login = (user) => {
@@ -50,7 +51,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, isAuthLoading, login, logout }}>
+    <AuthContext.Provider value={{ auth, login, logout, authLoading }}>
       {children}
     </AuthContext.Provider>
   );

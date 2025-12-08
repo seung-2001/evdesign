@@ -1,18 +1,18 @@
+import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container } from "../../Styles/Styles";
 import {
-    FormWrapper,
-    Title,
-    Subtitle,
-    FormGroup,
-    Label,
-    Input,
     ButtonGroup,
-    SubmitButton,
     CancelButton,
+    FormGroup,
+    FormWrapper,
+    Input,
+    Label,
+    SubmitButton,
+    Subtitle,
+    Title,
 } from './Join.styles';
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const Join = () => {
     const navigate = useNavigate();
@@ -46,14 +46,17 @@ const Join = () => {
                 })
                 .then((result) => {
                     if (result.status === 201) {
-                        alert("회원가입이 완료되었습니다. 운전면허 인증페이지로 갑니다.");
+                        alert("회원가입이 완료되었습니다. 환영합니다!");
                         setTimeout(() => {
-                            navigate("/license");
+                            navigate("/");
                         }, 1000);
                     }
                 })
                 .catch((error) => {
                     console.error("회원가입 에러:", error.response);
+                    console.error("에러 데이터 전체:", error.response?.data);  // 확인용
+                    console.error("에러 메시지1:", error.response?.data?.["error-message"]);  // 확인용
+                    console.error("에러 메시지2:", error.response?.data?.message);  // 확인용
                     const errorMessage = error.response?.data?.["error-message"] || 
                                        error.response?.data?.message || 
                                        "회원가입 중 오류가 발생했습니다.";
