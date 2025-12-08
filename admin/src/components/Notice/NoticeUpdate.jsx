@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { deleteNotice, getNoticeDetail, updateNotice } from '../../api/notice';
+import FileUpload from './FileUpload';
 import {
-    AttachButton,
-    ButtonGroup,
-    CancelButton,
-    Container,
-    DeleteButton,
-    FormGroup,
-    Input,
-    Label,
-    NoticeWrapper,
-    SubmitButton,
-    Subtitle,
-    TextArea,
-    Title
+  ButtonGroup,
+  CancelButton,
+  Container,
+  DeleteButton,
+  FormGroup,
+  Input,
+  Label,
+  NoticeWrapper,
+  SubmitButton,
+  Subtitle,
+  TextArea,
+  Title
 } from './NoticeUpdate.styles';
 
 const NoticeUpdate = () => {
@@ -77,17 +77,8 @@ const NoticeUpdate = () => {
     }
   };
 
-  // ✅ 파일 선택
-  const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setFiles(selectedFiles);
-    console.log('선택된 파일:', selectedFiles);
-  };
+  
 
-  // ✅ 파일 첨부 버튼 (숨겨진 input 트리거)
-  const handleAttach = () => {
-    document.getElementById('fileInput').click();
-  };
 
   // ✅ 수정 완료 버튼
   const handleSubmit = async () => {
@@ -210,22 +201,15 @@ const NoticeUpdate = () => {
         )}
 
         {/* ✅ 새 파일 선택 */}
-        <FormGroup>
-          <Label>새 파일 첨부 (선택)</Label>
-          <input
-            id="fileInput"
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleFileChange}
-            style={{ display: 'none' }}
-          />
-          {files.length > 0 && (
-            <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
-              선택된 파일: {files.map(f => f.name).join(', ')}
-            </div>
-          )}
-        </FormGroup>
+     <FormGroup>
+  <Label>새 파일 첨부 (선택)</Label>
+  <FileUpload 
+    files={files} 
+    setFiles={setFiles}
+    maxFiles={15}
+    maxSize={50}
+  />
+</FormGroup>
 
         <ButtonGroup>
           <CancelButton onClick={handleCancel} disabled={loading}>
@@ -234,9 +218,6 @@ const NoticeUpdate = () => {
           <DeleteButton onClick={handleDelete} disabled={loading}>
             삭제하기
           </DeleteButton>
-          <AttachButton onClick={handleAttach} disabled={loading}>
-            파일 첨부하기
-          </AttachButton>
           <SubmitButton onClick={handleSubmit} disabled={loading}>
             {loading ? '수정 중...' : '수정하기'}
           </SubmitButton>

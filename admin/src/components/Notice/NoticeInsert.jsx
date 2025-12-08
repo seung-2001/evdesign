@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createNotice } from '../../api/notice';
 import { AuthContext } from '../../context/AuthContext';
+import FileUpload from './FileUpload';
 import {
   ButtonGroup,
   CancelButton,
@@ -35,11 +36,7 @@ const NoticeInsert = () => {
     }
   };
 
-  const handleFileChange = (e) => {
-    const selectedFiles = Array.from(e.target.files);
-    setFiles(selectedFiles);
-    console.log('선택된 파일:', selectedFiles);
-  };
+  
 
   const handleSubmit = async () => {  // ✅ async 추가
     // 유효성 검사
@@ -113,20 +110,14 @@ const NoticeInsert = () => {
         </FormGroup>
 
         <FormGroup>
-          <Label>파일 첨부</Label>
-          <Input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleFileChange}
-            disabled={loading}  // ✅ 추가
-          />
-          {files.length > 0 && (
-            <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
-              선택된 파일: {files.map(f => f.name).join(', ')}
-            </div>
-          )}
-        </FormGroup>
+  <Label>파일 첨부</Label>
+  <FileUpload 
+    files={files} 
+    setFiles={setFiles}
+    maxFiles={15}
+    maxSize={50}
+  />
+</FormGroup>
 
         <ButtonGroup>
           <CancelButton onClick={handleCancel} disabled={loading}>  {/* ✅ 추가 */}

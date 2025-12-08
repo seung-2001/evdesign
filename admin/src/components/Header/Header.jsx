@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo, useContext } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useSearch } from "../../context/SearchContext";
 import { AuthContext } from "../../context/AuthContext";
+import { useSearch } from "../../context/SearchContext";
 
 const StyledHeader = styled.header`
     display: flex;
@@ -179,6 +179,10 @@ const SEARCH_CONFIG = {
         placeholder: "메시지 검색...",
         type: "message",
     },
+    "/notice": {
+        placeholder: "공지사항 검색...",
+        type: "notice",
+    },
     "/payment": {
         placeholder: "결제 내역 검색...",
         type: "payment",
@@ -212,11 +216,19 @@ const Header = () => {
         clearSearch();
     }, [location.pathname]);
 
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setSearchKeyword(inputValue.trim());
+        }, 500);  // 500ms 대기
+
+        return () => clearTimeout(timer);
+    }, [inputValue, setSearchKeyword]);
+
+
     // 검색어 입력 핸들러
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
-        setSearchKeyword(e.target.value.trim());
-    };
+        };
 
     // Enter 키 또는 검색 실행
     const handleKeyDown = (e) => {
