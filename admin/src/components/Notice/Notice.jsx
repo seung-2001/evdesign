@@ -3,23 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { getNoticeList, getNoticeSearch } from '../../api/notice';
 import { Container } from '../Styles/Styles';
 import {
-    ClearButton,
-    ContentWrapper,
-    ImagePlaceholder,
-    NoticeBody,
-    NoticeCard,
-    NoticeContent,
-    NoticeList,
-    NoticeTitle,
-    PageNumber,
-    Pagination,
-    PaginationButton,
-    SearchBox,
-    SearchLabel,
-    SearchSection,
-    Subtitle,
-    Title,
-    WriteButton
+  ClearButton,
+  ContentWrapper,
+  ImagePlaceholder,
+  NoticeBody,
+  NoticeCard,
+  NoticeContent,
+  NoticeList,
+  NoticeTitle,
+  PageNumber,
+  Pagination,
+  PaginationButton,
+  SearchBox,
+  SearchLabel,
+  SearchSection,
+  Subtitle,
+  Title,
+  WriteButton
 } from './Notice.styles';
 
 const Notice = () => {

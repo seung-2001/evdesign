@@ -1,19 +1,18 @@
-import { useContext, useState, useEffect } from "react";
-import { Container } from "../../Styles/Styles";
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import {
-    FormWrapper,
-    Title,
-    Subtitle,
-    InfoGroup,
-    Label,
-    Input,
     ButtonGroup,
-    UpdateButton,
-    CancelButton
+    CancelButton,
+    FormWrapper,
+    InfoGroup,
+    Input,
+    Label,
+    Subtitle,
+    Title,
+    UpdateButton
 } from './MyInfo.styles';
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 const MyInfo = () => {
     const navi = useNavigate();
