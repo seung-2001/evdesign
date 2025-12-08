@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import {
   Container,
@@ -31,11 +31,15 @@ import {
 
 const Car = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   
   // 상태 관리
   const [cars, setCars] = useState([]);
   const [pageInfo, setPageInfo] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0); // 백엔드는 0부터 시작
+  const [currentPage, setCurrentPage] = useState(() => {
+    const pageFromUrl = searchParams.get('page');
+    return pageFromUrl ? parseInt(pageFromUrl) : 1;
+  }); // 1부터 시작 (화면 표시용)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
@@ -43,7 +47,7 @@ const Car = () => {
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [searchText, setSearchText] = useState('');
   
-  // 브랜드 목록 (백엔드 데이터 기반으로 동적 생성 가능)
+  // 브랜드 목록
   const allBrands = ['테슬라', '현대', '기아', '벤츠', 'BMW', 'VOLVO'];
 
   // 차량 목록 조회
@@ -56,7 +60,10 @@ const Car = () => {
       setLoading(true);
       setError(null);
 
-      const response = await axios.get(`http://localhost:8081/cars?pageNo=${page}`);
+      // ✅ 백엔드는 0부터 시작하므로 -1
+      const response = await axios.get(`http://localhost:8081/cars?pageNo=${page - 1}`);
+      
+      console.log('API 응답:', response.data); // 디버깅용
       
       setCars(response.data.cars || []);
       setPageInfo(response.data.pi);
@@ -91,11 +98,9 @@ const Car = () => {
 
   // 필터링된 차량 목록
   const filteredCars = cars.filter(car => {
-    // 브랜드 필터
     const brandMatch = selectedBrands.length === 0 || 
                        selectedBrands.includes(car.carBrand);
     
-    // 검색어 필터 (차량 이름, 브랜드, 번호판으로 검색)
     const searchMatch = searchText === '' ||
                        car.carName?.toLowerCase().includes(searchText.toLowerCase()) ||
                        car.carBrand?.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -104,18 +109,19 @@ const Car = () => {
     return brandMatch && searchMatch;
   });
 
-  // 페이지 이동
+  // ✅ 페이지 이동 - 화면 페이지 번호(1부터)를 받음
   const handlePageChange = (page) => {
+    console.log('페이지 변경:', page); // 디버깅용
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // 차량 상세 페이지로 이동
   const handleCardClick = (carNo) => {
-    navigate(`/cars/${carNo}`);
+    navigate(`/car/${carNo}?page=${currentPage}`);
   };
 
-  // 차량 등록 페이지로 이동 (관리자/운영자만)
+  // 차량 등록 페이지로 이동
   const handleRegister = () => {
     const token = localStorage.getItem('accessToken');
     const role = localStorage.getItem('role');
@@ -131,10 +137,10 @@ const Car = () => {
       return;
     }
 
-    navigate('/cars');
+    navigate('/cars/register');
   };
 
-  // 페이지 번호 생성
+  // ✅ 페이지 번호 생성
   const renderPageNumbers = () => {
     if (!pageInfo) return null;
 
@@ -143,8 +149,8 @@ const Car = () => {
       pages.push(
         <PageButton
           key={i}
-          active={i === pageInfo.currentPage}
-          onClick={() => handlePageChange(i - 1)} // 화면은 1부터, API는 0부터
+          $active={i === currentPage}  // ✅ 현재 상태와 비교
+          onClick={() => handlePageChange(i)}  // ✅ 화면 번호 그대로 전달
         >
           {i}
         </PageButton>
@@ -159,7 +165,6 @@ const Car = () => {
         <KeywordsSection>
           <KeywordsTitle>브랜드 필터</KeywordsTitle>
           
-          {/* 선택된 브랜드 태그 */}
           {selectedBrands.length > 0 && (
             <SelectedTags>
               {selectedBrands.map(brand => (
@@ -173,7 +178,6 @@ const Car = () => {
             </SelectedTags>
           )}
 
-          {/* 브랜드 체크박스 */}
           <CheckboxList>
             {allBrands.map(brand => (
               <CheckboxItem key={brand}>
@@ -193,7 +197,6 @@ const Car = () => {
       </Sidebar>
 
       <MainContent>
-        {/* 검색바와 등록 버튼 */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
           <SearchBar>
             <SearchInput
@@ -202,10 +205,13 @@ const Car = () => {
               value={searchText}
               onChange={handleSearch}
             />
-            <SearchIcon>🔍</SearchIcon>
+            <SearchIcon>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+              </svg>
+            </SearchIcon>
           </SearchBar>
 
-          {/* 관리자/운영자만 보이는 등록 버튼 */}
           {(localStorage.getItem('role') === 'ROLE_OPERATOR' || 
             localStorage.getItem('role') === 'ROLE_ADMIN') && (
             <RegisterButton onClick={handleRegister}>
@@ -214,13 +220,10 @@ const Car = () => {
           )}
         </div>
 
-        {/* 로딩 상태 */}
         {loading && <LoadingMessage>차량 목록을 불러오는 중...</LoadingMessage>}
 
-        {/* 에러 상태 */}
         {error && <EmptyMessage>{error}</EmptyMessage>}
 
-        {/* 차량 목록 */}
         {!loading && !error && (
           <>
             {filteredCars.length === 0 ? (
@@ -261,14 +264,14 @@ const Car = () => {
                         </div>
                       )}
                     </CardImage>
-                    <CardCategory>{ (car.carBrand || '').trim() || '브랜드 미지정' }</CardCategory>
+                    <CardCategory>{(car.carBrand || '').trim() || '브랜드 미지정'}</CardCategory>
                     <CardTitle>{car.carName}</CardTitle>
                     <div style={{ 
                       padding: '0 16px 16px', 
                       fontSize: '13px', 
                       color: '#666' 
                     }}>
-                      { (car.carPlate || '').trim() || '번호판 미등록' } · {car.maxPassenger}인승
+                      {(car.carPlate || '').trim() || '번호판 미등록'} · {car.maxPassenger}인승
                       {car.rentalStatus === 'Y' && (
                         <span style={{ 
                           marginLeft: '8px',
@@ -284,25 +287,25 @@ const Car = () => {
               </CardGrid>
             )}
 
-            {/* 페이지네이션 */}
+            {/* ✅ 페이지네이션 */}
             {pageInfo && pageInfo.maxPage > 1 && (
               <PaginationWrapper>
                 {/* 이전 버튼 */}
-                {pageInfo.currentPage > 1 && (
+                {currentPage > 1 && (
                   <PageButton 
-                    onClick={() => handlePageChange(pageInfo.currentPage - 2)}
+                    onClick={() => handlePageChange(currentPage - 1)}
                   >
                     이전
                   </PageButton>
                 )}
 
-                {/* 페이지 번호 */}
+                {/* 페이지 번호들 */}
                 {renderPageNumbers()}
 
                 {/* 다음 버튼 */}
-                {pageInfo.currentPage < pageInfo.maxPage && (
+                {currentPage < pageInfo.maxPage && (
                   <PageButton 
-                    onClick={() => handlePageChange(pageInfo.currentPage)}
+                    onClick={() => handlePageChange(currentPage + 1)}
                   >
                     다음
                   </PageButton>

@@ -2,11 +2,11 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   width: 100%;
-  max-width: 1200px; /* 헤더 영역과 동일한 폭 */
-  margin: 0 auto; /* 중앙 정렬 */
+  max-width: 1200px;
+  margin: 0 auto;
   min-height: 100vh;
   background-color: #fff;
-  padding: 60px 20px; /* 좌우 여백 줄이기 */
+  padding: 60px 20px;
 `;
 
 export const ContentWrapper = styled.div`
@@ -61,6 +61,9 @@ export const ImagePlaceholder = styled.div`
   width: 100%;
   aspect-ratio: 4 / 3;
   background-color: #d9d9d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const ReserveButton = styled.button`
@@ -77,6 +80,11 @@ export const ReserveButton = styled.button`
 
   &:hover {
     background-color: #000;
+  }
+
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
   }
 `;
 
@@ -147,6 +155,11 @@ export const ColorDropdown = styled.select`
   &:focus {
     border-color: #666;
   }
+
+  &:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+  }
 `;
 
 export const ReserveButtonTop = styled.button`
@@ -208,4 +221,49 @@ export const DetailsContent = styled.div`
   font-size: 15px;
   color: #666;
   line-height: 1.6;
+
+  p {
+    margin: 8px 0;
+  }
+
+  strong {
+    color: #333;
+    font-weight: 600;
+  }
+`;
+
+export const LoadingMessage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 16px;
+  color: #666;
+`;
+
+export const ErrorMessage = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  min-height: 400px;
+  font-size: 16px;
+  color: #dc3545;
+`;
+
+export const BackButton = styled.button`
+  padding: 10px 20px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #5a6268;
+  }
 `;
