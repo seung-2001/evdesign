@@ -101,14 +101,20 @@ const ReportPage = () => {
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
-    const { postId } = useParams();
+    const { boardNo } = useParams();
 
-    // URL에서 전달받은 게시글 정보 (예: /report?postId=123&postTitle=제목&type=REPORT)
+    // URL에서 전달받은 게시글 정보
     const searchParams = new URLSearchParams(location.search);
     const postTitle = searchParams.get("postTitle") || "{게시글 제목}";
     const initialType = searchParams.get("type") || "REPORT";
 
-    const [activeTab, setActiveTab] = useState(initialType); // 'REPORT' or 'INQUIRY'
+    // boardNo가 없으면 문의만 가능
+    const canReport = !!boardNo;
+
+    // boardNo가 없으면 무조건 INQUIRY, 있으면 initialType 사용
+    const [activeTab, setActiveTab] = useState(
+        canReport ? initialType : "INQUIRY"
+    ); // 'REPORT' or 'INQUIRY'
     const [selectedReason, setSelectedReason] = useState(null);
     const [expandedReason, setExpandedReason] = useState(null);
     const [inquiryTitle, setInquiryTitle] = useState("");
@@ -120,6 +126,13 @@ const ReportPage = () => {
         activeTab === "REPORT" ? REPORT_REASONS : INQUIRY_TYPES;
 
     const handleTabChange = (tab) => {
+        // boardNo가 없으면 신고 탭으로 변경 불가
+        if (tab === "REPORT" && !canReport) {
+            alert(
+                "신고할 게시글이 없습니다. 게시글에서 신고 버튼을 눌러주세요."
+            );
+            return;
+        }
         setActiveTab(tab);
         setSelectedReason(null);
         setExpandedReason(null);
@@ -139,8 +152,8 @@ const ReportPage = () => {
 
     const handleSubmit = async () => {
         // 디버깅용 로그
-        console.log("현재 auth 상태:", auth);
-        console.log("accessToken:", auth.accessToken);
+        console.log("현재 auth 상태:", auth);                             
+        console.log("accessToken:", auth.accessToken);                         
 
         // 로그인 체크
         if (!auth.isAuthenticated || !auth.accessToken) {
@@ -175,34 +188,64 @@ const ReportPage = () => {
         );
 
         try {
-            await axios.post(
-                `${API_BASE_URL}/reports`,
-                {
-                    memberNo: auth.memberNo,
-                    boardNo: activeTab === "REPORT" ? postId || null : null, // 문의 시 null
-                    reportCategory: activeTab, // 'REPORT' or 'INQUIRY'
-                    reportTitle:
-                        activeTab === "REPORT"
-                            ? selectedReasonData.title
-                            : inquiryTitle.trim(),
-                    reportContent:
-                        additionalInfo.trim() || selectedReasonData.description,
+            // 요청 데이터 구성
+            const requestData = {
+                memberNo: Number(auth.memberNo), // 숫자로 변환
+                reportCategory: activeTab, // 'REPORT' or 'INQUIRY'
+                reportTitle:
+                    activeTab === "REPORT"
+                        ? selectedReasonData.title
+                        : inquiryTitle.trim(),
+                reportContent:
+                    additionalInfo.trim() || selectedReasonData.description,
+            };
+
+            // 신고일 경우에만 boardNo 추가
+            if (activeTab === "REPORT" && boardNo) {
+                requestData.boardNo = Number(boardNo); // 숫자로 변환
+            }
+
+            console.log("전송 데이터:", requestData);                                     
+
+            await axios.post(`${API_BASE_URL}/reports`, requestData, {
+                headers: {
+                    Authorization: `Bearer ${auth.accessToken}`,
                 },
-                {
-                    headers: {
-                        Authorization: `Bearer ${auth.accessToken}`,
-                    },
-                }
-            );
+            });
 
             setIsSuccess(true);
         } catch (err) {
             console.error("등록 실패:", err);
-            alert(
+
+            // 에러 메시지 추출
+            let errorMessage =
                 activeTab === "REPORT"
-                    ? "신고 등록에 실패했습니다. 다시 시도해주세요."
-                    : "문의 등록에 실패했습니다. 다시 시도해주세요."
-            );
+                    ? "신고 등록에 실패했습니다."
+                    : "문의 등록에 실패했습니다.";
+
+            if (err.response) {
+                const status = err.response.status;
+                const serverMessage = err.response.data;
+
+                if (status === 400) {
+                    errorMessage =
+                        typeof serverMessage === "string"
+                            ? serverMessage
+                            : "입력 데이터를 확인해주세요.";
+                } else if (status === 401 || status === 403) {
+                    errorMessage = "로그인이 필요하거나 권한이 없습니다.";
+                    navigate("/login");
+                    return;
+                } else if (status === 500) {
+                    errorMessage =
+                        "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+                }
+            } else if (err.request) {
+                errorMessage =
+                    "서버에 연결할 수 없습니다. 네트워크를 확인해주세요.";
+            }
+
+            alert(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -247,7 +290,11 @@ const ReportPage = () => {
             <TabContainer>
                 <Tab
                     $active={activeTab === "REPORT"}
+                    $disabled={!canReport}
                     onClick={() => handleTabChange("REPORT")}
+                    title={
+                        !canReport ? "게시글에서 신고 버튼을 눌러주세요" : ""
+                    }
                 >
                     신고
                 </Tab>

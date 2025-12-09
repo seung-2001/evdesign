@@ -92,7 +92,8 @@ export const SearchButton = styled.button`
 export const StationDetailCard = styled.div`
   background: #dbeafe;
   border-radius: 12px;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -242,7 +243,7 @@ export const ReviewSection = styled.div`
   flex: 1;
   overflow-y: auto;
   min-height: 80px;
-  max-height: 150px;
+  max-height: 200px;
 `;
 
 export const ReviewItem = styled.div`
@@ -306,10 +307,12 @@ export const ReviewForm = styled.form`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 0.75rem 1rem 1rem;
+  padding: 0.75rem 1rem 1.5rem;
   border-top: 1px solid #93c5fd;
   background: #dbeafe;
   flex-shrink: 0;
+  margin-top: 1rem;
+  overflow: visible;
 `;
 
 export const ReviewTitleInput = styled.input`
@@ -358,6 +361,8 @@ export const ReviewSubmitButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+  margin-top: 0.5rem;
+  flex-shrink: 0;
 
   &:hover {
     background-color: #1d4ed8;
