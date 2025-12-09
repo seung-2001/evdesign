@@ -60,6 +60,7 @@ user/src/component/Common/
 - 👤 **회원관리** - 회원가입, 로그인, 면허 등록
 - 📢 **신고하기** - 충전소 관련 불편사항 신고
 - 📋 **게시판** - 사용자 커뮤니티
+- 🗣️ **공지사항** - 사용자들에게 전달할 사항들
 
 ---
 
@@ -82,6 +83,7 @@ admin/src/components/
 │   ├── info/           # 내 정보
 │   ├── login/          # 로그인
 │   └── manage/         # 회원 관리
+├── notice/             # 공지사항
 ├── Message/            # 메시지 관리
 ├── Payment/            # 결제 관리
 ├── Settings/           # 설정

@@ -18,12 +18,13 @@ import {
 } from './Notice.styles';
 
 const NoticeInsert = () => {
-  const navigate = useNavigate();  // ✅ 추가
+  const navigate = useNavigate();  
   const { auth, isAuthLoading } = useContext(AuthContext);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [thumbnail, setThumbnail] = useState(null);
   const [files, setFiles] = useState([]);
-  const [loading, setLoading] = useState(false);  // ✅ 추가
+  const [loading, setLoading] = useState(false);  
    useEffect(() => {
     if (!isAuthLoading && !auth.isAuthenticated) {
       alert("로그인이 필요합니다.");
@@ -38,48 +39,62 @@ const NoticeInsert = () => {
 
   
 
-  const handleSubmit = async () => {  // ✅ async 추가
-    // 유효성 검사
-    if (!title.trim()) {
-      alert('제목을 입력하세요.');
-      return;
+const handleSubmit = async () => {
+  
+  console.log('=== 제출 시작 ===');
+  console.log('title:', title);
+  console.log('content:', content);
+  console.log('thumbnail:', thumbnail);
+  console.log('files:', files);
+
+  if (!title.trim()) {
+    alert('제목을 입력하세요.');
+    return;
+  }
+  
+  if (!content.trim()) {
+    alert('내용을 입력하세요.');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    
+    const memberNo = localStorage.getItem('memberNo') || 1;
+    const formData = new FormData();
+    
+    console.log('=== FormData 추가 전 ===');
+    formData.append('noticeTitle', title);
+    formData.append('noticeContent', content);
+    formData.append('memberNo', memberNo);
+    console.log('=== FormData 확인 ===');
+    for (let [key, value] of formData.entries()) {
+      console.log(key, ':', value);
+    }
+    // 대표 이미지
+    if (thumbnail) {
+      formData.append('thumbnail', thumbnail);
     }
     
-    if (!content.trim()) {
-      alert('내용을 입력하세요.');
-      return;
+    // 첨부 파일들
+    if (files && files.length > 0) {
+      files.forEach(file => {
+        formData.append('files', file);
+      });
     }
-
-    // ✅ API 호출
-    try {
-      setLoading(true);
-      
-      // memberNo는 로그인한 사용자 정보에서 가져와야 함 (임시로 1)
-      const memberNo = localStorage.getItem('memberNo') || 1;
-      
-      const noticeData = {
-        noticeTitle: title,
-        noticeContent: content,
-        memberNo: parseInt(memberNo)
-      };
-
-      await createNotice(noticeData, files);
-      
-      alert('공지사항이 등록되었습니다.');
-      navigate('/notice');
-      
-    } catch (error) {
-      console.error('공지사항 등록 실패:', error);
-      
-      if (error.response?.status === 403 || error.response?.status === 401) {
-        alert('로그인이 필요합니다.');
-      } else {
-        alert('공지사항 등록에 실패했습니다.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+    
+    await createNotice(formData);
+    
+    alert('공지사항이 등록되었습니다.');
+    navigate('/notice');
+    
+  } catch (error) {
+    console.error('공지사항 등록 실패:', error);
+    alert('공지사항 등록에 실패했습니다.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <Container>
@@ -110,7 +125,33 @@ const NoticeInsert = () => {
         </FormGroup>
 
         <FormGroup>
-  <Label>파일 첨부</Label>
+  <Label>대표 이미지 (선택)</Label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      const file = e.target.files[0];
+      if (file && file.size > 10 * 1024 * 1024) {
+        alert('이미지는 10MB 이하만 가능합니다.');
+        return;
+      }
+      setThumbnail(file);
+    }}
+  />
+  {thumbnail && (
+    <div style={{ marginTop: '10px' }}>
+      <img 
+        src={URL.createObjectURL(thumbnail)} 
+        alt="미리보기"
+        style={{ maxWidth: '300px', borderRadius: '8px' }}
+      />
+    </div>
+  )}
+</FormGroup>
+
+{/* 첨부 파일 */}
+<FormGroup>
+  <Label>첨부 파일 (선택)</Label>
   <FileUpload 
     files={files} 
     setFiles={setFiles}

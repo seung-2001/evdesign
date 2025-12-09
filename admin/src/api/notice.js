@@ -38,24 +38,9 @@ export const getNoticeDetail = async (noticeNo) => {
 };
 
 // 공지사항 작성
-export const createNotice = async (noticeData, files) => {
+export const createNotice = async (formData) => {
   try {
-    const formData = new FormData();
-    
-    // JSON 데이터
-    formData.append('notice', new Blob([JSON.stringify(noticeData)], {
-      type: 'application/json'
-    }));
-    
-    // 파일들
-    if (files && files.length > 0) {
-      files.forEach(file => {
-        formData.append('files', file);
-      });
-    }
-    
     const response = await api.post('/notice/create', formData);
-    
     return response.data;
   } catch (error) {
     console.error('공지사항 작성 실패:', error);
@@ -64,22 +49,9 @@ export const createNotice = async (noticeData, files) => {
 };
 
 // 공지사항 수정
-export const updateNotice = async (noticeNo, noticeData, files) => {
+export const updateNotice = async (noticeNo, formData) => {
   try {
-    const formData = new FormData();
-    
-    formData.append('notice', new Blob([JSON.stringify(noticeData)], {
-      type: 'application/json'
-    }));
-    
-    if (files && files.length > 0) {
-      files.forEach(file => {
-        formData.append('files', file);
-      });
-    }
-    
     const response = await api.put(`/notice/${noticeNo}`, formData);
-    
     return response.data;
   } catch (error) {
     console.error('공지사항 수정 실패:', error);

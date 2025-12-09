@@ -35,19 +35,22 @@ const NoticeDetail = () => {
   }, [noticeNo]);
 
   const fetchNoticeDetail = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await getNoticeDetail(noticeNo);
-      console.log('공지사항 상세:', data);
-      setNotice(data);
-    } catch (err) {
-      console.error('공지사항 상세 조회 실패:', err);
-      setError('공지사항을 불러오는데 실패했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    setError(null);
+    const data = await getNoticeDetail(noticeNo);
+    console.log('공지사항 상세:', data);
+    console.log('fileUrls:', data.fileUrls);  // ✅ 추가
+    console.log('imageUrls:', data.imageUrls);  // ✅ 추가
+    console.log('thumbnailUrl:', data.thumbnailUrl);  // ✅ 추가
+    setNotice(data);
+  } catch (err) {
+    console.error('공지사항 상세 조회 실패:', err);
+    setError('공지사항을 불러오는데 실패했습니다.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleList = () => {
     navigate('/notice');
@@ -135,26 +138,71 @@ const canDelete = notice && (isAdmin || currentMemberNo === notice.memberNo);
           />
         </FormGroup>
 
-        {notice.imageUrls && notice.imageUrls.length > 0 && (
-          <FormGroup>
-            <Label>첨부 이미지</Label>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              {notice.imageUrls.map((url, index) => (
-                <img
-                  key={index}
-                  src={`http://localhost:8081${url}`}
-                  alt={`공지사항 이미지 ${index + 1}`}
-                  style={{
-                    maxWidth: '300px',
-                    height: 'auto',
-                    borderRadius: '8px',
-                    border: '1px solid #ddd'
-                  }}
-                />
-              ))}
-            </div>
-          </FormGroup>
-        )}
+{/* 대표 이미지 */}
+{/* 대표 이미지 */}
+{notice.thumbnailUrl && (
+  <FormGroup>
+    <Label>대표 이미지</Label>
+    <img 
+      src={`http://localhost:8081${notice.thumbnailUrl}`}
+      alt="대표 이미지"
+      style={{
+        maxWidth: '300px',
+        height: 'auto',
+        borderRadius: '8px',
+        border: '1px solid #ddd'
+      }}
+    />
+  </FormGroup>
+)}
+
+{/* 첨부 파일 */}
+{notice.fileUrls && notice.fileUrls.length > 0 && (
+  <FormGroup>
+    <Label>첨부 파일</Label>
+    <div style={{ 
+      border: '1px solid #ddd', 
+      borderRadius: '8px', 
+      padding: '15px',
+      backgroundColor: '#f9f9f9'
+    }}>
+      {notice.fileUrls.map((url, index) => {
+        const fileName = url.split('/').pop();
+        return (
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '10px',
+              borderBottom: index < notice.fileUrls.length - 1 ? '1px solid #eee' : 'none'
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>📎</span>
+            <span style={{ flex: 1, color: '#333' }}>{fileName}</span>
+            
+              <a href={`http://localhost:8081${url}`}
+              download
+              style={{
+                padding: '6px 12px',
+                backgroundColor: '#4a90e2',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                textDecoration: 'none',
+                fontSize: '14px',
+                cursor: 'pointer'
+              }}
+            >
+              다운로드
+            </a>
+          </div>
+        );
+      })}
+    </div>
+  </FormGroup>
+)}
 
         <FormGroup>
           <Label>내용</Label>
