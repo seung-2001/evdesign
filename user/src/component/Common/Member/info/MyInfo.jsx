@@ -184,17 +184,6 @@ const MyInfo = () => {
                     >
                         {hasLicense ? "운전면허 인증완료" : "운전면허 인증하기"}
                     </FullWidthButton>
-
-                    <FullWidthButton onClick={() => navi("/info/posts")}>
-                        내 게시물 보기
-                    </FullWidthButton>
-
-                    <FullWidthButton onClick={() => navi("/info/comments")}>
-                        내 댓글 보기
-                    </FullWidthButton>
-                    <FullWidthButton onClick={() => navi("/info/comments")}>
-                        내 리뷰 보기
-                    </FullWidthButton>
                     <FullWidthButton onClick={() => navi("/myReports")}>
                         내 신고 보기
                     </FullWidthButton>
