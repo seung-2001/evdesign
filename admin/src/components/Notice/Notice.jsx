@@ -1,23 +1,28 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getNoticeList, getNoticeSearch } from '../../api/notice';
 import { useSearch } from '../../context/SearchContext';
-import { Container } from '../Styles/Styles';
-import {
+import { 
+  Title,
+  Subtitle,
+  Container, 
   ContentWrapper,
-  ImagePlaceholder,
-  NoticeBody,
-  NoticeCard,
-  NoticeContent,
-  NoticeList,
+  ImagePlaceholder, 
+  NoticeBody, 
+  NoticeCard, 
+  NoticeContent, 
+  NoticeList, 
   NoticeTitle,
-  PageNumber,
   Pagination,
   PaginationButton,
-  Subtitle,
-  Title,
-  WriteButton
-} from './Notice.styles';
+  PageNumber,
+  Ellipsis,
+  WriteButton,
+  SearchSection,
+  SearchLabel,
+  SearchBox,
+  ClearButton
+} from "./Notice.styles";
 
 const Notice = () => {
   const {searchKeyword } = useSearch();

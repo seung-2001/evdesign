@@ -138,7 +138,7 @@ const canDelete = notice && (isAdmin || currentMemberNo === notice.memberNo);
           />
         </FormGroup>
 
-{/* 대표 이미지 */}
+
 {/* 대표 이미지 */}
 {notice.thumbnailUrl && (
   <FormGroup>
@@ -157,7 +157,7 @@ const canDelete = notice && (isAdmin || currentMemberNo === notice.memberNo);
 )}
 
 {/* 첨부 파일 */}
-{notice.fileUrls && notice.fileUrls.length > 0 && (
+{notice.imageUrls && notice.imageUrls.length > 0 && (
   <FormGroup>
     <Label>첨부 파일</Label>
     <div style={{ 
@@ -166,8 +166,10 @@ const canDelete = notice && (isAdmin || currentMemberNo === notice.memberNo);
       padding: '15px',
       backgroundColor: '#f9f9f9'
     }}>
-      {notice.fileUrls.map((url, index) => {
-        const fileName = url.split('/').pop();
+      {notice.imageUrls.map((url, index) => {
+        const fileName = notice.originalFileNames?.[index] || url.split('/').pop();  // ✅ 원본 파일명 사용
+        const isImage = /\.(jpg|jpeg|png|gif|webp)$/i.test(fileName);
+        
         return (
           <div
             key={index}
@@ -176,14 +178,29 @@ const canDelete = notice && (isAdmin || currentMemberNo === notice.memberNo);
               alignItems: 'center',
               gap: '10px',
               padding: '10px',
-              borderBottom: index < notice.fileUrls.length - 1 ? '1px solid #eee' : 'none'
+              marginBottom: '10px',
+              borderBottom: index < notice.imageUrls.length - 1 ? '1px solid #eee' : 'none'
             }}
           >
-            <span style={{ fontSize: '20px' }}>📎</span>
+            {isImage ? (
+              <img 
+                src={`http://localhost:8081${url}`}
+                alt={fileName}
+                style={{
+                  maxWidth: '100px',
+                  height: 'auto',
+                  borderRadius: '4px'
+                }}
+              />
+            ) : (
+              <span style={{ fontSize: '20px' }}>📎</span>
+            )}
+            
             <span style={{ flex: 1, color: '#333' }}>{fileName}</span>
             
-              <a href={`http://localhost:8081${url}`}
-              download
+            <a 
+              href={`http://localhost:8081${url}`}
+              download={fileName}  // ✅ 다운로드 시 원본 파일명으로
               style={{
                 padding: '6px 12px',
                 backgroundColor: '#4a90e2',
@@ -203,7 +220,6 @@ const canDelete = notice && (isAdmin || currentMemberNo === notice.memberNo);
     </div>
   </FormGroup>
 )}
-
         <FormGroup>
           <Label>내용</Label>
           <ContentBox>

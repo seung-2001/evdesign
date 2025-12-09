@@ -20,17 +20,17 @@ import {
 const NoticeUpdate = () => {
   const { noticeNo } = useParams();
   const navigate = useNavigate();
-  
+  const [filesToDelete, setFilesToDelete] = useState([]);
+  const [existingFiles, setExistingFiles] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [thumbnail, setThumbnail] = useState(null);        // ✅ 새 대표 이미지
   const [existingThumbnail, setExistingThumbnail] = useState(null);  // ✅ 기존 대표 이미지
   const [files, setFiles] = useState([]);                  // ✅ 새 첨부 파일
-  const [existingFiles, setExistingFiles] = useState([]);  // ✅ 기존 첨부 파일
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // ✅ 컴포넌트 마운트 시 기존 데이터 불러오기
+  //  컴포넌트 마운트 시 기존 데이터 불러오기
   useEffect(() => {
     fetchNoticeDetail();
   }, [noticeNo]);
@@ -42,8 +42,17 @@ const fetchNoticeDetail = async () => {
     
     setTitle(data.noticeTitle);
     setContent(data.noticeContent);
-    setExistingThumbnail(data.thumbnailUrl);  // ✅ 추가
-    setExistingFiles(data.fileUrls || []);    // ✅ 추가 (기존 imageUrls 대신)
+    setExistingThumbnail(data.thumbnailUrl);
+    
+    // 수정: fileUrls → imageUrls + originalFileNames
+    if (data.imageUrls && data.imageUrls.length > 0) {
+      // URL과 원본 파일명을 함께 저장
+      const filesWithNames = data.imageUrls.map((url, index) => ({
+        url: url,
+        name: data.originalFileNames?.[index] || url.split('/').pop()
+      }));
+      setExistingFiles(filesWithNames);
+    }
   } catch (err) {
     console.error('공지사항 조회 실패:', err);
     setError('공지사항을 불러오는데 실패했습니다.');
@@ -53,37 +62,31 @@ const fetchNoticeDetail = async () => {
     setLoading(false);
   }
 };
+  // 취소 버튼
+const handleCancel = () => {
+  if (window.confirm('수정을 취소하시겠습니까?')) {
+    navigate(`/notice/${noticeNo}`);
+  }
+};
 
-  // ✅ 취소 버튼
-  const handleCancel = () => {
-    if (window.confirm('수정을 취소하시겠습니까?')) {
-      navigate(`/notice/${noticeNo}`);
-    }
-  };
+const handleDelete = async () => {
+  if (!window.confirm('정말 삭제하시겠습니까?')) {
+    return;
+  }
 
-  // ✅ 삭제 버튼
-  const handleDelete = async () => {
-    if (!window.confirm('정말 삭제하시겠습니까?')) {
-      return;
-    }
-
-    try {
-      setLoading(true);
-      await deleteNotice(noticeNo);
-      alert('공지사항이 삭제되었습니다.');
-      navigate('/notice');
-    } catch (err) {
-      console.error('공지사항 삭제 실패:', err);
-      alert('공지사항 삭제에 실패했습니다.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  
-
-
-  // ✅ 수정 완료 버튼
+  try {
+    setLoading(true);
+    await deleteNotice(noticeNo);
+    alert('공지사항이 삭제되었습니다.');
+    navigate('/notice');
+  } catch (err) {
+    console.error('공지사항 삭제 실패:', err);
+    alert('공지사항 삭제에 실패했습니다.');
+  } finally {
+    setLoading(false);
+  }
+};
+  // 수정 완료 버튼
   const handleSubmit = async () => {
   console.log('=== 수정 시작 ===');
   console.log('title:', title);
@@ -113,10 +116,14 @@ const fetchNoticeDetail = async () => {
     formData.append('noticeContent', content);
     formData.append('memberNo', memberNo);
     
+    if (filesToDelete.length > 0) {
+  filesToDelete.forEach(url => formData.append('filesToDelete', url));
+}
+
     if (thumbnail) {
       formData.append('thumbnail', thumbnail);
     }
-    
+
     if (files && files.length > 0) {
       files.forEach(file => formData.append('files', file));
     }
@@ -262,7 +269,7 @@ const fetchNoticeDetail = async () => {
 {existingFiles.length > 0 && (
   <FormGroup>
     <Label>현재 첨부 파일</Label>
-    {existingFiles.map((url, index) => (
+    {existingFiles.map((file, index) => (
       <div key={index} style={{ 
         display: 'flex', 
         alignItems: 'center',
@@ -273,27 +280,22 @@ const fetchNoticeDetail = async () => {
         borderRadius: '4px'
       }}>
         <a 
-          href={`http://localhost:8081${url}`} 
+          href={`http://localhost:8081${file.url}`} 
           target="_blank"
           rel="noopener noreferrer"
           style={{ flex: 1, color: '#2563eb' }}
         >
-          📎 {url.split('/').pop()}
+          📎 {file.name}  {/* ✅ 원본 파일명 표시 */}
         </a>
-        <button
-          type="button"
-          onClick={() => setExistingFiles(existingFiles.filter((_, i) => i !== index))}
-          style={{
-            background: '#f44336',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            padding: '4px 8px',
-            cursor: 'pointer'
-          }}
-        >
-          삭제
-        </button>
+     <DeleteButton
+  type="button"
+  onClick={() => {
+    setFilesToDelete([...filesToDelete, file.url]);
+    setExistingFiles(existingFiles.filter((_, i) => i !== index));
+  }}
+>
+  삭제
+</DeleteButton>
       </div>
     ))}
   </FormGroup>
