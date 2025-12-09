@@ -179,3 +179,67 @@ export const CardTitle = styled.h4`
   color: #000;
   line-height: 1.4;
 `;
+
+export const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 60px;
+  padding: 20px 0;
+`;
+
+export const PageButton = styled.button`
+  min-width: 36px;
+  height: 36px;
+  padding: 8px 12px;
+  border: 1px solid ${props => props.active ? '#000' : '#ddd'};
+  background-color: ${props => props.active ? '#000' : '#fff'};
+  color: ${props => props.active ? '#fff' : '#333'};
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: ${props => props.active ? '600' : '400'};
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #000;
+    background-color: ${props => props.active ? '#000' : '#f5f5f5'};
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+export const LoadingMessage = styled.div`
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 16px;
+  color: #666;
+`;
+
+export const EmptyMessage = styled.div`
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 16px;
+  color: #999;
+`;
+
+export const RegisterButton = styled.button`
+  padding: 12px 24px;
+  background-color: #276ef1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #1f56c4;
+  }
+`;

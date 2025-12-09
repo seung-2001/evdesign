@@ -54,7 +54,7 @@ export const ButtonGroup = styled.div`
 export const UpdateButton = styled.button`
     flex: 1;
     padding: 14px;
-    background-color: #333;
+    background-color: #93c5fd;
     color: white;
     border: none;
     border-radius: 4px;
@@ -64,14 +64,14 @@ export const UpdateButton = styled.button`
     transition: background-color 0.3s;
 
     &:hover {
-        background-color: #555;
+        background-color: #3e90eeff;
     }
 `;
 
 export const CancelButton = styled.button`
     flex: 1;
     padding: 14px;
-    background-color: #999;
+    background-color: #dc3545;
     color: white;
     border: none;
     border-radius: 4px;
@@ -81,7 +81,7 @@ export const CancelButton = styled.button`
     transition: background-color 0.3s;
 
     &:hover {
-        background-color: #777;
+        background-color: #c82333;
     }
 `;
 
@@ -102,3 +102,103 @@ export const DeleteButton = styled.button`
         background-color: #c82333;
     }
 `;
+
+export const FullWidthButton = styled.button`
+    width: 100%;
+    padding: 14px;
+    background-color: ${props => props.$primary ? "#93c5fd" : props.disabled ? "#bbb" : "#93c5fd"};
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: ${props => props.$primary ? "#60a5fa" : props.disabled ? "#bbb" : "#60a5fa"};
+    }
+`;
+export const Modal = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+`;
+
+export const ModalContent = styled.div`
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-width: 400px;
+    max-width: 90%;
+`;
+
+export const ModalTitle = styled.h2`
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+`;
+
+export const ModalInput = styled.input`
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 20px;
+
+    &:focus {
+        outline: none;
+        border-color: #333;
+    }
+`;
+
+export const ModalButtonGroup = styled.div`
+    display: flex;
+    gap: 12px;
+`;
+
+export const ModalButton = styled.button`
+    flex: 1;
+    padding: 12px;
+    background-color: #93c5fd;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #60a5fa;
+    }
+`;
+
+export const ModalCancelButton = styled.button`
+    flex: 1;
+    padding: 12px;
+    background-color: #999;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+        background-color: #777;
+    }
+`;
+

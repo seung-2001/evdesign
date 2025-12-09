@@ -1,5 +1,13 @@
 import styled from 'styled-components';
 
+export const Container = styled.div`
+  margin-left: 250px;
+  padding: 2rem;
+  min-height: calc(100vh - 70px);
+  background-color: #f9fafb;
+  width: calc(100% - 250px);
+`;
+
 export const FormWrapper = styled.div`
     max-width: 500px;
     margin: 50px auto;

@@ -1,103 +1,216 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getNoticeList, getNoticeSearch } from '../../../api/notice';
 import { Container } from '../Styles/Styles';
 import {
-  Title,
-  Subtitle,
-  ContentWrapper,
-  SearchSection,
-  SearchLabel,
-  SearchBox,
   ClearButton,
-  NoticeList,
-  NoticeCard,
+  ContentWrapper,
   ImagePlaceholder,
-  NoticeContent,
-  NoticeTitle,
   NoticeBody,
+  NoticeCard,
+  NoticeContent,
+  NoticeList,
+  NoticeTitle,
+  PageNumber,
   Pagination,
   PaginationButton,
-  PageNumber,
-  Ellipsis
+  SearchBox,
+  SearchLabel,
+  SearchSection,
+  Subtitle,
+  Title,
 } from './Notice.styles';
 
 const Notice = () => {
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchText, setSearchText] = useState('제목 + 내용');
+  const [searchInput, setSearchInput] = useState('');      // ✅ 입력값
+  const [searchKeyword, setSearchKeyword] = useState(''); // 검색에 쓰이는 값
+  const [notices, setNotices] = useState([]);
+  const [pageInfo, setPageInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
+  
 
-  const notices = [
-    { id: 1, title: '예약안내', body: 'Body text for whatever you\'d like to say. Add main takeaway points, quotes, anecdotes, or even a very very short story.' },
-    { id: 2, title: '신고는 이렇게 해주세요!', body: 'Body text for whatever you\'d like to say. Add main takeaway points, quotes, anecdotes, or even a very very short story.' },
-    { id: 3, title: '게시판이용안내', body: 'Body text for whatever you\'d like to say. Add main takeaway points, quotes, anecdotes, or even a very very short story.' }
-  ];
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchKeyword(searchInput);
+      setCurrentPage(1);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchInput]);
 
-  const totalPages = 68;
+
+  useEffect(() => {
+    fetchNotices();
+  }, [currentPage, searchKeyword]);
+
+  const fetchNotices = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      let data;
+      if (searchKeyword) {
+        data = await getNoticeSearch(currentPage, searchKeyword);
+      } else {
+        data = await getNoticeList(currentPage);
+      }
+      
+      setNotices(data.noticeList);
+      setPageInfo(data.pageInfo);
+    } catch (err) {
+      console.error('공지사항 조회 실패:', err);
+      setError('공지사항을 불러오는데 실패했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchInput(e.target.value);
+  };
 
   const handleClearSearch = () => {
-    setSearchText('');
+    setSearchInput('');
+    setSearchKeyword('');
+    setCurrentPage(1);
   };
 
   const handlePageChange = (page) => {
-    setCurrentPage(page);
+    if (page >= 1 && page <= (pageInfo?.maxPage || 1)) {
+      setCurrentPage(page);
+    }
+  };
+
+
+  const handleNoticeClick = (noticeNo) => {
+    navigate(`/notice/${noticeNo}`);
   };
 
   const renderPageNumbers = () => {
-    const pages = [];
-    
-    if (currentPage === 1) {
-      pages.push(
-        <PageNumber key={1} active={true}>1</PageNumber>,
-        <PageNumber key={2} onClick={() => handlePageChange(2)}>2</PageNumber>,
-        <PageNumber key={3} onClick={() => handlePageChange(3)}>3</PageNumber>
-      );
-    }
-    
-    if (currentPage > 3) {
-      pages.push(<Ellipsis key="ellipsis">...</Ellipsis>);
-    }
-    
-    pages.push(
-      <PageNumber key={67} onClick={() => handlePageChange(67)}>67</PageNumber>,
-      <PageNumber key={68} onClick={() => handlePageChange(68)}>68</PageNumber>
-    );
-    
-    return pages;
-  };
+  if (!pageInfo) return null;
 
-  return (
-    <Container>
-      <ContentWrapper>
-        <Title>공지사항</Title>
-        <Subtitle>notice</Subtitle>
-        <br/><br/><br/><br/>
-        <SearchSection>
+  const pages = [];
+  const { startPage, endPage, currentPage: current } = pageInfo;
+
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(
+      <PageNumber
+        key={i}
+        $active={i === current}  // ✅ active → $active
+        onClick={() => handlePageChange(i)}
+      >
+        {i}
+      </PageNumber>
+    );
+  }
+
+  return pages;
+};
+
+return (
+  <Container>
+    <ContentWrapper>
+      <Title>공지사항</Title>
+      <Subtitle>notice</Subtitle>
+      <br /><br /><br /><br />
+
+      {/* ✅ SearchSection과 버튼을 감싸는 wrapper */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        marginBottom: '20px',
+        gap: '20px'  // 간격
+      }}>
+        {/* 검색 영역 */}
+        <SearchSection style={{ flex: 1 }}>
           <SearchLabel>공지사항</SearchLabel>
           <SearchBox>
-            {searchText}
-            {searchText && <ClearButton onClick={handleClearSearch}>×</ClearButton>}
+            <input
+              type="text"
+              placeholder="검색어를 입력하세요"
+              value={searchInput}
+              onChange={handleSearchChange}
+              style={{
+                border: 'none',
+                outline: 'none',
+                width: '100%',
+                background: 'transparent'
+              }}
+            />
+            {searchInput && (
+              <ClearButton onClick={handleClearSearch}>×</ClearButton>
+            )}
           </SearchBox>
         </SearchSection>
 
-        <NoticeList>
-          {notices.map((notice) => (
-            <NoticeCard key={notice.id}>
-              <ImagePlaceholder />
-              <NoticeContent>
-                <NoticeTitle>{notice.title}</NoticeTitle>
-                <NoticeBody>{notice.body}</NoticeBody>
-              </NoticeContent>
-            </NoticeCard>
-          ))}
-        </NoticeList>
+        </div>
 
-        <Pagination>
-          <PaginationButton onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-            ← Previous
-          </PaginationButton>
-          {renderPageNumbers()}
-          <PaginationButton onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-            Next →
-          </PaginationButton>
-        </Pagination>
+            
+
+        {loading && <div style={{ textAlign: 'center', padding: '20px' }}>로딩 중...</div>}
+        {error && <div style={{ textAlign: 'center', padding: '20px', color: 'red' }}>{error}</div>}
+
+        {!loading && !error && (
+          <>
+            <NoticeList>
+              {notices.length > 0 ? (
+                notices.map((notice) => (
+                  <NoticeCard 
+                    key={notice.noticeNo}
+                    onClick={() => handleNoticeClick(notice.noticeNo)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {notice.imageUrls && notice.imageUrls.length > 0 ? (
+                      <img 
+                        src={`http://localhost:8081${notice.imageUrls[0]}`}
+                        alt={notice.noticeTitle}
+                        style={{
+                          width: '200px',
+                          height: '150px',
+                          objectFit: 'cover',
+                          borderRadius: '8px'
+                        }}
+                      />
+                    ) : (
+                      <ImagePlaceholder />
+                    )}
+                    <NoticeContent>
+                      <NoticeTitle>{notice.noticeTitle}</NoticeTitle>
+                      <NoticeBody>{notice.noticeContent}</NoticeBody>
+                    </NoticeContent>
+                  </NoticeCard>
+                ))
+              ) : (
+                <div style={{ textAlign: 'center', padding: '40px' }}>
+                  검색 결과가 없습니다.
+                </div>
+              )}
+            </NoticeList>
+
+            {pageInfo && pageInfo.maxPage > 1 && (
+              <Pagination>
+                <PaginationButton
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  ← Previous
+                </PaginationButton>
+                {renderPageNumbers()}
+                <PaginationButton
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === pageInfo.maxPage}
+                >
+                  Next →
+                </PaginationButton>
+              </Pagination>
+            )}
+          </>
+        )}
       </ContentWrapper>
     </Container>
   );

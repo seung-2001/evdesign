@@ -21,9 +21,9 @@ import {
   DetailsTitle,
   ToggleIcon,
   DetailsContent,
-} from './CarDetail.styles';
+} from './CarDetails.styles';
 
-const CarDetail = () => {
+const CarDetails = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [selectedColor, setSelectedColor] = useState('블랙');
   const [isDetailsOpen, setIsDetailsOpen] = useState(true);
@@ -91,4 +91,4 @@ const CarDetail = () => {
   );
 };
 
-export default CarDetail;
+export default CarDetails;

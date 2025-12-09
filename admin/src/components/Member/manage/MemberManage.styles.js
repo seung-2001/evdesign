@@ -2,11 +2,19 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+<<<<<<< HEAD
     margin-left: 250px;
     padding: 2rem;
     min-height: calc(100vh - 70px);
     background-color: #f9fafb;
     width: calc(100% - 250px);
+=======
+  margin-left: 250px;
+  padding: 2rem;
+  min-height: calc(100vh - 70px);
+  background-color: #f9fafb;
+  width: calc(100% - 250px);
+>>>>>>> 78e555127784a4dd4909fa25192ba1e472c49c61
 `;
 
 export const ContentWrapper = styled.div`

@@ -31,7 +31,7 @@ const Footer = () => {
       title: "공유",
       items: [
         { label: "전기차 공유", path: "/board/share" },
-        { label: "자유 게시판", path: "/board/free" },
+        { label: "자유 게시판", path: "/boardList" },
         { label: "충전소", path: "/station/info" },
       ],
     },

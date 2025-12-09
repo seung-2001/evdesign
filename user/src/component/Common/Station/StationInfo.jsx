@@ -58,7 +58,7 @@ const CHARGER_TYPE_MAP = {
     "07": "AC3상",
     "08": "DC콤보(완속)",
     "09": "NACS",
-    "10": "DC콤보+NACS",
+    10: "DC콤보+NACS",
 };
 
 // 충전기 타입 라벨 가져오기
@@ -75,7 +75,7 @@ const isFastCharger = (type) => {
 const StationInfoPage = () => {
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
-    
+
     const [stations, setStations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -171,7 +171,8 @@ const StationInfoPage = () => {
     // 리뷰 등록
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
-        if (!reviewTitle.trim() || !reviewContent.trim() || !selectedStation) return;
+        if (!reviewTitle.trim() || !reviewContent.trim() || !selectedStation)
+            return;
 
         // 로그인 체크
         if (!auth.isAuthenticated || !auth.accessToken) {
@@ -181,16 +182,20 @@ const StationInfoPage = () => {
         }
 
         try {
-            await axios.post(`${API_BASE_URL}/station/reviews`, {
-                stationNo: selectedStation.stationNo,
-                reviewTitle: reviewTitle.trim(),
-                reviewContent: reviewContent.trim(),
-                memberNo: auth.memberNo,
-            }, {
-                headers: {
-                    Authorization: `Bearer ${auth.accessToken}`
+            await axios.post(
+                `${API_BASE_URL}/station/reviews`,
+                {
+                    stationNo: selectedStation.stationNo,
+                    reviewTitle: reviewTitle.trim(),
+                    reviewContent: reviewContent.trim(),
+                    memberNo: auth.memberNo,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${auth.accessToken}`,
+                    },
                 }
-            });
+            );
             setReviewTitle("");
             setReviewContent("");
             fetchReviews(selectedStation.stationNo);
@@ -214,7 +219,8 @@ const StationInfoPage = () => {
         const updateData = {
             reviewNo: review.reviewNo,
             stationNo: selectedStation.stationNo,
-            reviewTitle: review.reviewTitle || `${selectedStation.stationName} 리뷰`,
+            reviewTitle:
+                review.reviewTitle || `${selectedStation.stationName} 리뷰`,
             reviewContent: editContent.trim(),
             memberNo: review.memberNo,
         };
@@ -223,8 +229,8 @@ const StationInfoPage = () => {
         try {
             await axios.put(`${API_BASE_URL}/station/reviews`, updateData, {
                 headers: {
-                    Authorization: `Bearer ${auth.accessToken}`
-                }
+                    Authorization: `Bearer ${auth.accessToken}`,
+                },
             });
             setEditingReviewNo(null);
             setEditContent("");
@@ -249,8 +255,8 @@ const StationInfoPage = () => {
         try {
             await axios.delete(`${API_BASE_URL}/station/reviews/${reviewNo}`, {
                 headers: {
-                    Authorization: `Bearer ${auth.accessToken}`
-                }
+                    Authorization: `Bearer ${auth.accessToken}`,
+                },
             });
             fetchReviews(selectedStation.stationNo);
             alert("리뷰가 삭제되었습니다.");
@@ -295,15 +301,17 @@ const StationInfoPage = () => {
     }));
 
     // 선택된 마커 데이터
-    const selectedMapMarker = selectedStation ? {
-        id: selectedStation.stationNo,
-        lat: selectedStation.stationLat,
-        lng: selectedStation.stationLng,
-        name: selectedStation.stationName,
-        address: selectedStation.stationAddress,
-        type: selectedStation.stationType,
-        data: selectedStation,
-    } : null;
+    const selectedMapMarker = selectedStation
+        ? {
+              id: selectedStation.stationNo,
+              lat: selectedStation.stationLat,
+              lng: selectedStation.stationLng,
+              name: selectedStation.stationName,
+              address: selectedStation.stationAddress,
+              type: selectedStation.stationType,
+              data: selectedStation,
+          }
+        : null;
 
     // 마커 클릭 핸들러
     const handleMarkerClick = (markerData) => {
@@ -322,7 +330,9 @@ const StationInfoPage = () => {
         return `
             <div style="padding: 10px; min-width: 180px;">
                 <strong style="font-size: 13px;">${markerData.name}</strong>
-                <p style="font-size: 11px; color: #666; margin: 4px 0;">${markerData.address || ""}</p>
+                <p style="font-size: 11px; color: #666; margin: 4px 0;">${
+                    markerData.address || ""
+                }</p>
                 <span style="
                     display: inline-block;
                     padding: 2px 6px;
@@ -349,7 +359,7 @@ const StationInfoPage = () => {
     if (error && stations.length === 0) {
         return (
             <Container>
-                <PageTitle>충전소 정보</PageTitle>
+                <PageTitle>충전소 정보</PageTitle>.
                 <ErrorMessage>{error}</ErrorMessage>
             </Container>
         );
@@ -384,18 +394,27 @@ const StationInfoPage = () => {
                                 stations.map((station) => (
                                     <StationListItem
                                         key={station.stationNo}
-                                        onClick={() => setSelectedStation(station)}
+                                        onClick={() =>
+                                            setSelectedStation(station)
+                                        }
                                     >
                                         <StationListInfo>
                                             <StationListName>
                                                 {station.stationName}
                                             </StationListName>
                                             <StationListAddress>
-                                                {station.stationAddress || "주소 정보 없음"}
+                                                {station.stationAddress ||
+                                                    "주소 정보 없음"}
                                             </StationListAddress>
                                         </StationListInfo>
-                                        <StationListBadge $fast={isFastCharger(station.stationType)}>
-                                            {getChargerTypeLabel(station.stationType)}
+                                        <StationListBadge
+                                            $fast={isFastCharger(
+                                                station.stationType
+                                            )}
+                                        >
+                                            {getChargerTypeLabel(
+                                                station.stationType
+                                            )}
                                         </StationListBadge>
                                     </StationListItem>
                                 ))
@@ -404,7 +423,9 @@ const StationInfoPage = () => {
                     ) : (
                         /* 충전소 선택 후: 상세 카드 표시 */
                         <StationDetailCard>
-                            <BackButton onClick={() => setSelectedStation(null)}>
+                            <BackButton
+                                onClick={() => setSelectedStation(null)}
+                            >
                                 ← 목록으로
                             </BackButton>
                             <StationImage
@@ -438,8 +459,7 @@ const StationInfoPage = () => {
                                             "Y"
                                         }
                                     >
-                                        {selectedStation.stationStatus ===
-                                        "Y"
+                                        {selectedStation.stationStatus === "Y"
                                             ? "이용가능"
                                             : "이용불가"}
                                     </StatusBadge>
@@ -450,9 +470,7 @@ const StationInfoPage = () => {
                             <ReviewSection>
                                 <h3>리뷰</h3>
                                 {reviews.length === 0 ? (
-                                    <NoReviews>
-                                        아직 리뷰가 없습니다.
-                                    </NoReviews>
+                                    <NoReviews>아직 리뷰가 없습니다.</NoReviews>
                                 ) : (
                                     reviews.map((review) => (
                                         <ReviewItem key={review.reviewNo}>
@@ -476,23 +494,22 @@ const StationInfoPage = () => {
                                                         value={editContent}
                                                         onChange={(e) =>
                                                             setEditContent(
-                                                                e.target
-                                                                    .value
+                                                                e.target.value
                                                             )
                                                         }
                                                     />
                                                     <ReviewActions>
                                                         <ReviewActionButton
                                                             onClick={() =>
-                                                                handleReviewUpdate(review)
+                                                                handleReviewUpdate(
+                                                                    review
+                                                                )
                                                             }
                                                         >
                                                             저장
                                                         </ReviewActionButton>
                                                         <ReviewActionButton
-                                                            onClick={
-                                                                cancelEdit
-                                                            }
+                                                            onClick={cancelEdit}
                                                         >
                                                             취소
                                                         </ReviewActionButton>
@@ -501,9 +518,7 @@ const StationInfoPage = () => {
                                             ) : (
                                                 <>
                                                     <ReviewContent>
-                                                        {
-                                                            review.reviewContent
-                                                        }
+                                                        {review.reviewContent}
                                                     </ReviewContent>
                                                     <ReviewActions>
                                                         <ReviewActionButton
@@ -551,7 +566,10 @@ const StationInfoPage = () => {
                                 />
                                 <ReviewSubmitButton
                                     type="submit"
-                                    disabled={!reviewTitle.trim() || !reviewContent.trim()}
+                                    disabled={
+                                        !reviewTitle.trim() ||
+                                        !reviewContent.trim()
+                                    }
                                 >
                                     리뷰 등록
                                 </ReviewSubmitButton>
