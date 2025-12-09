@@ -103,9 +103,14 @@ const MyReports = () => {
     // 필터링된 목록
     const filteredReports = reports.filter((report) => {
         if (filter === "전체") return true;
-        const type = report.reportType || "";
-        if (filter === "신고") return type === "REPORT";
-        if (filter === "문의") return type === "INQUIRY";
+        // reportType 또는 reportCategory로 필터링 (영문/한글 모두 지원)
+        const type = report.reportType || report.reportCategory || "";
+        if (filter === "신고") {
+            return type === "REPORT" || type === "신고";
+        }
+        if (filter === "문의") {
+            return type === "INQUIRY" || type === "문의";
+        }
         return true;
     });
 
@@ -207,11 +212,11 @@ const MyReports = () => {
                                     <BadgeContainer>
                                         <TypeBadge
                                             $type={getReportTypeLabel(
-                                                report.reportType
+                                                report.reportType || report.reportCategory
                                             )}
                                         >
                                             {getReportTypeLabel(
-                                                report.reportType
+                                                report.reportType || report.reportCategory
                                             )}
                                         </TypeBadge>
                                         <StatusBadge
@@ -270,11 +275,11 @@ const MyReports = () => {
                                     <BadgeContainer>
                                         <TypeBadge
                                             $type={getReportTypeLabel(
-                                                selectedReport.reportType
+                                                selectedReport.reportType || selectedReport.reportCategory
                                             )}
                                         >
                                             {getReportTypeLabel(
-                                                selectedReport.reportType
+                                                selectedReport.reportType || selectedReport.reportCategory
                                             )}
                                         </TypeBadge>
                                         <StatusBadge

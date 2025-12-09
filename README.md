@@ -15,6 +15,86 @@
 
 ---
 
+## 📄 페이지 리스트
+
+### 👤 User App (`/user`)
+
+#### 🏠 메인
+- [x] 메인 페이지 (`/`)
+
+#### 🔑 인증/인가
+- [x] 로그인 (`/login`)
+- [x] 회원가입 (`/join`)
+- [x] 내 정보 (`/info`)
+- [x] 회원정보 수정 (`/update`)
+- [x] 비밀번호 변경 (`/changePwd`)
+- [x] 운전면허 인증 (`/infoLicense`)
+
+#### 📝 게시판
+- [x] 게시글 목록 (`/boardList`)
+- [x] 게시글 작성 (`/boardInsert`)
+- [x] 게시글 상세 (`/boardDetail/:boardNo`)
+- [x] 게시글 수정 (`/boardUpdate/:boardNo`)
+
+#### 📢 공지사항
+- [x] 공지사항 목록 (`/notice`)
+- [x] 공지사항 상세 (`/notice/:noticeNo`)
+
+#### 🚗 차량
+- [x] 차량 목록 (`/car`)
+- [x] 차량 상세 (`/car/detail`)
+- [x] 차량 등록/수정 (`/car/save`)
+
+#### 🔌 충전소
+- [x] 충전소 정보 (`/station/info`)
+
+#### 📢 신고/문의
+- [x] 신고/문의 등록 (`/report`, `/report/:boardNo`)
+- [x] 내 신고 내역 (`/myReports`)
+
+---
+
+### 🔧 Admin Dashboard (`/admin`)
+
+#### 🏠 메인
+- [x] 회원 관리 대시보드 (`/`)
+
+#### 🔑 인증
+- [x] 관리자 로그인 (`/login`)
+- [x] 내 정보 (`/info`)
+
+#### 👥 회원 관리
+- [x] 회원 관리 (`/member-manage`)
+
+#### 🚗 차량 관리
+- [x] 차량 등록/수정 (`/cars`)
+- [ ] 차량 목록 (구현 예정)
+- [ ] 차량 상세보기 (구현 예정)
+- [ ] 차량 예약 관리 (구현 예정)
+
+#### 🔌 충전소 관리
+- [x] 충전소 관리 (`/charging-station`)
+
+#### 📢 신고/문의 관리
+- [x] 문의 관리 (`/inquiry`)
+
+#### 📝 게시판 관리
+- [x] 게시판 관리 (`/board`)
+
+#### 📢 공지사항 관리
+- [x] 공지사항 목록 (`/notice`)
+- [x] 공지사항 작성 (`/notice/insert`)
+- [x] 공지사항 수정 (`/notice/update/:noticeNo`)
+- [x] 공지사항 상세 (`/notice/:noticeNo`)
+
+#### 💳 결제 관리
+- [x] 결제 관리 (`/payment`)
+
+#### ⚙️ 설정
+- [x] 설정 (`/settings`)
+
+---
+
 ## 📁 프로젝트 구조
 
 ```
@@ -60,7 +140,6 @@ user/src/component/Common/
 - 👤 **회원관리** - 회원가입, 로그인, 면허 등록
 - 📢 **신고하기** - 충전소 관련 불편사항 신고
 - 📋 **게시판** - 사용자 커뮤니티
-- 🗣️ **공지사항** - 사용자들에게 전달할 사항들
 
 ---
 
@@ -83,8 +162,6 @@ admin/src/components/
 │   ├── info/           # 내 정보
 │   ├── login/          # 로그인
 │   └── manage/         # 회원 관리
-├── notice/             # 공지사항
-├── Message/            # 메시지 관리
 ├── Payment/            # 결제 관리
 ├── Settings/           # 설정
 ├── Sidebar/            # 사이드바
@@ -97,7 +174,6 @@ admin/src/components/
 - 👥 **회원 관리** - 회원 정보 조회 및 관리
 - 💬 **문의 관리** - 사용자 문의 확인 및 답변
 - 💳 **결제 관리** - 결제 내역 조회 및 환불 처리
-- 📨 **메시지** - 사용자에게 공지/알림 발송
 
 ---
 
@@ -133,11 +209,7 @@ cd admin && npm run build
 `user/index.html`에 Kakao Map API 스크립트 추가:
 
 ```html
-<<<<<<< HEAD
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services,clusterer"></script>
-=======
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY(JavaScript SDK)&libraries=services,clusterer"></script>
->>>>>>> 78e555127784a4dd4909fa25192ba1e472c49c61
 ```
 
 ---

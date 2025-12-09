@@ -22,7 +22,7 @@ const Footer = () => {
     support: {
       title: "고객지원",
       items: [
-        { label: "신고하기", path: "/report" },
+        { label: "문의하기기", path: "/report" },
         { label: "공지사항", path: "/notice" },
         { label: "사용 안내", path: "/guide" },
       ],
