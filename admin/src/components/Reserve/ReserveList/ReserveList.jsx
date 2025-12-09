@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   Container,
@@ -19,6 +20,7 @@ import {
 } from './ReserveList.styles';
 
 const ReserveList = () => {
+  const navigate = useNavigate();
   const [reservations, setReservations] = useState([]);
   const [pageInfo, setPageInfo] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -42,7 +44,6 @@ const ReserveList = () => {
 
       console.log('백엔드 응답:', response.data);
       
-      // reserveList로 받아오기
       if (response.data.reserveList) {
         setReservations(response.data.reserveList);
       }
@@ -62,8 +63,14 @@ const ReserveList = () => {
     fetchReservations();
   }, []);
 
+  // 상세보기로 이동
+  const handleViewDetails = (reserveNo) => {
+    navigate(`/reserve/details/${reserveNo}`);
+  };
+
   // 예약 취소
-  const handleCancel = async (reserveNo) => {
+  const handleCancel = async (reserveNo, e) => {
+    e.stopPropagation(); // 상세보기 이동 방지
     if (!window.confirm('예약을 취소하시겠습니까?')) return;
 
     try {
@@ -86,7 +93,8 @@ const ReserveList = () => {
   };
 
   // 예약 승인
-  const handleApprove = async (reserveNo) => {
+  const handleApprove = async (reserveNo, e) => {
+    e.stopPropagation(); // 상세보기 이동 방지
     if (!window.confirm('예약을 승인하시겠습니까?')) return;
 
     try {
@@ -110,7 +118,8 @@ const ReserveList = () => {
   };
 
   // 차량 반납
-  const handleReturn = async (reserveNo) => {
+  const handleReturn = async (reserveNo, e) => {
+    e.stopPropagation(); // 상세보기 이동 방지
     if (!window.confirm('반납 처리하시겠습니까?')) return;
 
     try {
@@ -192,7 +201,11 @@ const ReserveList = () => {
               </TableRow>
             ) : (
               reservations.map((reservation) => (
-                <TableRow key={reservation.reserveNo}>
+                <TableRow 
+                  key={reservation.reserveNo}
+                  onClick={() => handleViewDetails(reservation.reserveNo)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <TableCell>{reservation.reserveNo}</TableCell>
                   <TableCell>
                     {reservation.memberName || '정보없음'}
@@ -217,7 +230,7 @@ const ReserveList = () => {
                       {reservation.approveStatus === 'N' && (
                         <ActionButton
                           $variant="approve"
-                          onClick={() => handleApprove(reservation.reserveNo)}
+                          onClick={(e) => handleApprove(reservation.reserveNo, e)}
                         >
                           승인
                         </ActionButton>
@@ -225,14 +238,14 @@ const ReserveList = () => {
                       {reservation.approveStatus === 'Y' && (
                         <ActionButton
                           $variant="return"
-                          onClick={() => handleReturn(reservation.reserveNo)}
+                          onClick={(e) => handleReturn(reservation.reserveNo, e)}
                         >
                           반납처리
                         </ActionButton>
                       )}
                       <ActionButton
                         $variant="cancel"
-                        onClick={() => handleCancel(reservation.reserveNo)}
+                        onClick={(e) => handleCancel(reservation.reserveNo, e)}
                       >
                         취소
                       </ActionButton>

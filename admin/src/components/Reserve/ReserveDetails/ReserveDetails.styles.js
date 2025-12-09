@@ -86,8 +86,8 @@ export const CarTitle = styled.div`
 export const StatusBadge = styled.span`
   display: inline-block;
   padding: 4px 12px;
-  background: #d4f4dd;
-  color: #2d5f3f;
+  background-color: ${props => props.$color || '#d4f4dd'};
+  color: white;
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
@@ -147,16 +147,14 @@ export const FormSection = styled.div`
   gap: 20px;
 `;
 
-export const FormTitle = styled.h3`
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-`;
-
 export const NoticeText = styled.div`
   font-size: 14px;
   color: #333;
   margin-bottom: 10px;
+  padding: 12px;
+  background: #f0f7ff;
+  border-left: 4px solid #4285f4;
+  border-radius: 4px;
 `;
 
 export const FormGroup = styled.div`
@@ -171,79 +169,16 @@ export const Label = styled.label`
   color: #333;
 `;
 
-export const DateInputWrapper = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-`;
-
-export const DateInput = styled.input`
-  width: 100%;
-  padding: 12px 40px 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  outline: none;
-  
-  &:focus {
-    border-color: #4285f4;
-  }
-`;
-
-export const DateHint = styled.div`
-  font-size: 12px;
-  color: #999;
-  margin-top: 4px;
-`;
-
-export const Select = styled.select`
-  width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  outline: none;
-  background: white;
-  cursor: pointer;
-  
-  &:focus {
-    border-color: #4285f4;
-  }
-`;
-
-export const SelectHint = styled.div`
-  font-size: 12px;
-  color: #999;
-  margin-top: 4px;
-`;
-
 export const ButtonGroup = styled.div`
   display: flex;
   gap: 12px;
   margin-top: 10px;
 `;
 
-export const ApprovalButton = styled.button`
-  width: 100%;
-  padding: 14px 24px;
-  background: #4285f4;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-  
-  &:hover {
-    background: #3367d6;
-  }
-`;
-
 export const ApproveButton = styled.button`
   flex: 1;
   padding: 14px 24px;
-  background: #4285f4;
+  background: #4CAF50;
   color: white;
   border: none;
   border-radius: 6px;
@@ -253,7 +188,7 @@ export const ApproveButton = styled.button`
   transition: background 0.2s;
   
   &:hover {
-    background: #3367d6;
+    background: #45a049;
   }
 `;
 
@@ -272,4 +207,54 @@ export const RejectButton = styled.button`
   &:hover {
     background: #c62828;
   }
+`;
+
+export const ReturnButton = styled.button`
+  flex: 1;
+  padding: 14px 24px;
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  
+  &:hover {
+    background: #1976D2;
+  }
+`;
+
+export const CancelButton = styled.button`
+  flex: 1;
+  padding: 14px 24px;
+  background: #757575;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  
+  &:hover {
+    background: #616161;
+  }
+`;
+
+export const LoadingSpinner = styled.div`
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+`;
+
+export const ErrorMessage = styled.div`
+  text-align: center;
+  padding: 20px;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 4px;
+  margin-bottom: 20px;
 `;
