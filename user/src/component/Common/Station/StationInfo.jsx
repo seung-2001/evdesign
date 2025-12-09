@@ -89,6 +89,12 @@ const StationInfoPage = () => {
     const [editingReviewNo, setEditingReviewNo] = useState(null);
     const [editContent, setEditContent] = useState("");
 
+    // 반경 필터링된 충전소 상태
+    const [filteredStations, setFilteredStations] = useState(null);
+
+    // 리뷰 작성 폼 표시 여부
+    const [showReviewForm, setShowReviewForm] = useState(false);
+
     // 충전소 목록 조회
     const fetchStations = async () => {
         try {
@@ -198,6 +204,7 @@ const StationInfoPage = () => {
             );
             setReviewTitle("");
             setReviewContent("");
+            setShowReviewForm(false); // 폼 닫기
             fetchReviews(selectedStation.stationNo);
             alert("리뷰가 등록되었습니다.");
         } catch (err) {
@@ -316,6 +323,22 @@ const StationInfoPage = () => {
         });
     };
 
+    // 반경 필터 콜백 - 지도에서 필터링된 마커를 받아서 리스트 업데이트
+    const handleFilteredMarkersChange = (filteredMarkers) => {
+        if (filteredMarkers.length === stations.length) {
+            // 전체 표시일 때는 null로 설정
+            setFilteredStations(null);
+        } else {
+            // 필터링된 마커의 id로 충전소 필터링
+            const filteredIds = filteredMarkers.map((m) => m.id);
+            const filtered = stations.filter((s) => filteredIds.includes(s.stationNo));
+            setFilteredStations(filtered);
+        }
+    };
+
+    // 왼쪽 리스트에 표시할 충전소 (필터링 적용)
+    const displayStations = filteredStations !== null ? filteredStations : stations;
+
     // KakaoMap용 마커 데이터 변환
     const mapMarkers = stations.map((station) => ({
         id: station.stationNo,
@@ -415,10 +438,28 @@ const StationInfoPage = () => {
                     {/* 충전소 선택 전: 리스트 표시 */}
                     {!selectedStation ? (
                         <StationListContainer>
-                            {stations.length === 0 ? (
-                                <EmptyState>충전소가 없습니다</EmptyState>
+                            {filteredStations !== null && (
+                                <div style={{
+                                    padding: "0.75rem 1rem",
+                                    background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+                                    color: "white",
+                                    fontSize: "0.8rem",
+                                    fontWeight: "600",
+                                    borderRadius: "8px",
+                                    marginBottom: "0.75rem",
+                                    textAlign: "center"
+                                }}>
+                                    📍 반경 내 {displayStations.length}개 충전소
+                                </div>
+                            )}
+                            {displayStations.length === 0 ? (
+                                <EmptyState>
+                                    {filteredStations !== null 
+                                        ? "반경 내 충전소가 없습니다" 
+                                        : "충전소가 없습니다"}
+                                </EmptyState>
                             ) : (
-                                stations.map((station) => (
+                                displayStations.map((station) => (
                                     <StationListItem
                                         key={station.stationNo}
                                         onClick={() =>
@@ -574,33 +615,56 @@ const StationInfoPage = () => {
                                 )}
                             </ReviewSection>
 
+                            {/* 리뷰 작성 토글 버튼 */}
+                            <button
+                                type="button"
+                                onClick={() => setShowReviewForm(!showReviewForm)}
+                                style={{
+                                    width: "100%",
+                                    padding: "0.875rem",
+                                    background: showReviewForm ? "#e5e7eb" : "linear-gradient(135deg, #2563eb, #1d4ed8)",
+                                    color: showReviewForm ? "#374151" : "white",
+                                    border: "none",
+                                    borderRadius: "8px",
+                                    fontSize: "0.9rem",
+                                    fontWeight: "600",
+                                    cursor: "pointer",
+                                    transition: "all 0.2s",
+                                    marginTop: "1rem",
+                                }}
+                            >
+                                {showReviewForm ? "✕ 작성 취소" : "✏️ 리뷰 작성하기"}
+                            </button>
+
                             {/* 리뷰 작성 폼 */}
-                            <ReviewForm onSubmit={handleReviewSubmit}>
-                                <ReviewTitleInput
-                                    type="text"
-                                    placeholder="리뷰 제목을 입력해주세요..."
-                                    value={reviewTitle}
-                                    onChange={(e) =>
-                                        setReviewTitle(e.target.value)
-                                    }
-                                />
-                                <ReviewTextarea
-                                    placeholder="리뷰 내용을 작성해주세요..."
-                                    value={reviewContent}
-                                    onChange={(e) =>
-                                        setReviewContent(e.target.value)
-                                    }
-                                />
-                                <ReviewSubmitButton
-                                    type="submit"
-                                    disabled={
-                                        !reviewTitle.trim() ||
-                                        !reviewContent.trim()
-                                    }
-                                >
-                                    리뷰 등록
-                                </ReviewSubmitButton>
-                            </ReviewForm>
+                            {showReviewForm && (
+                                <ReviewForm onSubmit={handleReviewSubmit}>
+                                    <ReviewTitleInput
+                                        type="text"
+                                        placeholder="리뷰 제목을 입력해주세요..."
+                                        value={reviewTitle}
+                                        onChange={(e) =>
+                                            setReviewTitle(e.target.value)
+                                        }
+                                    />
+                                    <ReviewTextarea
+                                        placeholder="리뷰 내용을 작성해주세요..."
+                                        value={reviewContent}
+                                        onChange={(e) =>
+                                            setReviewContent(e.target.value)
+                                        }
+                                    />
+                                    <ReviewSubmitButton
+                                        type="submit"
+                                        disabled={
+                                            !reviewTitle.trim() ||
+                                            !reviewContent.trim()
+                                        }
+                                    >
+                                        리뷰 등록
+                                    </ReviewSubmitButton>
+                                </ReviewForm>
+                            )}
                         </StationDetailCard>
                     )}
                 </LeftPanel>
@@ -621,6 +685,8 @@ const StationInfoPage = () => {
                         getInfoWindowContent={getInfoWindowContent}
                         minHeight="100%"
                         mapId="station-map"
+                        enableRadiusFilter={true}
+                        onFilteredMarkersChange={handleFilteredMarkersChange}
                     />
                 </RightPanel>
             </MainLayout>
