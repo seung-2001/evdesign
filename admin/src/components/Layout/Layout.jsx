@@ -45,11 +45,12 @@ const Layout = () => {
                 <Route path="/info" element={<MyInfo />} />
                 <Route path="/member-manage" element={<MemberManage />} />
                 <Route path="/board" element={<Board />} />
-                <Route path="/notice" element={<Notice />} />
-                <Route path="insert" element={<NoticeInsert />} />
-                <Route path="update/:noticeNo" element={<NoticeUpdate />} />
-                <Route path=":noticeNo" element={<NoticeDetail />} />
-                
+                <Route path="/notice">
+                    <Route index element={<Notice />} />
+                    <Route path="insert" element={<NoticeInsert />} />
+                    <Route path="update/:noticeNo" element={<NoticeUpdate />} />
+                    <Route path=":noticeNo" element={<NoticeDetail />} />
+                </Route>
             </Routes>
         </StyledLayout>
     );
