@@ -35,7 +35,7 @@ const Layout = () => {
                 {/* 아직 없는 차량 목록 <Route path="/cars" element={<CarList />} /> */}
                 {/* 아직 없는 차량 상세보기 <Route path="/cars/:carNo" element={<CarDetails />} /> */}
                 <Route path="/cars" element={<SaveCar />} /> {/* 차량 등록/수정 */}
-                {/* 아직 없는 차량 예약 관리 <Route path="/car-reservation" element={<CarReservation />} /> */}
+                <Route path="/reserve/operator/reserve-manage" element={<CarReservation />} />
 
                 <Route path="/charging-station" element={<ChargingStation />} />
                 <Route path="/inquiry" element={<Inquiry />} />
