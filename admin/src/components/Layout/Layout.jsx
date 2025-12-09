@@ -14,7 +14,7 @@ import NoticeInsert from "../Notice/NoticeInsert";
 import NoticeUpdate from "../Notice/NoticeUpdate";
 import Payment from "../Payment/Payment";
 import Settings from "../Settings/Settings";
-import SaveCar from "../Cars/SaveCar/SaveCar";
+import ReserveList from "../Reserve/ReserveList/ReserveList";
 import Sidebar from "../Sidebar/Sidebar";
 import Board from "../Board/Board"
 
@@ -35,7 +35,7 @@ const Layout = () => {
                 
                 {/* 아직 없는 차량 목록 <Route path="/cars" element={<CarList />} /> */}
                 {/* 아직 없는 차량 상세보기 <Route path="/cars/:carNo" element={<CarDetails />} /> */}
-                <Route path="/cars" element={<SaveCar />} /> {/* 차량 등록/수정 */}
+                <Route path="/cars" element={<ReserveList />} /> {/* 차량 등록/수정 */}
                 {/* 아직 없는 차량 예약 관리 <Route path="/car-reservation" element={<CarReservation />} /> */}
 
                 <Route path="/charging-station" element={<ChargingStation />} />
