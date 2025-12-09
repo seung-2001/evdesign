@@ -1,5 +1,12 @@
 import styled from 'styled-components';
 
+export const Container = styled.div`
+  margin-left: 250px;
+  padding: 2rem;
+  min-height: calc(100vh - 70px);
+  background-color: #f9fafb;
+  width: calc(100% - 250px);
+`;
 
 export const Title = styled.h1`
   font-size: 48px;
@@ -191,11 +198,6 @@ export const WriteButton = styled.button`
   }
 `;
 
-export const Container = styled.div`
-  width: 100%;
-  min-height: 100vh;
-  background-color: #f5f5f5;
-`;
 
 export const NoticeWrapper = styled.div`
   max-width: 800px;

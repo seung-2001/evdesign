@@ -1,8 +1,22 @@
+<<<<<<< HEAD
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../context/AuthContext";
 import {
+=======
+import { useContext, useState, useEffect } from "react";
+
+import { AuthContext } from "../../../context/AuthContext";
+import {
+    Container,
+    FormWrapper,
+    Title,
+    Subtitle,
+    InfoGroup,
+    Label,
+    Input,
+>>>>>>> 3bb11e2f5a10452ebcc156d28211883372790315
     ButtonGroup,
     CancelButton,
     FormWrapper,

@@ -3,6 +3,7 @@ import { createContext, useEffect, useState } from "react";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const[authLoading, setLoading] = useState(true);
   const [auth, setAuth] = useState({
     memberNo: null,
     memberName: null,
@@ -26,6 +27,8 @@ export const AuthProvider = ({ children }) => {
     if (storedAuth.memberNo && storedAuth.accessToken) {
       setAuth({ ...storedAuth, isAuthenticated: true });
     }
+
+    setLoading(false);
   }, []);
 
   const login = (user) => {
@@ -48,7 +51,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout }}>
+    <AuthContext.Provider value={{ auth, login, logout, authLoading }}>
       {children}
     </AuthContext.Provider>
   );

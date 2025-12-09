@@ -34,16 +34,29 @@ export const Tab = styled.button`
   padding: 0.75rem 2rem;
   font-size: 1rem;
   font-weight: 600;
-  border: 2px solid ${props => props.$active ? '#374151' : '#e5e7eb'};
-  background: ${props => props.$active ? '#374151' : '#ffffff'};
-  color: ${props => props.$active ? '#ffffff' : '#6b7280'};
+  border: 2px solid ${props => {
+    if (props.$disabled) return '#e5e7eb';
+    return props.$active ? '#374151' : '#e5e7eb';
+  }};
+  background: ${props => {
+    if (props.$disabled) return '#f3f4f6';
+    return props.$active ? '#374151' : '#ffffff';
+  }};
+  color: ${props => {
+    if (props.$disabled) return '#9ca3af';
+    return props.$active ? '#ffffff' : '#6b7280';
+  }};
   border-radius: 25px;
-  cursor: pointer;
+  cursor: ${props => props.$disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.2s;
+  opacity: ${props => props.$disabled ? '0.6' : '1'};
 
   &:hover {
-    border-color: #374151;
-    color: ${props => props.$active ? '#ffffff' : '#374151'};
+    border-color: ${props => props.$disabled ? '#e5e7eb' : '#374151'};
+    color: ${props => {
+      if (props.$disabled) return '#9ca3af';
+      return props.$active ? '#ffffff' : '#374151';
+    }};
   }
 `;
 

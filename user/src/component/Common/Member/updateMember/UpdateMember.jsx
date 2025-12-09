@@ -112,7 +112,7 @@ const UpdateMember = () => {
     };
 
     const handleCancel = () => {
-        navi('/mypage');
+        navi('/info');
     };
 
     const handlePasswordChange = () => {

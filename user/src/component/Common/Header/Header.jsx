@@ -41,7 +41,6 @@ const Header = () => {
       title: "충전소",
       submenu: [
         { name: "충전소 정보", path: "/station/info" },
-        { name: "충전소 리뷰", path: "/station/review" },
       ],
     },
   ];

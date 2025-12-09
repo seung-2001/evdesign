@@ -71,7 +71,7 @@ const Notice = () => {
 
   const renderPageNumbers = () => {
   if (!pageInfo) return null;
-
+  
   const pages = [];
   const { startPage, endPage, currentPage: current } = pageInfo;
 
