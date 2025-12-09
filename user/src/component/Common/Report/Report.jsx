@@ -152,8 +152,8 @@ const ReportPage = () => {
 
     const handleSubmit = async () => {
         // 디버깅용 로그
-        console.log("현재 auth 상태:", auth);
-        console.log("accessToken:", auth.accessToken);
+        console.log("현재 auth 상태:", auth);                             
+        console.log("accessToken:", auth.accessToken);                         
 
         // 로그인 체크
         if (!auth.isAuthenticated || !auth.accessToken) {
@@ -205,7 +205,7 @@ const ReportPage = () => {
                 requestData.boardNo = Number(boardNo); // 숫자로 변환
             }
 
-            console.log("전송 데이터:", requestData);
+            console.log("전송 데이터:", requestData);                                     
 
             await axios.post(`${API_BASE_URL}/reports`, requestData, {
                 headers: {
