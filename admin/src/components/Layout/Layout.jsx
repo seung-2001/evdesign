@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import styled from "styled-components";
-import CarReservation from "../Reserve/ReserveList/ReserveList";
 import ChargingStation from "../ChargingStation/ChargingStation";
 import Header from "../Header/Header";
 import Inquiry from "../Inquiry/Inquiry";
@@ -13,8 +12,9 @@ import NoticeInsert from "../Notice/NoticeInsert";
 import NoticeUpdate from "../Notice/NoticeUpdate";
 import Payment from "../Payment/Payment";
 import Settings from "../Settings/Settings";
-import SaveCar from "../Cars/SaveCar/SaveCar";
+import ReserveList from "../Reserve/ReserveList/ReserveList";
 import Sidebar from "../Sidebar/Sidebar";
+import SaveCar from "../Cars/SaveCar/SaveCar"
 import Board from "../Board/Board"
 
 const StyledLayout = styled.div`
@@ -35,7 +35,7 @@ const Layout = () => {
                 {/* 아직 없는 차량 목록 <Route path="/cars" element={<CarList />} /> */}
                 {/* 아직 없는 차량 상세보기 <Route path="/cars/:carNo" element={<CarDetails />} /> */}
                 <Route path="/cars" element={<SaveCar />} /> {/* 차량 등록/수정 */}
-                <Route path="/reserve/operator/reserve-manage" element={<CarReservation />} />
+                <Route path="/reserve/operator/reserve-manage" element={<ReserveList />} />
 
                 <Route path="/charging-station" element={<ChargingStation />} />
                 <Route path="/inquiry" element={<Inquiry />} />

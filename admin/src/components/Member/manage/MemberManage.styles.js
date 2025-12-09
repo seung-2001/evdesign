@@ -2,26 +2,15 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
-<<<<<<< HEAD
-    margin-left: 250px;
-    padding: 2rem;
-    min-height: calc(100vh - 70px);
-    background-color: #f9fafb;
-    width: calc(100% - 250px);
-=======
   margin-left: 250px;
   padding: 2rem;
   min-height: calc(100vh - 70px);
   background-color: #f9fafb;
-  width: calc(100% - 250px);
->>>>>>> 78e555127784a4dd4909fa25192ba1e472c49c61
 `;
 
 export const ContentWrapper = styled.div`
-    overflow-x: auto;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
     background-color: #ffffff;
+    border-radius: 8px;
 `;
 
 export const Header = styled.div`
@@ -41,7 +30,8 @@ export const Subtitle = styled.p`
 
 export const TableWrapper = styled.div`
     background-color: white;
-    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
     overflow: hidden;
 `;
@@ -169,7 +159,7 @@ export const AssignButton = styled.button`
 `;
 
 export const DeleteButton = styled.button`
-    background-color: ${(props) => (props.$canDelete ? "#1f2937" : "#9ca3af")};
+    background-color: ${(props) => (props.$canDelete ? "#dc2626" : "#9ca3af")};
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 0.25rem;
@@ -180,7 +170,7 @@ export const DeleteButton = styled.button`
 
     &:hover {
         background-color: ${(props) =>
-            props.$canDelete ? "#374151" : "#9ca3af"};
+            props.$canDelete ? "#b91c1c" : "#9ca3af"};
     }
 
     &:disabled {
