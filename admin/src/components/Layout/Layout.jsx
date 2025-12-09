@@ -7,7 +7,6 @@ import Inquiry from "../Inquiry/Inquiry";
 import MyInfo from "../Member/info/MyInfo";
 import Login from "../Member/login/login";
 import MemberManage from "../Member/manage/MemberManage";
-import Message from "../Message/Message";
 import Notice from "../Notice/Notice";
 import NoticeDetail from "../Notice/NoticeDetail";
 import NoticeInsert from "../Notice/NoticeInsert";
@@ -40,20 +39,17 @@ const Layout = () => {
 
                 <Route path="/charging-station" element={<ChargingStation />} />
                 <Route path="/inquiry" element={<Inquiry />} />
-                <Route path="/message" element={<Message />} />
                 <Route path="/payment" element={<Payment />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/info" element={<MyInfo />} />
                 <Route path="/member-manage" element={<MemberManage />} />
                 <Route path="/board" element={<Board />} />
-                <Route path="/notice">
-                <Route index element={<Notice />} />
+                <Route path="/notice" element={<Notice />} />
                 <Route path="insert" element={<NoticeInsert />} />
                 <Route path="update/:noticeNo" element={<NoticeUpdate />} />
                 <Route path=":noticeNo" element={<NoticeDetail />} />
                 
-</Route>
             </Routes>
         </StyledLayout>
     );
