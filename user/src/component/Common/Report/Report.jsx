@@ -103,7 +103,7 @@ const ReportPage = () => {
     const location = useLocation();
     const { boardNo } = useParams();
 
-    // URL에서 전달받은 게시글 정보 (예: /report?postId=123&postTitle=제목&type=REPORT)
+    // URL에서 전달받은 게시글 정보
     const searchParams = new URLSearchParams(location.search);
     const postTitle = searchParams.get("postTitle") || "{게시글 제목}";
     const initialType = searchParams.get("type") || "REPORT";
@@ -112,7 +112,9 @@ const ReportPage = () => {
     const canReport = !!boardNo;
 
     // boardNo가 없으면 무조건 INQUIRY, 있으면 initialType 사용
-    const [activeTab, setActiveTab] = useState(canReport ? initialType : "INQUIRY"); // 'REPORT' or 'INQUIRY'
+    const [activeTab, setActiveTab] = useState(
+        canReport ? initialType : "INQUIRY"
+    ); // 'REPORT' or 'INQUIRY'
     const [selectedReason, setSelectedReason] = useState(null);
     const [expandedReason, setExpandedReason] = useState(null);
     const [inquiryTitle, setInquiryTitle] = useState("");
@@ -126,7 +128,9 @@ const ReportPage = () => {
     const handleTabChange = (tab) => {
         // boardNo가 없으면 신고 탭으로 변경 불가
         if (tab === "REPORT" && !canReport) {
-            alert("신고할 게시글이 없습니다. 게시글에서 신고 버튼을 눌러주세요.");
+            alert(
+                "신고할 게시글이 없습니다. 게시글에서 신고 버튼을 눌러주세요."
+            );
             return;
         }
         setActiveTab(tab);
@@ -203,44 +207,44 @@ const ReportPage = () => {
 
             console.log("전송 데이터:", requestData);
 
-            await axios.post(
-                `${API_BASE_URL}/reports`,
-                requestData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${auth.accessToken}`,
-                    },
-                }
-            );
+            await axios.post(`${API_BASE_URL}/reports`, requestData, {
+                headers: {
+                    Authorization: `Bearer ${auth.accessToken}`,
+                },
+            });
 
             setIsSuccess(true);
         } catch (err) {
             console.error("등록 실패:", err);
-            
+
             // 에러 메시지 추출
-            let errorMessage = activeTab === "REPORT" 
-                ? "신고 등록에 실패했습니다." 
-                : "문의 등록에 실패했습니다.";
-            
+            let errorMessage =
+                activeTab === "REPORT"
+                    ? "신고 등록에 실패했습니다."
+                    : "문의 등록에 실패했습니다.";
+
             if (err.response) {
                 const status = err.response.status;
                 const serverMessage = err.response.data;
-                
+
                 if (status === 400) {
-                    errorMessage = typeof serverMessage === "string" 
-                        ? serverMessage 
-                        : "입력 데이터를 확인해주세요.";
+                    errorMessage =
+                        typeof serverMessage === "string"
+                            ? serverMessage
+                            : "입력 데이터를 확인해주세요.";
                 } else if (status === 401 || status === 403) {
                     errorMessage = "로그인이 필요하거나 권한이 없습니다.";
                     navigate("/login");
                     return;
                 } else if (status === 500) {
-                    errorMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+                    errorMessage =
+                        "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
                 }
             } else if (err.request) {
-                errorMessage = "서버에 연결할 수 없습니다. 네트워크를 확인해주세요.";
+                errorMessage =
+                    "서버에 연결할 수 없습니다. 네트워크를 확인해주세요.";
             }
-            
+
             alert(errorMessage);
         } finally {
             setIsSubmitting(false);
@@ -288,7 +292,9 @@ const ReportPage = () => {
                     $active={activeTab === "REPORT"}
                     $disabled={!canReport}
                     onClick={() => handleTabChange("REPORT")}
-                    title={!canReport ? "게시글에서 신고 버튼을 눌러주세요" : ""}
+                    title={
+                        !canReport ? "게시글에서 신고 버튼을 눌러주세요" : ""
+                    }
                 >
                     신고
                 </Tab>

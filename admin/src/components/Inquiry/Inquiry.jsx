@@ -217,8 +217,13 @@ const Inquiry = () => {
     // 인증 컨텍스트 사용
     const { auth } = useContext(AuthContext);
 
-    // 필터링된 목록
+    // 필터링된 목록 (처리 완료된 항목 제외)
     const filteredInquiries = inquiries.filter((inquiry) => {
+        // 처리 완료(RESOLVED) 또는 반려(REJECTED)된 항목은 제외
+        if (inquiry.status === "RESOLVED" || inquiry.status === "REJECTED") {
+            return false;
+        }
+        
         if (filter === "전체") return true;
         // reportType 또는 reportCategory로 필터링 (영문/한글 모두 지원)
         const type = inquiry.reportType || inquiry.reportCategory || "";
@@ -348,10 +353,14 @@ const Inquiry = () => {
         }
 
         try {
-            await axios.put(`${API_BASE_URL}/reports`, {
-                reportNo: inquiry.reportNo,
+            const requestData = {
+                reportNo: Number(inquiry.reportNo),
                 status: newStatus,
-            }, {
+            };
+            console.log("상태 변경 요청 데이터:", requestData);
+            console.log("토큰:", auth.accessToken);
+            
+            await axios.put(`${API_BASE_URL}/reports`, requestData, {
                 headers: {
                     Authorization: `Bearer ${auth.accessToken}`,
                 },
@@ -365,7 +374,17 @@ const Inquiry = () => {
             }
         } catch (err) {
             console.error("상태 변경 실패:", err);
-            alert("상태 변경에 실패했습니다.");
+            console.log("err.response:", err.response);
+            console.log("err.response.data:", err.response?.data);
+            
+            let errorMessage = "상태 변경에 실패했습니다.";
+            if (err.response?.data) {
+                const serverMessage = err.response.data;
+                errorMessage = typeof serverMessage === "string" 
+                    ? serverMessage 
+                    : serverMessage?.message || serverMessage?.["error-message"] || errorMessage;
+            }
+            alert(errorMessage);
         }
     };
 

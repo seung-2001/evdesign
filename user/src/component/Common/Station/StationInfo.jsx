@@ -204,23 +204,11 @@ const StationInfoPage = () => {
             console.error("리뷰 등록 실패:", err);
             
             let errorMessage = "리뷰 등록에 실패했습니다.";
-            if (err.response) {
-                const status = err.response.status;
+            if (err.response?.data) {
                 const serverMessage = err.response.data;
-                
-                if (status === 400) {
-                    errorMessage = typeof serverMessage === "string" 
-                        ? serverMessage 
-                        : "입력 데이터를 확인해주세요.";
-                } else if (status === 401 || status === 403) {
-                    errorMessage = "로그인이 필요하거나 권한이 없습니다.";
-                    navigate("/login");
-                    return;
-                } else if (status === 500) {
-                    errorMessage = "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
-                }
-            } else if (err.request) {
-                errorMessage = "서버에 연결할 수 없습니다. 네트워크를 확인해주세요.";
+                errorMessage = typeof serverMessage === "string" 
+                    ? serverMessage 
+                    : serverMessage?.message || serverMessage?.["error-message"] || errorMessage;
             }
             
             alert(errorMessage);
@@ -261,25 +249,11 @@ const StationInfoPage = () => {
             console.error("리뷰 수정 실패:", err);
             
             let errorMessage = "리뷰 수정에 실패했습니다.";
-            if (err.response) {
-                const status = err.response.status;
+            if (err.response?.data) {
                 const serverMessage = err.response.data;
-                
-                if (status === 400) {
-                    errorMessage = typeof serverMessage === "string" 
-                        ? serverMessage 
-                        : "입력 데이터를 확인해주세요.";
-                } else if (status === 401 || status === 403) {
-                    errorMessage = "로그인이 필요하거나 권한이 없습니다.";
-                    navigate("/login");
-                    return;
-                } else if (status === 404) {
-                    errorMessage = "리뷰를 찾을 수 없습니다.";
-                } else if (status === 500) {
-                    errorMessage = "서버 오류가 발생했습니다.";
-                }
-            } else if (err.request) {
-                errorMessage = "서버에 연결할 수 없습니다.";
+                errorMessage = typeof serverMessage === "string" 
+                    ? serverMessage 
+                    : serverMessage?.message || serverMessage?.["error-message"] || errorMessage;
             }
             
             alert(errorMessage);
@@ -308,19 +282,11 @@ const StationInfoPage = () => {
             console.error("리뷰 삭제 실패:", err);
             
             let errorMessage = "리뷰 삭제에 실패했습니다.";
-            if (err.response) {
-                const status = err.response.status;
-                if (status === 401 || status === 403) {
-                    errorMessage = "로그인이 필요하거나 권한이 없습니다.";
-                    navigate("/login");
-                    return;
-                } else if (status === 404) {
-                    errorMessage = "리뷰를 찾을 수 없습니다.";
-                } else if (status === 500) {
-                    errorMessage = "서버 오류가 발생했습니다.";
-                }
-            } else if (err.request) {
-                errorMessage = "서버에 연결할 수 없습니다.";
+            if (err.response?.data) {
+                const serverMessage = err.response.data;
+                errorMessage = typeof serverMessage === "string" 
+                    ? serverMessage 
+                    : serverMessage?.message || serverMessage?.["error-message"] || errorMessage;
             }
             
             alert(errorMessage);
