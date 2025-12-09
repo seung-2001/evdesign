@@ -25,6 +25,7 @@ const Header = () => {
       title: "차량공유",
       submenu: [
         { name: "예약하기", path: "/car" },
+        { name: "차량등록", path: "/saveCar" }
       ],
     },
     {
@@ -40,7 +41,6 @@ const Header = () => {
       title: "충전소",
       submenu: [
         { name: "충전소 정보", path: "/station/info" },
-        { name: "충전소 리뷰", path: "/station/review" },
       ],
     },
   ];

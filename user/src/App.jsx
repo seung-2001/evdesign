@@ -23,52 +23,56 @@ import StationInfo from "./component/Common/Station/StationInfo";
 import { AuthProvider } from "./component/context/AuthContext";
 
 const App = () => {
-  return (
-    <AuthProvider>
-      <br />
-      <Header />
-      <Routes>
-        <Route path="/" element={<MainContent />} />
-        
-        {/* 회원 관련 */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/join" element={<Join />} />
-        <Route path="/infoLicense" element={<InfoLicenseCertification />} />
-        <Route path="/info" element={<MyInfo />} />
-        <Route path="/update" element={<UpdateMember />} />
-        <Route path="/changePwd" element={<ChangePassword />} />
-        <Route path="/myReports" element={<MyReports />} />
-        
-        {/* 게시판 */}
-        <Route path="/boardList" element={<BoardList />} />
-        <Route path="/boardInsert" element={<BoardInsert />} />
-        <Route path="/boardDetail/:boardNo" element={<BoardDetail />} />
-        <Route path="/boardUpdate/:boardNo" element={<BoardUpdate />} />
-        
-        {/* 공지사항 */}
-        <Route path="/notice">
-          <Route index element={<Notice />} />
-          <Route path=":noticeNo" element={<NoticeDetail />} />
-        </Route>
-        
-        {/* 자동차 */}
-        <Route path="/car">
-          <Route index element={<Car />} />
-          <Route path="detail" element={<CarDetail />} />
-          <Route path="save" element={<SaveCar />} />
-        </Route>
-        
-        {/* 충전소 */}
-        <Route path="/station">
-          <Route path="info" element={<StationInfo />} />
-        </Route>
-        
-        {/* 신고 */}
-        <Route path="/report" element={<Report />} />
-      </Routes>
-      <Footer />
-    </AuthProvider>
-  );
-}; 
+    return (
+        <AuthProvider>
+            <br />
+            <Header />
+            <Routes>
+                <Route path="/" element={<MainContent />} />
+
+                {/* 회원 관련 */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/join" element={<Join />} />
+                <Route
+                    path="/infoLicense"
+                    element={<InfoLicenseCertification />}
+                />
+                <Route path="/info" element={<MyInfo />} />
+                <Route path="/update" element={<UpdateMember />} />
+                <Route path="/changePwd" element={<ChangePassword />} />
+                <Route path="/myReports" element={<MyReports />} />
+
+                {/* 게시판 */}
+                <Route path="/boardList" element={<BoardList />} />
+                <Route path="/boardInsert" element={<BoardInsert />} />
+                <Route path="/boardDetail/:boardNo" element={<BoardDetail />} />
+                <Route path="/boardUpdate/:boardNo" element={<BoardUpdate />} />
+
+                {/* 공지사항 */}
+                <Route path="/notice">
+                    <Route index element={<Notice />} />
+                    <Route path=":noticeNo" element={<NoticeDetail />} />
+                </Route>
+
+                {/* 자동차 */}
+                <Route path="/car">
+                    <Route index element={<Car />} />
+                    <Route path="detail" element={<CarDetail />} />
+                    <Route path="save" element={<SaveCar />} />
+                </Route>
+
+                {/* 충전소 */}
+                <Route path="/station">
+                    <Route path="info" element={<StationInfo />} />
+                </Route>
+
+                {/* 신고/문의 */}
+                <Route path="/report" element={<Report />} />
+                <Route path="/report/:boardNo" element={<Report />} />
+            </Routes>
+            <Footer />
+        </AuthProvider>
+    );
+};
 
 export default App;

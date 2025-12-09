@@ -123,13 +123,170 @@ const MemberManage = () => {
 
   if (loadingAuth) {
     return (
-      <S.Container>
-        <S.ContentWrapper>
-          <S.LoadingWrapper>
-            <S.LoadingText>권한을 확인하는 중...</S.LoadingText>
-          </S.LoadingWrapper>
-        </S.ContentWrapper>
-      </S.Container>
+        <S.Container>
+            <S.Header>
+                <S.Title>회원 관리</S.Title>
+                <S.Subtitle>memberManage</S.Subtitle>
+            </S.Header>
+            <S.ContentWrapper>
+                <S.TableWrapper>
+                    {loading ? (
+                        <S.LoadingWrapper>
+                            <S.LoadingText>로딩 중...</S.LoadingText>
+                        </S.LoadingWrapper>
+                    ) : (
+                        <>
+                            <S.Table>
+                                <S.TableHead>
+                                    <S.TableRow>
+                                        <S.TableHeader>memberNo</S.TableHeader>
+                                        <S.TableHeader>memberId</S.TableHeader>
+                                        <S.TableHeader>
+                                            memberName
+                                        </S.TableHeader>
+                                        <S.TableHeader>
+                                            enroleDate
+                                        </S.TableHeader>
+                                        <S.TableHeader>role</S.TableHeader>
+                                        <S.TableHeader>status</S.TableHeader>
+                                        <S.TableHeader>액션</S.TableHeader>
+                                    </S.TableRow>
+                                </S.TableHead>
+                                <S.TableBody>
+                                    {members.map((member) => (
+                                        <S.TableRow key={member.memberNo}>
+                                            <S.TableCell>
+                                                {member.memberNo}
+                                            </S.TableCell>
+                                            <S.TableCell>
+                                                {member.memberId}
+                                            </S.TableCell>
+                                            <S.TableCell>
+                                                {member.memberName}
+                                            </S.TableCell>
+                                            <S.TableCell $secondary>
+                                                {member.enroleDate}
+                                            </S.TableCell>
+                                            <S.TableCell>
+                                                <S.Badge
+                                                    $variant={member.role.toLowerCase()}
+                                                >
+                                                    {member.role}
+                                                </S.Badge>
+                                            </S.TableCell>
+                                            <S.TableCell>
+                                                <S.Badge
+                                                    $variant={
+                                                        member.status === "Y"
+                                                            ? "active"
+                                                            : "inactive"
+                                                    }
+                                                >
+                                                    {member.status === "Y"
+                                                        ? "활성"
+                                                        : "비활성"}
+                                                </S.Badge>
+                                            </S.TableCell>
+                                            <S.TableCell>
+                                                <S.ButtonGroup>
+                                                    {currentUserRole ===
+                                                        "Admin" && (
+                                                        <S.AssignButton
+                                                            onClick={() =>
+                                                                handleAssignOperator(
+                                                                    member
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                !canAssignOperator(
+                                                                    member
+                                                                )
+                                                            }
+                                                            $canAssign={canAssignOperator(
+                                                                member
+                                                            )}
+                                                        >
+                                                            관리자지정
+                                                        </S.AssignButton>
+                                                    )}
+                                                    <S.DeleteButton
+                                                        onClick={() =>
+                                                            handleDeleteMember(
+                                                                member
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            !canDeleteMember(
+                                                                member
+                                                            )
+                                                        }
+                                                        $canDelete={canDeleteMember(
+                                                            member
+                                                        )}
+                                                    >
+                                                        회원탈퇴
+                                                    </S.DeleteButton>
+                                                </S.ButtonGroup>
+                                            </S.TableCell>
+                                        </S.TableRow>
+                                    ))}
+                                </S.TableBody>
+                            </S.Table>
+
+                            <S.PaginationWrapper>
+                                <S.PaginationInfo>
+                                    전체{" "}
+                                    <S.InfoNumber>
+                                        {totalPages * itemsPerPage}
+                                    </S.InfoNumber>
+                                    개 중{" "}
+                                    <S.InfoNumber>
+                                        {(currentPage - 1) * itemsPerPage + 1}
+                                    </S.InfoNumber>
+                                    -
+                                    <S.InfoNumber>
+                                        {Math.min(
+                                            currentPage * itemsPerPage,
+                                            totalPages * itemsPerPage
+                                        )}
+                                    </S.InfoNumber>{" "}
+                                    표시
+                                </S.PaginationInfo>
+                                <S.Pagination>
+                                    <S.PageButton
+                                        onClick={() =>
+                                            handlePageChange(currentPage - 1)
+                                        }
+                                        disabled={currentPage === 1}
+                                    >
+                                        ‹
+                                    </S.PageButton>
+                                    {getPageNumbers().map((page) => (
+                                        <S.PageButton
+                                            key={page}
+                                            onClick={() =>
+                                                handlePageChange(page)
+                                            }
+                                            $active={currentPage === page}
+                                        >
+                                            {page}
+                                        </S.PageButton>
+                                    ))}
+                                    <S.PageButton
+                                        onClick={() =>
+                                            handlePageChange(currentPage + 1)
+                                        }
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        ›
+                                    </S.PageButton>
+                                </S.Pagination>
+                            </S.PaginationWrapper>
+                        </>
+                    )}
+                </S.TableWrapper>
+            </S.ContentWrapper>
+        </S.Container>
     );
   }
 
