@@ -4,8 +4,6 @@ import { getNoticeDetail } from '../../../api/notice';
 import {
   ButtonGroup,
   Container,
-  ContentBox,
-  ContentText,
   FormGroup,
   Input,
   Label,
@@ -127,86 +125,60 @@ const NoticeDetail = () => {
           </FormGroup>
         )}
 
-        {/* ✅ 첨부 이미지 표시 (대표 이미지 제외) */}
-        {notice.imageUrls && notice.imageUrls.length > 0 && (
-          <FormGroup>
-            <Label>첨부 이미지</Label>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              {notice.imageUrls
-                .filter(url => url !== notice.thumbnailUrl) // 대표 이미지 제외
-                .map((url, index) => (
-                  <img
-                    key={index}
-                    src={`http://localhost:8081${url}`}
-                    alt={`공지사항 이미지 ${index + 1}`}
-                    style={{
-                      maxWidth: '300px',
-                      height: 'auto',
-                      borderRadius: '8px',
-                      border: '1px solid #ddd'
-                    }}
-                  />
-                ))}
-            </div>
-          </FormGroup>
-        )}
-
-        <FormGroup>
-          <Label>내용</Label>
-          <ContentBox>
-            <ContentText style={{ whiteSpace: 'pre-wrap' }}>
-              {notice.noticeContent}
-            </ContentText>
-          </ContentBox>
-        </FormGroup>
-
-        {/* ✅ 첨부 파일 표시 및 다운로드 */}
-        {notice.fileUrls && notice.fileUrls.length > 0 && (
-          <FormGroup>
-            <Label>첨부 파일</Label>
-            <div style={{ 
-              border: '1px solid #ddd', 
-              borderRadius: '8px', 
-              padding: '15px',
-              backgroundColor: '#f9f9f9'
-            }}>
-              {notice.fileUrls.map((url, index) => {
-                const fileName = url.split('/').pop();
-                return (
-                  <div
-                    key={index}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px',
-                      padding: '10px',
-                      borderBottom: index < notice.fileUrls.length - 1 ? '1px solid #eee' : 'none'
-                    }}
-                  >
-                    <span style={{ fontSize: '20px' }}>📎</span>
-                    <span style={{ flex: 1, color: '#333' }}>{fileName}</span>
-                    <button
-                      onClick={() => handleDownload(url)}
-                      style={{
-                        padding: '6px 12px',
-                        backgroundColor: '#4a90e2',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontSize: '14px'
-                      }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = '#357abd'}
-                      onMouseLeave={(e) => e.target.style.backgroundColor = '#4a90e2'}
-                    >
-                      다운로드
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          </FormGroup>
-        )}
+       {notice.imageUrls && notice.imageUrls.length > 0 && (
+  <FormGroup>
+    <Label>첨부 파일</Label>
+    <div style={{ 
+      border: '1px solid #ddd', 
+      borderRadius: '8px', 
+      padding: '15px',
+      backgroundColor: '#f9f9f9'
+    }}>
+      {notice.imageUrls.map((url, index) => {
+        const fileName = notice.originalFileNames?.[index] || url.split('/').pop();
+        const isImage = /\.(jpg|jpeg|png|gif|webp|jfif)$/i.test(fileName);
+        const isThumbnail = url === notice.thumbnailUrl;
+        
+        return (
+          <div
+            key={index}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '10px',
+              borderBottom: index < notice.imageUrls.length - 1 ? '1px solid #eee' : 'none'
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>
+              {isImage ? '🖼️' : '📎'}
+            </span>
+            <span style={{ flex: 1, color: '#333' }}>
+              {fileName}
+              {isThumbnail && ' (대표 이미지)'}
+            </span>
+            <button
+              onClick={() => handleDownload(url)}
+              style={{
+                padding: '6px 12px',
+                backgroundColor: '#4a90e2',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#357abd'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#4a90e2'}
+            >
+              다운로드
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  </FormGroup>
+)}
 
         <FormGroup>
           <Label>작성일</Label>
