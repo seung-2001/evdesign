@@ -14,12 +14,13 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-        const regexp = /^[a-zA-Z0-9]{3,20}$/;
+        const regexp = /^[a-zA-Z0-9]{5,20}$/;
+        const regexpPwd = /^[a-zA-Z0-9]{8,20}$/;
         if(!regexp.test(memberId)){
-            setMsg("아이디는 영어 숫자만 쓰셈 3자에서 20자 사이임ㅋ");
+            setMsg("아이디는 5자에서 20자 사이입니다.");
             return
-        } else if(!regexp.test(memberPwd)){
-            setMsg("비밀번호는 영어 숫자만 쓰자 3자에서 20자")
+        } else if(!regexpPwd.test(memberPwd)){
+            setMsg("비밀번호는 8자에서 20자 입니다.")
             return;
         } else{
             setMsg("");
@@ -30,7 +31,7 @@ const Login = () => {
         }).then(result =>{
             const { memberNo, memberName, accessToken, refreshToken, role} = result.data;
             login({memberNo, memberName, accessToken, refreshToken, role});
-            alert("추카포카");
+            alert("로그인 성공!");
             window.location.href="/";
         }).catch(error => {
             alert(error.response.data["error-message"]);

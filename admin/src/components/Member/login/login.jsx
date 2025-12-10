@@ -69,11 +69,6 @@ setTimeout(() => {
       }
     });
   };
-
-  const handleSignup = () => {
-    navigate("/join");
-  };
-
   return (
     <Container>
       <SubContainer>
