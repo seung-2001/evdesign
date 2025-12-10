@@ -21,7 +21,7 @@ import {
   SubmitButton,
   CancelButton,
   DeleteButton,
-  ErrorMessage  // 추가
+  ErrorMessage
 } from './SaveCar.styles.js';
 
 const SaveCar = () => {
@@ -37,7 +37,6 @@ const SaveCar = () => {
     carBrand: ''
   });
 
-  // 유효성 검증 에러 상태 추가
   const [errors, setErrors] = useState({
     carName: '',
     carPlate: '',
@@ -57,7 +56,6 @@ const SaveCar = () => {
       [name]: value
     }));
     
-    // 입력 시 해당 필드 에러 초기화
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -160,7 +158,6 @@ const SaveCar = () => {
       carBrand: brand
     }));
     
-    // 브랜드 선택 시 에러 초기화
     if (errors.carBrand) {
       setErrors(prev => ({
         ...prev,
@@ -169,24 +166,20 @@ const SaveCar = () => {
     }
   };
 
-  // 입력 검증 함수
   const validateForm = () => {
     const newErrors = {};
     let isValid = true;
 
-    // 차량 이름 검증 (필수)
     if (!formData.carName || formData.carName.trim() === '') {
       newErrors.carName = '차량 이름은 필수 입력 항목입니다.';
       isValid = false;
     }
 
-    // 번호판 검증 (필수)
     if (!formData.carPlate || formData.carPlate.trim() === '') {
       newErrors.carPlate = '번호판은 필수 입력 항목입니다.';
       isValid = false;
     }
 
-    // 최대 탑승 인원 검증 (필수, 숫자, 1 이상)
     if (!formData.maxPassenger || formData.maxPassenger === '') {
       newErrors.maxPassenger = '최대 탑승 인원은 필수 입력 항목입니다.';
       isValid = false;
@@ -195,19 +188,16 @@ const SaveCar = () => {
       isValid = false;
     }
 
-    // 색상 검증 (필수)
     if (!formData.color || formData.color === '') {
       newErrors.color = '색상을 선택해주세요.';
       isValid = false;
     }
 
-    // 차량 위치 검증 (필수)
     if (!formData.carLocation || formData.carLocation.trim() === '') {
       newErrors.carLocation = '차량 위치는 필수 입력 항목입니다.';
       isValid = false;
     }
 
-    // 브랜드 검증 (필수)
     if (!formData.carBrand || formData.carBrand === '') {
       newErrors.carBrand = '브랜드를 선택해주세요.';
       isValid = false;
@@ -219,7 +209,6 @@ const SaveCar = () => {
 
   const handleSubmit = async () => {
     try {
-      // 유효성 검증 실행
       if (!validateForm()) {
         alert('필수 입력 항목을 모두 입력해주세요.');
         return;
@@ -228,41 +217,35 @@ const SaveCar = () => {
       const token = localStorage.getItem('accessToken');
       const formDataToSend = new FormData();
 
+      // ✅ 각 필드를 개별적으로 추가 (백엔드와 매핑)
       if (!isEditMode) {
-        const carCreateDTO = {
-          carName: formData.carName.trim(),
-          carPlate: formData.carPlate.trim(),
-          maxPassenger: parseInt(formData.maxPassenger),
-          color: formData.color,
-          carLocation: formData.carLocation.trim(),
-          carBrand: formData.carBrand
-        };
-
-        formDataToSend.append('car', new Blob([JSON.stringify(carCreateDTO)], {
-          type: 'application/json'
-        }));
+        // 등록 모드 - CarCreateDTO
+        formDataToSend.append('carName', formData.carName.trim());
+        formDataToSend.append('carPlate', formData.carPlate.trim());
+        formDataToSend.append('maxPassenger', parseInt(formData.maxPassenger));
+        formDataToSend.append('color', formData.color);
+        formDataToSend.append('carLocation', formData.carLocation.trim());
+        formDataToSend.append('carBrand', formData.carBrand);
       } else {
-        const carDTO = {
-          carNo: carNo,
-          carName: formData.carName.trim(),
-          carPlate: formData.carPlate.trim(),
-          maxPassenger: parseInt(formData.maxPassenger),
-          color: formData.color,
-          carLocation: formData.carLocation.trim(),
-          carBrand: formData.carBrand
-        };
-
-        formDataToSend.append('car', new Blob([JSON.stringify(carDTO)], {
-          type: 'application/json'
-        }));
+        // 수정 모드 - CarDTO
+        formDataToSend.append('carNo', carNo);
+        formDataToSend.append('carName', formData.carName.trim());
+        formDataToSend.append('carPlate', formData.carPlate.trim());
+        formDataToSend.append('maxPassenger', parseInt(formData.maxPassenger));
+        formDataToSend.append('color', formData.color);
+        formDataToSend.append('carLocation', formData.carLocation.trim());
+        formDataToSend.append('carBrand', formData.carBrand);
       }
 
+      // 파일 추가
       if (imageFile) {
         formDataToSend.append('file', imageFile);
       }
       if (attachedFile) {
         formDataToSend.append('file', attachedFile);
       }
+
+      console.log('전송할 데이터:', Object.fromEntries(formDataToSend));
 
       let response;
       if (!isEditMode) {
@@ -301,25 +284,13 @@ const SaveCar = () => {
     }
   };
 
-  const handleCancel = () => {
-    if (confirm('작성을 취소하시겠습니까?')) {
-      window.location.href = '/cars';
-    }
-  };
-
   const handleDelete = async () => {
-    if (!isEditMode || !carNo) {
-      alert('삭제할 수 없습니다.');
-      return;
-    }
-
-    if (!confirm('정말 삭제하시겠습니까?')) {
+    if (!window.confirm('정말 이 차량을 삭제하시겠습니까?')) {
       return;
     }
 
     try {
       const token = localStorage.getItem('accessToken');
-      
       await axios.delete(`http://localhost:8081/cars/${carNo}`, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -332,198 +303,182 @@ const SaveCar = () => {
     } catch (error) {
       console.error('차량 삭제 실패:', error);
       
-      if (error.response?.data?.['error-message']) {
-        alert(error.response.data['error-message']);
-      } else if (error.response?.status === 409) {
-        alert('예약중인 차량은 삭제할 수 없습니다.');
+      if (error.response?.status === 401) {
+        alert('로그인이 필요합니다.');
+        window.location.href = '/login';
+      } else if (error.response?.status === 403) {
+        alert('권한이 없습니다. 관리자/운영자만 접근 가능합니다.');
       } else {
         alert('차량 삭제에 실패했습니다.');
       }
     }
   };
 
+  const handleCancel = () => {
+    if (window.confirm('작성 중인 내용이 저장되지 않습니다. 취소하시겠습니까?')) {
+      window.location.href = '/cars';
+    }
+  };
+
   return (
     <Container>
-      <PageTitle>{isEditMode ? '공유차량 수정' : '공유차량 등록'}</PageTitle>
-      <PageSubtitle>{isEditMode ? 'Edit Car' : 'Save New Car'}</PageSubtitle>
+      <PageTitle>{isEditMode ? '차량 정보 수정' : '차량 등록'}</PageTitle>
+      <PageSubtitle>
+        {isEditMode ? '차량 정보를 수정합니다' : '새로운 차량 정보를 등록합니다'}
+      </PageSubtitle>
 
       <ContentWrapper>
         <LeftSection>
-          <SectionTitle>{isEditMode ? '공유차량 수정' : '공유차량 등록'}</SectionTitle>
-          
+          <SectionTitle>차량 이미지</SectionTitle>
           <ImageUploadArea>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              style={{ display: 'none'}}
-              id="image-upload"
-            />
-            {
-              imagePreview
-              ?
-              (
-                <label htmlFor="image-upload" style={{cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%'}}>
-                  <img src={imagePreview} alt="차량 이미지 미리보기" style={{maxWidth: '100%', maxHeight: '100%', objectFit: 'contain'}} />
-                </label>
-              )
-              :
-              (
-              <label 
-                htmlFor="image-upload"
-                style={{
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '100%',
-                  height: '100%',
-                  color: '#999'
-                }}
-              >
-                이미지를 선택하세요 (선택사항)
-              </label>
-              )
-            }
+            {imagePreview ? (
+              <img 
+                src={imagePreview} 
+                alt="차량 이미지" 
+                style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+              />
+            ) : (
+              <div>이미지를 업로드하세요</div>
+            )}
           </ImageUploadArea>
 
-          <FormSection>
-            <FormTitle>첨부파일 (선택사항)</FormTitle>
-            <input
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ display: 'none' }}
+            id="image-upload"
+          />
+          <ButtonGroup>
+            <SubmitButton 
+              type="button" 
+              onClick={() => document.getElementById('image-upload').click()}
+            >
+              이미지 업로드
+            </SubmitButton>
+          </ButtonGroup>
+
+          <SectionTitle style={{ marginTop: '30px' }}>첨부 파일</SectionTitle>
+          <FormGroup>
+            <Input
               type="file"
               onChange={handleFileChange}
-              style={{ display: 'none'}}
-              id="file-upload"
+              accept=".pdf,.doc,.docx,.xls,.xlsx"
             />
-            <label 
-              htmlFor="file-upload" 
-              style={{ 
-                fontSize: '14px', 
-                color: attachedFile ? '#333' : '#666',
-                cursor: 'pointer',
-                textDecoration: 'underline'
-              }}
-            >
-              {attachedFile ? attachedFile.name : '파일을 선택하세요'}
-            </label>
-          </FormSection>
-
-          <FormSection>
-            <FormTitle>차량 위치 <span style={{color: 'red'}}>*</span></FormTitle>
-            <Input 
-              type="text" 
-              name="carLocation"
-              value={formData.carLocation}
-              onChange={handleInputChange}
-              placeholder="차량 위치 입력 (필수)"
-              style={{
-                borderColor: errors.carLocation ? 'red' : '#ddd'
-              }}
-            />
-            {errors.carLocation && <ErrorMessage>{errors.carLocation}</ErrorMessage>}
-          </FormSection>
+            {attachedFile && (
+              <div style={{ fontSize: '14px', color: '#666', marginTop: '8px' }}>
+                선택된 파일: {attachedFile.name}
+              </div>
+            )}
+          </FormGroup>
         </LeftSection>
 
         <RightSection>
-          <FormTitle>차량 정보 입력</FormTitle>
-          
-          <FormGroup>
-            <Label>차량 이름 <span style={{color: 'red'}}>*</span></Label>
-            <Input 
-              type="text" 
-              name="carName"
-              value={formData.carName}
-              onChange={handleInputChange}
-              placeholder="차량 이름 입력 (필수)"
-              style={{
-                borderColor: errors.carName ? 'red' : '#ddd'
-              }}
-            />
-            {errors.carName && <ErrorMessage>{errors.carName}</ErrorMessage>}
-          </FormGroup>
+          <FormSection>
+            <FormTitle>차량 기본 정보</FormTitle>
 
-          <FormGroup>
-            <Label>브랜드 선택 <span style={{color: 'red'}}>*</span></Label>
-            <TagSection>
-              {availableBrands.map((brand, index) => (
-                <Tag 
-                  key={index}
-                  onClick={() => handleBrandSelect(brand)}
-                  style={{
-                    cursor: 'pointer',
-                    background: selectedBrand === brand ? '#4285f4' : '#d4f4dd',
-                    color: selectedBrand === brand ? 'white' : '#2d5f3f',
-                    border: errors.carBrand ? '2px solid red' : 'none'
-                  }}
-                >
-                  {brand}
-                </Tag>
-              ))}
-            </TagSection>
-            {errors.carBrand && <ErrorMessage>{errors.carBrand}</ErrorMessage>}
-          </FormGroup>
+            <FormGroup>
+              <Label>차량명 *</Label>
+              <Input
+                type="text"
+                name="carName"
+                value={formData.carName}
+                onChange={handleInputChange}
+                placeholder="예: 테슬라 모델 Y"
+              />
+              {errors.carName && <ErrorMessage>{errors.carName}</ErrorMessage>}
+            </FormGroup>
 
-          <FormGroup>
-            <Label>번호판 <span style={{color: 'red'}}>*</span></Label>
-            <Input 
-              type="text" 
-              name="carPlate"
-              value={formData.carPlate}
-              onChange={handleInputChange}
-              placeholder="예: 12가 3456 (필수)"
-              style={{
-                borderColor: errors.carPlate ? 'red' : '#ddd'
-              }}
-            />
-            {errors.carPlate && <ErrorMessage>{errors.carPlate}</ErrorMessage>}
-          </FormGroup>
+            <FormGroup>
+              <Label>차량 번호판 *</Label>
+              <Input
+                type="text"
+                name="carPlate"
+                value={formData.carPlate}
+                onChange={handleInputChange}
+                placeholder="예: 12가 3456"
+              />
+              {errors.carPlate && <ErrorMessage>{errors.carPlate}</ErrorMessage>}
+            </FormGroup>
 
-          <FormGroup>
-            <Label>최대 탑승 인원 <span style={{color: 'red'}}>*</span></Label>
-            <Input 
-              type="number" 
-              name="maxPassenger"
-              value={formData.maxPassenger}
-              onChange={handleInputChange}
-              placeholder="숫자만 입력 (필수)"
-              min="1"
-              style={{
-                borderColor: errors.maxPassenger ? 'red' : '#ddd'
-              }}
-            />
-            {errors.maxPassenger && <ErrorMessage>{errors.maxPassenger}</ErrorMessage>}
-          </FormGroup>
+            <FormGroup>
+              <Label>최대 탑승 인원 *</Label>
+              <Input
+                type="number"
+                name="maxPassenger"
+                value={formData.maxPassenger}
+                onChange={handleInputChange}
+                placeholder="예: 4"
+                min="1"
+              />
+              {errors.maxPassenger && <ErrorMessage>{errors.maxPassenger}</ErrorMessage>}
+            </FormGroup>
 
-          <FormGroup>
-            <Label>색상 <span style={{color: 'red'}}>*</span></Label>
-            <Select 
-              name="color"
-              value={formData.color}
-              onChange={handleInputChange}
-              style={{
-                borderColor: errors.color ? 'red' : '#ddd'
-              }}
-            >
-              <option value="">색상 선택 (필수)</option>
-              <option value="블랙">블랙</option>
-              <option value="화이트">화이트</option>
-              <option value="실버">실버</option>
-              <option value="레드">레드</option>
-              <option value="블루">블루</option>
-              <option value="그레이">그레이</option>
-            </Select>
-            {errors.color && <ErrorMessage>{errors.color}</ErrorMessage>}
-          </FormGroup>
+            <FormGroup>
+              <Label>색상 *</Label>
+              <Select
+                name="color"
+                value={formData.color}
+                onChange={handleInputChange}
+              >
+                <option value="">색상을 선택하세요</option>
+                <option value="흰색">흰색</option>
+                <option value="검정">검정</option>
+                <option value="은색">은색</option>
+                <option value="회색">회색</option>
+                <option value="빨강">빨강</option>
+                <option value="파랑">파랑</option>
+                <option value="기타">기타</option>
+              </Select>
+              {errors.color && <ErrorMessage>{errors.color}</ErrorMessage>}
+            </FormGroup>
+
+            <FormGroup>
+              <Label>차량 위치 *</Label>
+              <Input
+                type="text"
+                name="carLocation"
+                value={formData.carLocation}
+                onChange={handleInputChange}
+                placeholder="예: KH 종로점"
+              />
+              {errors.carLocation && <ErrorMessage>{errors.carLocation}</ErrorMessage>}
+            </FormGroup>
+
+            <FormGroup>
+              <Label>브랜드 *</Label>
+              <TagSection>
+                {availableBrands.map((brand) => (
+                  <Tag
+                    key={brand}
+                    onClick={() => handleBrandSelect(brand)}
+                    style={{
+                      cursor: 'pointer',
+                      background: selectedBrand === brand ? '#2d5f3f' : '#d4f4dd',
+                      color: selectedBrand === brand ? '#fff' : '#2d5f3f'
+                    }}
+                  >
+                    {brand}
+                  </Tag>
+                ))}
+              </TagSection>
+              {errors.carBrand && <ErrorMessage>{errors.carBrand}</ErrorMessage>}
+            </FormGroup>
+          </FormSection>
 
           <ButtonGroup>
-            <SubmitButton onClick={handleSubmit}>
+            <SubmitButton type="button" onClick={handleSubmit}>
               {isEditMode ? '수정하기' : '등록하기'}
             </SubmitButton>
-            <CancelButton onClick={handleCancel}>취소</CancelButton>
+            <CancelButton type="button" onClick={handleCancel}>
+              취소
+            </CancelButton>
           </ButtonGroup>
 
           {isEditMode && (
-            <DeleteButton onClick={handleDelete}>삭제하기</DeleteButton>
+            <DeleteButton type="button" onClick={handleDelete}>
+              차량 삭제
+            </DeleteButton>
           )}
         </RightSection>
       </ContentWrapper>

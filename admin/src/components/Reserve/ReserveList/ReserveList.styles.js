@@ -31,6 +31,9 @@ export const SectionTitle = styled.h2`
 export const TableWrapper = styled.div`
   width: 100%;
   overflow-x: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 `;
 
 export const StyledTable = styled.table`
@@ -52,30 +55,114 @@ export const HeaderCell = styled.th`
   border: none;
   
   &:first-child {
-    border-top-left-radius: 4px;
+    border-top-left-radius: 8px;
   }
   
   &:last-child {
-    border-top-right-radius: 4px;
+    border-top-right-radius: 8px;
   }
 `;
 
 export const TableRow = styled.tr`
-  background: #e8e8e8;
+  background: #f9f9f9;
+  border-bottom: 1px solid #e0e0e0;
   
   &:nth-child(even) {
-    background: #e0e0e0;
+    background: #f0f0f0;
   }
   
-  &:not(:last-child) {
-    margin-bottom: 8px;
+  &:hover {
+    background: #e8e8e8;
   }
 `;
 
 export const TableCell = styled.td`
-  padding: 20px 16px;
+  padding: 16px;
   text-align: center;
   font-size: 14px;
   color: #333;
   border: none;
+`;
+
+export const StatusBadge = styled.span`
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  background-color: ${props => props.$color || '#888'};
+`;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+`;
+
+export const ActionButton = styled.button`
+  padding: 6px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  ${props => {
+    switch(props.$variant) {
+      case 'approve':
+        return `
+          background-color: #4CAF50;
+          color: white;
+          &:hover { background-color: #45a049; }
+        `;
+      case 'reject':
+        return `
+          background-color: #f44336;
+          color: white;
+          &:hover { background-color: #da190b; }
+        `;
+      case 'cancel':
+        return `
+          background-color: #ff9800;
+          color: white;
+          &:hover { background-color: #e68900; }
+        `;
+      case 'return':
+        return `
+          background-color: #2196F3;
+          color: white;
+          &:hover { background-color: #0b7dda; }
+        `;
+      default:
+        return `
+          background-color: #6b5bb3;
+          color: white;
+          &:hover { background-color: #5a4a9f; }
+        `;
+    }
+  }}
+  
+  &:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+`;
+
+export const ErrorMessage = styled.div`
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 14px;
+`;
+
+export const LoadingSpinner = styled.div`
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: #666;
 `;
