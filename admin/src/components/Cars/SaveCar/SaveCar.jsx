@@ -283,7 +283,7 @@ const SaveCar = () => {
         alert('차량 정보가 수정되었습니다.');
       }
 
-      window.location.href = '/cars';
+      window.location.href = '/saveCar';
 
     } catch (error) {
       console.error('차량 등록/수정 실패:', error);

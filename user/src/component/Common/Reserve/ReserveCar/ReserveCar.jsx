@@ -42,6 +42,7 @@ const ReserveCar = () => {
 
   const handleVerify = () => {
     console.log('인증하러가기');
+    window.location.href = '/license';
   };
 
   const handleSubmit = () => {

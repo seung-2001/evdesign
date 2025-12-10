@@ -60,13 +60,13 @@ const SidebarDivider = styled.div`
 
 const Sidebar = () => {
     const menuItems = [
-        { path: "/cars", icon: "car", label: "공유차량 등록/수정" },
+        { path: "/saveCar", icon: "car", label: "공유차량 등록/수정" },
+        { path: "/reserve/operator/reserve-manage", icon: "car", label: "차량 예약 관리" },
         { path: "/charging-station", icon: "charging", label: "충전소 관리" },
         { path: "/inquiry", icon: "alert", label: "신고/문의 관리" },
         { path: "/member-manage", icon: "users", label: "회원관리" },
         { path: "/notice", icon: "clipboard", label: "공지사항 관리" },
         { path: "/board", icon: "clipboard", label: "게시판 관리" },
-        { path: "/message", icon: "envelope", label: "Message" },
         { path: "/payment", icon: "credit-card", label: "Payment" },
         { path: "/settings", icon: "gear", label: "Settings" },
     ];
