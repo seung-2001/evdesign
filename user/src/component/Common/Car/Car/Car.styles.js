@@ -189,22 +189,23 @@ export const PaginationWrapper = styled.div`
   padding: 20px 0;
 `;
 
+// ✅ 수정: $active로 변경하여 DOM으로 전달되지 않도록 함
 export const PageButton = styled.button`
   min-width: 36px;
   height: 36px;
   padding: 8px 12px;
-  border: 1px solid ${props => props.active ? '#000' : '#ddd'};
-  background-color: ${props => props.active ? '#000' : '#fff'};
-  color: ${props => props.active ? '#fff' : '#333'};
+  border: 1px solid ${props => props.$active ? '#000' : '#ddd'};
+  background-color: ${props => props.$active ? '#000' : '#fff'};
+  color: ${props => props.$active ? '#fff' : '#333'};
   border-radius: 4px;
   font-size: 14px;
-  font-weight: ${props => props.active ? '600' : '400'};
+  font-weight: ${props => props.$active ? '600' : '400'};
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
     border-color: #000;
-    background-color: ${props => props.active ? '#000' : '#f5f5f5'};
+    background-color: ${props => props.$active ? '#000' : '#f5f5f5'};
   }
 
   &:disabled {

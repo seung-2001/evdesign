@@ -4,7 +4,7 @@ import BoardInsert from "./component/Common/Board/BoardInsert";
 import BoardList from "./component/Common/Board/BoardList";
 import BoardUpdate from "./component/Common/Board/BoardUpdate";
 import Car from "./component/Common/Car/Car/Car";
-import CarDetail from "./component/Common/Car/CarDetails/CarDetails";
+import CarDetails from "./component/Common/Car/CarDetails/CarDetails";
 import SaveCar from "../../admin/src/components/Cars/SaveCar/SaveCar";
 import Footer from "./component/Common/Footer/Footer";
 import Header from "./component/Common/Header/Header";
@@ -23,6 +23,7 @@ import StationInfo from "./component/Common/Station/StationInfo";
 import { AuthProvider } from "./component/context/AuthContext";
 
 const App = () => {
+
     return (
         <AuthProvider>
             <br />
@@ -56,9 +57,9 @@ const App = () => {
 
                 {/* 자동차 */}
                 <Route path="/car">
-                    <Route index element={<Car />} />
-                    <Route path="detail" element={<CarDetail />} />
-                    <Route path="save" element={<SaveCar />} />
+                  <Route index element={<Car />} />
+                  <Route path="/car/:carNo" element={<CarDetails />} />
+                  <Route path="save" element={<SaveCar />} />
                 </Route>
 
                 {/* 충전소 */}

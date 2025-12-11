@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import styled from "styled-components";
-import CarReservation from "../Reserve/ReserveList/ReserveList";
+import Board from "../Board/Board";
+import SaveCar from "../Cars/SaveCar/SaveCar";
 import ChargingStation from "../ChargingStation/ChargingStation";
 import Header from "../Header/Header";
 import Inquiry from "../Inquiry/Inquiry";
@@ -9,10 +10,10 @@ import Login from "../Member/login/login";
 import MemberManage from "../Member/manage/MemberManage";
 import NoticeRoutes from "../Notice/NoticeRoutes";
 import Payment from "../Payment/Payment";
-import Settings from "../Settings/Settings";
+import ReserveDetails from "../Reserve/ReserveDetails/ReserveDetails";
 import ReserveList from "../Reserve/ReserveList/ReserveList";
+import Settings from "../Settings/Settings";
 import Sidebar from "../Sidebar/Sidebar";
-import Board from "../Board/Board"
 
 const StyledLayout = styled.div`
     display: flex;
@@ -29,11 +30,14 @@ const Layout = () => {
             <Routes>
                 <Route path="/" element={<MemberManage />} />
                 
-                {/* 아직 없는 차량 목록 <Route path="/cars" element={<CarList />} /> */}
-                {/* 아직 없는 차량 상세보기 <Route path="/cars/:carNo" element={<CarDetails />} /> */}
-                <Route path="/cars" element={<ReserveList />} /> {/* 차량 등록/수정 */}
-                {/* 아직 없는 차량 예약 관리 <Route path="/car-reservation" element={<CarReservation />} /> */}
+                {/* 차량 관련 */}
+                <Route path="/cars" element={<SaveCar />} />
+                
+                {/* 예약 관련 */}
+                <Route path="/reserve/operator/reserve-manage" element={<ReserveList />} />
+                <Route path="/reserve/details/:reserveNo" element={<ReserveDetails />} />
 
+                {/* 기타 */}
                 <Route path="/charging-station" element={<ChargingStation />} />
                 <Route path="/inquiry" element={<Inquiry />} />
                 <Route path="/payment" element={<Payment />} />
@@ -42,8 +46,11 @@ const Layout = () => {
                 <Route path="/info" element={<MyInfo />} />
                 <Route path="/member-manage" element={<MemberManage />} />
                 <Route path="/board" element={<Board />} />
+
                 <Route path="/notice/*" element={<NoticeRoutes />} />
                 
+
+
             </Routes>
         </StyledLayout>
     );
