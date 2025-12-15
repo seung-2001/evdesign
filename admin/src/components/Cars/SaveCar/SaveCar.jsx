@@ -217,7 +217,7 @@ const SaveCar = () => {
       const token = localStorage.getItem('accessToken');
       const formDataToSend = new FormData();
 
-      // ✅ 각 필드를 개별적으로 추가 (백엔드와 매핑)
+      // 각 필드를 개별적으로 추가 (백엔드와 매핑)
       if (!isEditMode) {
         // 등록 모드 - CarCreateDTO
         formDataToSend.append('carName', formData.carName.trim());
