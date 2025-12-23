@@ -69,7 +69,7 @@ const ChangePassword = () => {
 
         try {
             await axios.put(
-                'http://localhost:8081/member/changePwd',
+                '${apiUrl}/member/changePwd',
                 {
                     currentPassword: passwords.currentPassword,
                     newPassword: passwords.newPassword,

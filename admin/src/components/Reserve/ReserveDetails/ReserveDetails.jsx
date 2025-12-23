@@ -40,6 +40,7 @@ const ReserveDetails = () => {
   const navigate = useNavigate();
   
   const [reservation, setReservation] = useState(null);
+  const apiUrl = window.ENV?.API_URL || "http://localhost:8081";
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -51,7 +52,7 @@ const ReserveDetails = () => {
     try {
       const token = localStorage.getItem('accessToken');
       const response = await axios.get(
-        `http://localhost:8081/reserve/details/${reserveNo}`,
+        `${apiUrl}/reserve/details/${reserveNo}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -82,7 +83,7 @@ const ReserveDetails = () => {
     try {
       const token = localStorage.getItem('accessToken');
       await axios.patch(
-        `http://localhost:8081/reserve/operator/reserve-manage/${reserveNo}`,
+        `${apiUrl}/reserve/operator/reserve-manage/${reserveNo}`,
         {},
         {
           headers: {
@@ -106,7 +107,7 @@ const ReserveDetails = () => {
     try {
       const token = localStorage.getItem('accessToken');
       await axios.delete(
-        `http://localhost:8081/reserve/${reserveNo}`,
+        `${apiUrl}/reserve/${reserveNo}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -129,7 +130,7 @@ const ReserveDetails = () => {
     try {
       const token = localStorage.getItem('accessToken');
       await axios.post(
-        `http://localhost:8081/reserve/${reserveNo}`,
+        `${apiUrl}/reserve/${reserveNo}`,
         {},
         {
           headers: {
@@ -153,7 +154,7 @@ const ReserveDetails = () => {
     try {
       const token = localStorage.getItem('accessToken');
       await axios.delete(
-        `http://localhost:8081/reserve/${reserveNo}`,
+        `${apiUrl}/reserve/${reserveNo}`,
         {
           headers: {
             Authorization: `Bearer ${token}`

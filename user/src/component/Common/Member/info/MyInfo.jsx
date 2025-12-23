@@ -45,7 +45,7 @@ const MyInfo = () => {
         }
 
         const fn1 = async () => {
-           const result = await axios.get("http://localhost:8081/member/info", {
+           const result = await axios.get("${apiUrl}/member/info", {
                 headers: { Authorization: `Bearer ${auth.accessToken}` }
             });
             
@@ -58,7 +58,7 @@ const MyInfo = () => {
     useEffect(() => {
         const fetchLicense = async () => {
             const result = await axios.get(
-                `http://localhost:8081/member/hasLicense/${auth.memberNo}`,
+                `${apiUrl}/member/hasLicense/${auth.memberNo}`,
                 {
                     headers: { Authorization: `Bearer ${auth.accessToken}` }
                 }
@@ -77,7 +77,7 @@ const MyInfo = () => {
         try {
             // 비밀번호 확인 API 호출
             const result = await axios.post(
-                "http://localhost:8081/member/verify-password",
+                "${apiUrl}/member/verify-password",
                 { password },
                 { headers: { Authorization: `Bearer ${auth.accessToken}` } }
             );

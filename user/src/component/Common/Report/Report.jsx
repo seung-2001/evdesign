@@ -32,7 +32,7 @@ import {
     SuccessMessage,
 } from "./Report.styles";
 
-const API_BASE_URL = "http://localhost:8081";
+const API_BASE_URL = "${apiUrl}";
 
 // 신고 사유 목록
 const REPORT_REASONS = [

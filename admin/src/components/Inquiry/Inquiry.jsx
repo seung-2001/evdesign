@@ -202,8 +202,7 @@ const ErrorMessage = styled.div`
     border-radius: 8px;
     margin-bottom: 1rem;
 `;
-
-const API_BASE_URL = "http://localhost:8081";
+const API_BASE_URL = window.ENV?.API_URL || "http://localhost:8081";
 
 const Inquiry = () => {
     const [inquiries, setInquiries] = useState([]);

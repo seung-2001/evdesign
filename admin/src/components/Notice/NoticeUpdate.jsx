@@ -25,6 +25,7 @@ const NoticeUpdate = () => {
   const [content, setContent] = useState('');
   const [files, setFiles] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
+  const apiUrl = window.ENV?.API_URL || "http://localhost:8081";
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -192,7 +193,7 @@ const NoticeUpdate = () => {
               {existingImages.map((url, index) => (
                 <img
                   key={index}
-                  src={`http://localhost:8081${url}`}
+                  src={`${apiUrl}${url}`}
                   alt={`기존 이미지 ${index + 1}`}
                   style={{
                     maxWidth: '200px',

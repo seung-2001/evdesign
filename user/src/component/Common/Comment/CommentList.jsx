@@ -24,7 +24,7 @@ const CommentList = ({ boardNo, refresh }) => {
 
       
       const response = await axios.get(
-        `http://localhost:8081/comments?boardNo=${boardNo}`
+        `${apiUrl}/comments?boardNo=${boardNo}`
       );
       
       console.log("댓글 조회 성공:", response.data);
@@ -51,7 +51,7 @@ const CommentList = ({ boardNo, refresh }) => {
     }
 
     try {
-      await axios.delete(`http://localhost:8081/comments/${commentNo}`, {
+      await axios.delete(`${apiUrl}/comments/${commentNo}`, {
         headers: {
           Authorization: `Bearer ${auth.accessToken}`,
         },

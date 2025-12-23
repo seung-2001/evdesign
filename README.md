@@ -225,7 +225,7 @@ cd admin && npm run build
 ## 📝 환경 변수
 
 ```env
-VITE_API_BASE_URL=http://localhost:8080/api
+VITE_API_BASE_URL=${apiUrl}:8080/api
 VITE_KAKAO_MAP_KEY=your_kakao_map_key
 ```
 

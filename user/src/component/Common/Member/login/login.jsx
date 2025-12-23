@@ -25,7 +25,7 @@ const Login = () => {
         } else{
             setMsg("");
         }
-        axios.post("http://localhost:8081/auth/login",{
+        axios.post("${apiUrl}/auth/login",{
             memberId,
             memberPwd
         }).then(result =>{

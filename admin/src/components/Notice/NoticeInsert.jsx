@@ -23,6 +23,7 @@ const NoticeInsert = () => {
   const [content, setContent] = useState('');
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);  // ✅ 추가
+  
    useEffect(() => {
     if (!isAuthLoading && !auth.isAuthenticated) {
       alert("로그인이 필요합니다.");

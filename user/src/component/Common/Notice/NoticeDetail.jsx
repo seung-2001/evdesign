@@ -105,7 +105,7 @@ const NoticeDetail = () => {
               {notice.imageUrls.map((url, index) => (
                 <img
                   key={index}
-                  src={`http://localhost:8081${url}`}
+                  src={`${apiUrl}${url}`}
                   alt={`공지사항 이미지 ${index + 1}`}
                   style={{
                     maxWidth: '300px',

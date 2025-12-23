@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
 import { useSearch } from '../../../context/SearchContext';
+import { allMember } from '../../../api/request';
 import axios from 'axios';
 import * as S from './MemberManage.styles';
 
@@ -15,6 +16,7 @@ const MemberManage = () => {
   const [loadingAuth, setLoadingAuth] = useState(true);
   const navigate = useNavigate();
   const itemsPerPage = 10;
+  const apiUrl = window.ENV?.API_URL || "http://localhost:8081";
 
   // 전체 members에서 검색 적용
   const filteredMembers = members.filter((m) =>
@@ -52,11 +54,20 @@ const MemberManage = () => {
   const fetchMembers = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:8081/member/operator/member-manage', {
-        headers: { Authorization: `Bearer ${auth.accessToken}` },
-      });
-      const data = Array.isArray(res.data) ? res.data : [];
-      setMembers(data);
+      const url = "/member/operator/member-manage";
+      const authToken = `Bearer ${auth.accessToken}`;
+      const res = await allMember(url, authToken);
+      console.log( "리스폰 : {}",res);
+      const {message, data, success} = res.data;
+
+      
+      console.log("success:", success);
+      console.log("message:", message);
+      console.log("실제 데이터:", data);
+
+      const members = Array.isArray(data) ? data: [];
+      setMembers(members);
+      
     } catch (err) {
       console.error(err);
       alert('회원 목록 조회 실패: ' + (err.response?.data?.message || err.message));
@@ -76,7 +87,7 @@ const MemberManage = () => {
     if (window.confirm(`${member.memberName}(${member.memberId})님을 OPERATOR로 지정하시겠습니까?`)) {
       try {
         await axios.put(
-          `http://localhost:8081/member/admin/change-role/${member.memberNo}`,
+          `${apiUrl}/member/admin/change-role/${member.memberNo}`,
           { 
             newRole: 'ROLE_OPERATOR',
             currentRole: member.roleStatus,
@@ -95,7 +106,7 @@ const MemberManage = () => {
   const handleDeleteMember = async (member) => {
     if (window.confirm(`${member.memberName}(${member.memberId}) 회원을 탈퇴시키겠습니까?`)) {
       try {
-        await axios.delete(`http://localhost:8081/member/operator/member-manage/${member.memberNo}`, {
+        await axios.delete(`${apiUrl}/member/operator/member-manage/${member.memberNo}`, {
           headers: { Authorization: `Bearer ${auth.accessToken}` },
         });
         alert('회원 탈퇴가 완료되었습니다.');

@@ -30,6 +30,7 @@ const Notice = () => {
   const [pageInfo, setPageInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const apiUrl = window.ENV?.API_URL || "http://localhost:8081";
 
   useEffect(() => {
     fetchNotices();
@@ -163,7 +164,7 @@ return (
                   >
                     {notice.imageUrls && notice.imageUrls.length > 0 ? (
                       <img 
-                        src={`http://localhost:8081${notice.imageUrls[0]}`}
+                        src={`${apiUrl}${notice.imageUrls[0]}`}
                         alt={notice.noticeTitle}
                         style={{
                           width: '200px',

@@ -45,7 +45,7 @@ import {
     EmptyState,
 } from "./StationInfo.styles";
 
-const API_BASE_URL = "http://localhost:8081";
+const API_BASE_URL = "${apiUrl}";
 
 // 충전기 타입 코드 매핑
 const CHARGER_TYPE_MAP = {

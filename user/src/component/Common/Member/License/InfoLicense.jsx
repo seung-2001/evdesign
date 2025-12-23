@@ -59,7 +59,7 @@ const InfoLicenseCertification = () => {
     }
 
     axios
-      .post("http://localhost:8081/member/infoLicense", {
+      .post("${apiUrl}/member/infoLicense", {
         memberNo,
         licenseNo: formData.licenseNo,
         renewDate: formData.renewDate
@@ -78,10 +78,10 @@ const InfoLicenseCertification = () => {
 
           if (!auth.isAuthenticated) {
             // 회원가입 직후 accessToken 없는 경우 이거 수정해야함
-           setTimeout(() => navigate("/myinfo"), 1000);
+           setTimeout(() => navigate("/info"), 1000);
           } else {
             // 마이페이지에서 인증한 경우
-            setTimeout(() => navigate("/myinfo"), 1000);
+            setTimeout(() => navigate("/info"), 1000);
           }
         }
       })

@@ -53,7 +53,7 @@ const BoardUpdate = () => {
         : {};
 
       const response = await axios.get(
-        `http://localhost:8081/boards/${boardNo}`,
+        `${apiUrl}/boards/${boardNo}`,
         { headers }
       );
       
@@ -87,7 +87,7 @@ const BoardUpdate = () => {
   const handleDelete = async () => {
     if (window.confirm("정말로 삭제하시겠습니까?")) {
       try {
-        await axios.delete(`http://localhost:8081/boards/${boardNo}`, {
+        await axios.delete(`${apiUrl}/boards/${boardNo}`, {
           headers: {
             Authorization: `Bearer ${auth.accessToken}`,
           },
@@ -151,7 +151,7 @@ const BoardUpdate = () => {
 
     // PUT 대신 POST 사용
     await axios.post(
-      `http://localhost:8081/boards/${boardNo}/update`,
+      `${apiUrl}/boards/${boardNo}/update`,
       formData,
       {
         headers: {
@@ -234,7 +234,7 @@ const BoardUpdate = () => {
               }}
             >
               <img
-                src={`http://localhost:8081/uploads/${existingImage}`}
+                src={`${apiUrl}/uploads/${existingImage}`}
                 alt="기존 이미지"
                 style={{
                   maxWidth: "200px",

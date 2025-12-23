@@ -41,6 +41,7 @@ const CarDetails = () => {
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const apiUrl = window.ENV?.API_URL || "${apiUrl}";
 
   // 차량 상세 정보 조회
   useEffect(() => {
@@ -52,7 +53,7 @@ const CarDetails = () => {
       setLoading(true);
       const token = localStorage.getItem('accessToken');
       
-      const response = await axios.get(`http://localhost:8081/cars/${carNo}`, {
+      const response = await axios.get(`${apiUrl}/cars/${carNo}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -138,7 +139,7 @@ const CarDetails = () => {
     }
 
     try {
-      await axios.delete(`http://localhost:8081/cars/${carNo}`, {
+      await axios.delete(`${apiUrl}/cars/${carNo}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -208,7 +209,7 @@ const CarDetails = () => {
               <CardImagePlaceholder>
                 {car.img && car.img.changeName ? (
                   <img 
-                    src={`http://localhost:8081/uploads/${car.img.changeName}`}
+                    src={`${apiUrl}/uploads/${car.img.changeName}`}
                     alt={car.carName}
                     style={{
                       width: '100%',
@@ -227,7 +228,7 @@ const CarDetails = () => {
                   <CardLabel>첨부파일</CardLabel>
                   <CardValue>
                     <a 
-                      href={`http://localhost:8081/uploads/${car.file.changeName}`}
+                      href={`${apiUrl}/uploads/${car.file.changeName}`}
                       download={car.file.originName}
                       style={{ color: '#276ef1', textDecoration: 'underline' }}
                     >

@@ -61,7 +61,7 @@ const Car = () => {
       setError(null);
 
       // ✅ 백엔드는 0부터 시작하므로 -1
-      const response = await axios.get(`http://localhost:8081/cars?pageNo=${page - 1}`);
+      const response = await axios.get(`${apiUrl}/cars?pageNo=${page - 1}`);
       
       console.log('API 응답:', response.data); // 디버깅용
       
@@ -242,7 +242,7 @@ const Car = () => {
                     <CardImage>
                       {car.img && car.img.changeName ? (
                         <img 
-                          src={`http://localhost:8081/uploads/${car.img.changeName}`}
+                          src={`${apiUrl}/uploads/${car.img.changeName}`}
                           alt={car.carName}
                           style={{
                             width: '100%',

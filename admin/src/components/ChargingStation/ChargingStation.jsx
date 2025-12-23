@@ -262,7 +262,7 @@ const SubmitButton = styled.button`
     }
 `;
 
-const API_BASE_URL = "http://localhost:8081";
+const API_BASE_URL = "${apiUrl}";
 // 카카오 REST API 키 (카카오 개발자 콘솔에서 발급받은 키로 변경하세요)
 const KAKAO_REST_API_KEY = "YOUR_KAKAO_REST_API_KEY";
 

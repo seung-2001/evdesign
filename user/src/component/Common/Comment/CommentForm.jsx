@@ -40,7 +40,7 @@ const CommentForm = ({ boardNo, onCommentAdded }) => {
       console.log("requestData:", requestData);
 
       const response = await axios.post(
-      "http://localhost:8081/comments",
+      "${apiUrl}/comments",
       requestData,
       {
         headers: {

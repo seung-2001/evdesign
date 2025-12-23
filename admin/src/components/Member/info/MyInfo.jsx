@@ -21,6 +21,8 @@ const MyInfo = () => {
     const { auth } = useContext(AuthContext);
     const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
+    const apiUrl = window.ENV?.API_URL || "http://localhost:8081";
+    
 
     useEffect(() => {
         console.log("어스는!:",auth);
@@ -30,7 +32,7 @@ const MyInfo = () => {
             return;
         }
         const fn1 = async () => {
-           const result = await axios.get("http://localhost:8081/member/info", {
+           const result = await axios.get(`${apiUrl}/member/info`, {
                 headers: { Authorization: `Bearer ${auth.accessToken}` }
             });
             

@@ -62,7 +62,7 @@ const BoardDetail = () => {
 
       // 상세 조회 시 자동으로 조회수 증가
       const response = await axios.get(
-        `http://localhost:8081/boards/${boardNo}`,
+        `${apiUrl}/boards/${boardNo}`,
         { headers }
       );
 
@@ -88,7 +88,7 @@ const BoardDetail = () => {
     e.preventDefault();
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
-        await axios.delete(`http://localhost:8081/boards/${boardNo}`, {
+        await axios.delete(`${apiUrl}/boards/${boardNo}`, {
           headers: {
             Authorization: `Bearer ${auth.accessToken}`,
           },
@@ -191,7 +191,7 @@ const BoardDetail = () => {
         {board.changeName && (
           <ImageSection>
             <PostImage
-              src={`http://localhost:8081/uploads/${board.changeName}`}
+              src={`${apiUrl}/uploads/${board.changeName}`}
               alt="첨부이미지"
               onError={(e) => {
                 console.error("이미지 로드 실패");

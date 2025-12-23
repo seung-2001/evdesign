@@ -36,7 +36,7 @@ import {
     BackButton,
 } from "./MyReports.styles";
 
-const API_BASE_URL = "http://localhost:8081";
+const API_BASE_URL = "${apiUrl}";
 
 // 상태 영어 -> 한글 변환
 const STATUS_MAP = {

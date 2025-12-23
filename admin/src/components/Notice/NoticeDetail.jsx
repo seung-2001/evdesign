@@ -21,14 +21,18 @@ const NoticeDetail = () => {
   const { noticeNo } = useParams();
   const navigate = useNavigate();
   
+  
   const [notice, setNotice] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const apiUrl = window.ENV?.API_URL || "http://localhost:8081";
+  
 
   // ✅ 로그인한 사용자 정보 (추후 Context나 Redux로 관리)
   const currentMemberNo = parseInt(localStorage.getItem('memberNo') || '0');
   const role = localStorage.getItem('role') || '';
   const isAdmin = role.includes('ADMIN');
+  
 
   useEffect(() => {
     fetchNoticeDetail();
@@ -142,7 +146,7 @@ const canDelete = notice && (isAdmin || currentMemberNo === notice.memberNo);
               {notice.imageUrls.map((url, index) => (
                 <img
                   key={index}
-                  src={`http://localhost:8081${url}`}
+                  src={`${apiUrl}${url}`}
                   alt={`공지사항 이미지 ${index + 1}`}
                   style={{
                     maxWidth: '300px',

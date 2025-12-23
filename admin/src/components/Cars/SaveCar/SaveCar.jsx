@@ -27,6 +27,7 @@ import {
 const SaveCar = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [carNo, setCarNo] = useState(null);
+  const apiUrl = window.ENV?.API_URL || "http://localhost:8081";
 
   const [formData, setFormData] = useState({
     carName: '',
@@ -84,7 +85,7 @@ const SaveCar = () => {
   const fetchCarData = async (carNo) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const response = await axios.get(`http://localhost:8081/cars/${carNo}`, {
+      const response = await axios.get(`${apiUrl}/cars/${carNo}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -104,7 +105,7 @@ const SaveCar = () => {
       setSelectedBrand(car.carBrand || '');
 
       if (car.img && car.img.changeName) {
-        setImagePreview(`http://localhost:8081/uploads/${car.img.changeName}`);
+        setImagePreview(`${apiUrl}/uploads/${car.img.changeName}`);
       }
 
     } catch (error) {
@@ -266,7 +267,7 @@ const SaveCar = () => {
 
       let response;
       if (!isEditMode) {
-        response = await axios.post('http://localhost:8081/cars', formDataToSend, {
+        response = await axios.post(`${apiUrl}/cars`, formDataToSend, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
@@ -274,7 +275,7 @@ const SaveCar = () => {
         });
         alert('차량이 등록되었습니다.');
       } else {
-        response = await axios.put(`http://localhost:8081/cars/${carNo}`, formDataToSend, {
+        response = await axios.put(`${apiUrl}/cars/${carNo}`, formDataToSend, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
@@ -320,7 +321,7 @@ const SaveCar = () => {
     try {
       const token = localStorage.getItem('accessToken');
       
-      await axios.delete(`http://localhost:8081/cars/${carNo}`, {
+      await axios.delete(`${apiUrl}/cars/${carNo}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

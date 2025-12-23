@@ -47,7 +47,7 @@ const CarDetails = () => {
         setLoading(true);
         setError(null);
 
-        const response = await axios.get(`http://localhost:8081/cars/${carNo}`);
+        const response = await axios.get(`${apiUrl}/cars/${carNo}`);
         const carData = response.data;
         
         setCar(carData);
@@ -156,7 +156,7 @@ const CarDetails = () => {
             
             {car.img && car.img.changeName ? (
               <img 
-                src={`http://localhost:8081/uploads/${car.img.changeName}`}
+                src={`${apiUrl}/uploads/${car.img.changeName}`}
                 alt={car.carName}
                 style={{
                   width: '100%',
@@ -236,7 +236,7 @@ const CarDetails = () => {
                   <div style={{ marginTop: '16px' }}>
                     <strong>첨부 파일:</strong>
                     <a 
-                      href={`http://localhost:8081/uploads/${car.file.changeName}`}
+                      href={`${apiUrl}/uploads/${car.file.changeName}`}
                       download={car.file.originName}
                       style={{ 
                         marginLeft: '8px',

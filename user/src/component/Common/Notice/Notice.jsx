@@ -167,7 +167,7 @@ return (
                   >
                     {notice.imageUrls && notice.imageUrls.length > 0 ? (
                       <img 
-                        src={`http://localhost:8081${notice.imageUrls[0]}`}
+                        src={`${apiUrl}${notice.imageUrls[0]}`}
                         alt={notice.noticeTitle}
                         style={{
                           width: '200px',
