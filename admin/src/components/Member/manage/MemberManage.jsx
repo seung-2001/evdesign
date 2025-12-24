@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
 import { useSearch } from '../../../context/SearchContext';
-import { allMember } from '../../../api/request';
+import { allMember, assignOperator, deleteMemByAd } from '../../../api/request';
 import axios from 'axios';
 import * as S from './MemberManage.styles';
 
@@ -52,30 +52,31 @@ const MemberManage = () => {
   }, [auth]);
 
   const fetchMembers = async () => {
-    setLoading(true);
-    try {
-      const url = "/member/operator/member-manage";
-      const authToken = `Bearer ${auth.accessToken}`;
-      const res = await allMember(url, authToken);
-      console.log( "리스폰 : {}",res);
-      const {message, data, success} = res.data;
-
-      
-      console.log("success:", success);
-      console.log("message:", message);
-      console.log("실제 데이터:", data);
-
-      const members = Array.isArray(data) ? data: [];
+  setLoading(true);
+  try {
+    const url = "/member/operator/member-manage";
+    const authToken = `Bearer ${auth.accessToken}`;
+    const res = await allMember(url, authToken);
+    
+    
+    
+    const { message, data, success } = res.data;
+    if (success === "요청성공") {
+      const members = Array.isArray(data) ? data : [];
       setMembers(members);
-      
-    } catch (err) {
-      console.error(err);
-      alert('회원 목록 조회 실패: ' + (err.response?.data?.message || err.message));
+    } else {
+      alert(message || '회원 목록 조회에 실패했습니다.');
       setMembers([]);
-    } finally {
-      setLoading(false);
     }
-  };
+    
+  } catch (err) {
+    console.error("에러 상세:", err);
+    alert('회원 목록 조회 실패: ' + (err.response?.data?.message || err.message));
+    setMembers([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const getCurrentPageMembers = () => {
     const start = (currentPage - 1) * itemsPerPage;
@@ -86,19 +87,22 @@ const MemberManage = () => {
   const handleAssignOperator = async (member) => {
     if (window.confirm(`${member.memberName}(${member.memberId})님을 OPERATOR로 지정하시겠습니까?`)) {
       try {
-        await axios.put(
-          `${apiUrl}/member/admin/change-role/${member.memberNo}`,
-          { 
-            newRole: 'ROLE_OPERATOR',
-            currentRole: member.roleStatus,
-            status: member.status
-          },
-          { headers: { Authorization: `Bearer ${auth.accessToken}` } }
-        );
+        const url = "/member/admin/change-role/";
+        const authToken = `${auth.accessToken}`;
+        const res = await assignOperator(url, authToken, member)
+        const { message, data, success } = res.data;
+
+        if (success === "요청성공") {
+          const members = Array.isArray(data) ? data : [];
+          setMembers(members);
+        } else {
+          alert(message || '관리자 지정에 실패했습니다.');
+          setMembers([]);
+        }
         alert('관리자로 지정되었습니다.');
         fetchMembers();
       } catch (err) {
-        alert(err.response?.data || '관리자 지정에 실패했습니다.');
+        alert(err.response?.data || '관리자 지정에 실패했습니다.123');
       }
     }
   };
@@ -106,9 +110,18 @@ const MemberManage = () => {
   const handleDeleteMember = async (member) => {
     if (window.confirm(`${member.memberName}(${member.memberId}) 회원을 탈퇴시키겠습니까?`)) {
       try {
-        await axios.delete(`${apiUrl}/member/operator/member-manage/${member.memberNo}`, {
-          headers: { Authorization: `Bearer ${auth.accessToken}` },
-        });
+        const url = "/member/operator/member-manage/"
+        const authToken = `${auth.accessToken}`
+        const res = await deleteMemByAd(member, url, authToken);
+        const {message, data, success} = res.data;
+
+        if (success === "요청성공"){
+          const members = Array.isArray(data) ? data : [];
+          setMembers(members);
+        } else {
+          alert(message || '관리자 지정에 실패했습니다.');
+          setMembers([]);
+        }
         alert('회원 탈퇴가 완료되었습니다.');
         fetchMembers();
       } catch (err) {

@@ -1,5 +1,6 @@
 import axios from "axios";
 const apiUrl = window.ENV?.API_URL || "http://localhost:8081";
+const [setMembers] = useState([]);
 
 export const reqObj = {
     getList : (url) =>
@@ -12,4 +13,35 @@ export const allMember = async (url, authToken) => {
         headers: { Authorization: `${authToken}` },
       });
       return res;
+}
+
+export const assignOperator = async(url, authToken, member) =>{
+   const res =  await axios.put(
+          `${apiUrl}${url}${member.memberNo}`,
+          { 
+            newRole: 'ROLE_OPERATOR',
+            currentRole: member.roleStatus,
+            status: member.status
+          },
+          { headers: { Authorization: `Bearer ${authToken}` } }
+        );
+    return res;
+}
+
+export const deleteMemByAd = async(member, url, authToken) => {
+    const res = await axios.delete(`${apiUrl}${url}${member.memberNo}`, {
+          headers: { Authorization: `Bearer ${authToken}` },
+    });
+
+}
+
+export const ResponseStatus = (message, data, success, errMessage) => {
+    const { message, data, success } = res.data;
+    if (success === "요청성공") {
+      const members = Array.isArray(data) ? data : [];
+      setMembers(members);
+    } else {
+      alert(message || `${errMessage}`);
+      setMembers([]);
+    }
 }

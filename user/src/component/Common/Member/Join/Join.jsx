@@ -34,7 +34,7 @@ const Join = () => {
 
         try {
             axios
-                .post("${apiUrl}/member/join", {
+                .post(`${apiUrl}/member/join`, {
                     memberName,
                     memberId,
                     memberPwd,
