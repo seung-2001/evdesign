@@ -16,7 +16,7 @@ import {
 
 const Join = () => {
     const navigate = useNavigate();
-
+    const apiUrl = window.ENV?.API_URL || "http://127.0.0.1:8081";
     const [memberId, setMemberId] = useState("");
     const [memberPwd, setMemberPwd] = useState("");
     const [memberName, setMemberName] = useState("");

@@ -1,6 +1,6 @@
 import axios from "axios";
-const apiUrl = window.ENV?.API_URL || "http://localhost:8081";
-const [setMembers] = useState([]);
+const apiUrl = window.ENV?.API_URL || "http://127.0.0.1:8081";
+
 
 export const reqObj = {
     getList : (url) =>
@@ -35,7 +35,7 @@ export const deleteMemByAd = async(member, url, authToken) => {
 
 }
 
-export const ResponseStatus = (message, data, success, errMessage) => {
+export const responseStatus = async( res, errMessage, setMembers) => {
     const { message, data, success } = res.data;
     if (success === "요청성공") {
       const members = Array.isArray(data) ? data : [];

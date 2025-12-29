@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ChangePassword = () => {
+    const apiUrl = window.ENV?.API_URL || "http://127.0.0.1:8081";
     const navi = useNavigate();
     const { auth } = useContext(AuthContext);
     const [passwords, setPasswords] = useState({
@@ -69,7 +70,7 @@ const ChangePassword = () => {
 
         try {
             await axios.put(
-                '${apiUrl}/member/changePwd',
+                `${apiUrl}/member/changePwd`,
                 {
                     currentPassword: passwords.currentPassword,
                     newPassword: passwords.newPassword,

@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const UpdateMember = () => {
+    const apiUrl = window.ENV?.API_URL || "http://127.0.0.1:8081";
     const navi = useNavigate();
     const { auth, logout } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
@@ -39,7 +40,7 @@ const UpdateMember = () => {
 
         const fetchUserInfo = async () => {
             try {
-                const result = await axios.get("${apiUrl}/member/info", {
+                const result = await axios.get(`${apiUrl}/member/info`, {
                     headers: { Authorization: `Bearer ${auth.accessToken}` }
                 });
                 
@@ -83,7 +84,7 @@ const UpdateMember = () => {
     console.log('전송할 데이터:', updateData);  // 확인용
     
     try {
-        await axios.put('${apiUrl}/member/info', updateData, {
+        await axios.put(`${apiUrl}/member/info`, updateData, {
             headers: { Authorization: `Bearer ${auth.accessToken}` }
         });
         alert('정보가 수정되었습니다.');
@@ -97,7 +98,7 @@ const UpdateMember = () => {
     const handleDelete = async () => {
         if (window.confirm('정말 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
             try {
-                await axios.delete('${apiUrl}/member/info', {
+                await axios.delete(`${apiUrl}/member/info`, {
                     headers: { Authorization: `Bearer ${auth.accessToken}` },
                     data:{}
                 });

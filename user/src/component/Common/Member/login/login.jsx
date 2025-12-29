@@ -6,6 +6,7 @@ import { SubContainer, Form, Title, Input, Button } from "./login.styles";
 import {AuthContext } from "../../../context/AuthContext.jsx"
 
 const Login = () => {
+  const apiUrl = window.ENV?.API_URL || "http://127.0.0.1:8081";
   const [memberId, setMemberId] = useState("");
   const [memberPwd, setMemberPwd] = useState("");
   const [msg, setMsg] = useState("");
@@ -25,7 +26,7 @@ const Login = () => {
         } else{
             setMsg("");
         }
-        axios.post("${apiUrl}/auth/login",{
+        axios.post(`${apiUrl}/auth/login`,{
             memberId,
             memberPwd
         }).then(result =>{

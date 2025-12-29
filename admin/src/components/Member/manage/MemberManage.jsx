@@ -2,8 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../../context/AuthContext';
 import { useSearch } from '../../../context/SearchContext';
-import { allMember, assignOperator, deleteMemByAd } from '../../../api/request';
-import axios from 'axios';
+import { allMember, assignOperator, deleteMemByAd, responseStatus } from '../../../api/request';
 import * as S from './MemberManage.styles';
 
 const MemberManage = () => {
@@ -30,17 +29,18 @@ const MemberManage = () => {
     setTotalPages(Math.ceil(filteredMembers.length / itemsPerPage));
     setCurrentPage(1); // 검색어 바뀌면 1페이지로 초기화
   }, [filteredMembers.length]);
-
+  
   useEffect(() => {
     if (auth.isAuthenticated === null) return;
 
     setLoadingAuth(false);
-
+    
     if (!auth.isAuthenticated) {
       alert("로그인이 필요합니다.");
       navigate("/login");
       return;
     }
+      
 
     if (!auth.role?.includes("ADMIN") && !auth.role?.includes("OPERATOR")) {
       alert("접근 권한이 없습니다.");
@@ -50,6 +50,7 @@ const MemberManage = () => {
 
     fetchMembers();
   }, [auth]);
+  
 
   const fetchMembers = async () => {
   setLoading(true);
@@ -57,18 +58,9 @@ const MemberManage = () => {
     const url = "/member/operator/member-manage";
     const authToken = `Bearer ${auth.accessToken}`;
     const res = await allMember(url, authToken);
+    const errMessage = "회원 조회에 실패하였습니다.";
     
-    
-    
-    const { message, data, success } = res.data;
-    if (success === "요청성공") {
-      const members = Array.isArray(data) ? data : [];
-      setMembers(members);
-    } else {
-      alert(message || '회원 목록 조회에 실패했습니다.');
-      setMembers([]);
-    }
-    
+    responseStatus(res, errMessage, setMembers);
   } catch (err) {
     console.error("에러 상세:", err);
     alert('회원 목록 조회 실패: ' + (err.response?.data?.message || err.message));
@@ -89,18 +81,14 @@ const MemberManage = () => {
       try {
         const url = "/member/admin/change-role/";
         const authToken = `${auth.accessToken}`;
-        const res = await assignOperator(url, authToken, member)
-        const { message, data, success } = res.data;
+        const errMessage = "관리자 지정에 실패했습니다.";
 
-        if (success === "요청성공") {
-          const members = Array.isArray(data) ? data : [];
-          setMembers(members);
-        } else {
-          alert(message || '관리자 지정에 실패했습니다.');
-          setMembers([]);
+        const res = await assignOperator(url, authToken, member);
+        if(responseStatus(res, errMessage, setMembers)){
+          alert('관리자로 지정되었습니다.');
+          fetchMembers();
+
         }
-        alert('관리자로 지정되었습니다.');
-        fetchMembers();
       } catch (err) {
         alert(err.response?.data || '관리자 지정에 실패했습니다.123');
       }
@@ -113,17 +101,12 @@ const MemberManage = () => {
         const url = "/member/operator/member-manage/"
         const authToken = `${auth.accessToken}`
         const res = await deleteMemByAd(member, url, authToken);
-        const {message, data, success} = res.data;
+        const errMessage = "회원 탈퇴에 실패하였습니다.";
+        if(responseStatus(res, errMessage, setMembers)){
+          alert('회원 탈퇴가 완료되었습니다.');
+          fetchMembers();
 
-        if (success === "요청성공"){
-          const members = Array.isArray(data) ? data : [];
-          setMembers(members);
-        } else {
-          alert(message || '관리자 지정에 실패했습니다.');
-          setMembers([]);
         }
-        alert('회원 탈퇴가 완료되었습니다.');
-        fetchMembers();
       } catch (err) {
         console.error(err);
         alert(err.response?.data?.["error-message"] || '회원탈퇴에 실패했습니다.');
@@ -218,8 +201,8 @@ const MemberManage = () => {
                           <S.ButtonGroup>
                             {auth.role?.includes('ADMIN') && (
                               <S.AssignButton 
-                                $canAssign={member.roleStatus === 'ROLE_USER'} 
-                                disabled={member.roleStatus !== 'ROLE_USER'}
+                                $canAssign={member.roleStatus === 'ROLE_USER' && member.status === 'Y'} 
+                                disabled={member.roleStatus !== 'ROLE_USER' || member.status !=='Y'}
                                 onClick={() => handleAssignOperator(member)}
                               >
                                 관리자지정

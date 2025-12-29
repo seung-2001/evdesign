@@ -35,8 +35,8 @@ import {
     ModalValue,
     BackButton,
 } from "./MyReports.styles";
+const apiUrl = window.ENV?.API_URL || "http://127.0.0.1:8081";
 
-const API_BASE_URL = "${apiUrl}";
 
 // 상태 영어 -> 한글 변환
 const STATUS_MAP = {
@@ -79,7 +79,7 @@ const MyReports = () => {
 
         try {
             setLoading(true);
-            const response = await axios.get(`${API_BASE_URL}/reports/my`, {
+            const response = await axios.get(`${apiUrl}/reports/my`, {
                 headers: {
                     Authorization: `Bearer ${auth.accessToken}`,
                 },
@@ -119,7 +119,7 @@ const MyReports = () => {
         if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
         try {
-            await axios.delete(`${API_BASE_URL}/reports`, {
+            await axios.delete(`${apiUrl}/reports`, {
                 params: { reportNo },
                 headers: {
                     Authorization: `Bearer ${auth.accessToken}`,

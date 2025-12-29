@@ -21,6 +21,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from '../../../context/AuthContext';
 
 const InfoLicenseCertification = () => {
+  const apiUrl = window.ENV?.API_URL || "http://127.0.0.1:8081";
   const navigate = useNavigate();
   const location = useLocation();
   const { auth } = useContext(AuthContext);
@@ -59,7 +60,7 @@ const InfoLicenseCertification = () => {
     }
 
     axios
-      .post("${apiUrl}/member/infoLicense", {
+      .post(`${apiUrl}/member/infoLicense`, {
         memberNo,
         licenseNo: formData.licenseNo,
         renewDate: formData.renewDate

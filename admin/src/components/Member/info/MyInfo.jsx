@@ -25,7 +25,7 @@ const MyInfo = () => {
     
 
     useEffect(() => {
-        console.log("어스는!:",auth);
+        if (auth.isAuthenticated === null) return;
         if(!auth.isAuthenticated) {
             alert("로그인부터 해주세요");
             navi("../login");
@@ -35,22 +35,13 @@ const MyInfo = () => {
            const result = await axios.get(`${apiUrl}/member/info`, {
                 headers: { Authorization: `Bearer ${auth.accessToken}` }
             });
-            
-            setUserInfo(result.data);
+
             setLoading(false);   
+            setUserInfo({...result.data.data});
+            console.log(result.data.data);
         }
+        console.log("유저의 정보는:", userInfo);
         fn1();
-        /*
-        .then(res => {
-            setUserInfo({...res.data});  // state에 서버에서 받은 정보 저장
-            console.log("결과는!:",userInfo);
-                setLoading(false);
-        })
-        .catch(err => {
-            console.log(err);
-            setLoading(false);       // 에러라도 로딩 끝
-        });
-        */
     }, [auth.isAuthenticated]);
 
     const handleUpdate = () => navi("/mypage/edit");
@@ -81,7 +72,7 @@ const MyInfo = () => {
             <FormWrapper>
                 <Title>마이페이지</Title>
                 <Subtitle>My Page</Subtitle>
-
+                
                 <InfoGroup>
                     <Label>사용자 아이디</Label>
                     <Input type="text" readOnly >

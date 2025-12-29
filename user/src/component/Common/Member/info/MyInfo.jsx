@@ -32,10 +32,11 @@ const MyInfo = () => {
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const [password, setPassword] = useState("");
     const [errMsg, setErrMsg] = useState("");
+    const apiUrl = window.ENV?.API_URL || "http://127.0.0.1:8081";
     
 
     useEffect(() => {
-        
+        console.log("토큰이 오나? : {}", auth.accessToken );
         if(authLoading) return;
 
         if(!auth.isAuthenticated) {
@@ -45,27 +46,33 @@ const MyInfo = () => {
         }
 
         const fn1 = async () => {
-           const result = await axios.get("${apiUrl}/member/info", {
+           const result = await axios.get(`${apiUrl}/member/info`, {
                 headers: { Authorization: `Bearer ${auth.accessToken}` }
             });
             
-            setUserInfo(result.data);
+            setUserInfo(result.data.data);
             setLoading(false);   
+            
         }
         fn1();
     }, [auth.isAuthenticated, authLoading]);
 
     useEffect(() => {
+        if(authLoading) return;
+        
         const fetchLicense = async () => {
+            
             const result = await axios.get(
                 `${apiUrl}/member/hasLicense/${auth.memberNo}`,
                 {
                     headers: { Authorization: `Bearer ${auth.accessToken}` }
                 }
             );
+            console.log("히히 :", result.data);
             setHasLicense(result.data); 
+            
         };
-
+        
         fetchLicense();
     }, []);
 
@@ -77,7 +84,7 @@ const MyInfo = () => {
         try {
             // 비밀번호 확인 API 호출
             const result = await axios.post(
-                "${apiUrl}/member/verify-password",
+                `${apiUrl}/member/verify-password`,
                 { password },
                 { headers: { Authorization: `Bearer ${auth.accessToken}` } }
             );
