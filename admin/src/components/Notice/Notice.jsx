@@ -1,31 +1,33 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getNoticeList, getNoticeSearch } from '../../api/notice';
-import {
-    Container,
-    ClearButton,
-    ContentWrapper,
-    ImagePlaceholder,
-    NoticeBody,
-    NoticeCard,
-    NoticeContent,
-    NoticeList,
-    NoticeTitle,
-    PageNumber,
-    Pagination,
-    PaginationButton,
-    SearchBox,
-    SearchLabel,
-    SearchSection,
-    Subtitle,
-    Title,
-    WriteButton
-} from './Notice.styles';
+import { useSearch } from '../../context/SearchContext';
+import { 
+  Title,
+  Subtitle,
+  Container, 
+  ContentWrapper,
+  ImagePlaceholder, 
+  NoticeBody, 
+  NoticeCard, 
+  NoticeContent, 
+  NoticeList, 
+  NoticeTitle,
+  Pagination,
+  PaginationButton,
+  PageNumber,
+  Ellipsis,
+  WriteButton,
+  SearchSection,
+  SearchLabel,
+  SearchBox,
+  ClearButton
+} from "./Notice.styles";
 
 const Notice = () => {
+  const {searchKeyword } = useSearch();
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchKeyword, setSearchKeyword] = useState('');
   const [notices, setNotices] = useState([]);
   const [pageInfo, setPageInfo] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -57,16 +59,6 @@ const Notice = () => {
     }
   };
 
-  const handleSearchChange = (e) => {
-    setSearchKeyword(e.target.value);
-    setCurrentPage(1);
-  };
-
-  const handleClearSearch = () => {
-    setSearchKeyword('');
-    setCurrentPage(1);
-  };
-
   const handlePageChange = (page) => {
     if (page >= 1 && page <= (pageInfo?.maxPage || 1)) {
       setCurrentPage(page);
@@ -84,7 +76,7 @@ const Notice = () => {
 
   const renderPageNumbers = () => {
   if (!pageInfo) return null;
-
+  
   const pages = [];
   const { startPage, endPage, currentPage: current } = pageInfo;
 
@@ -110,37 +102,12 @@ return (
       <Subtitle>notice</Subtitle>
       <br /><br /><br /><br />
 
-      {/* ✅ SearchSection과 버튼을 감싸는 wrapper */}
+      {/* ✅ 글쓰기 버튼만 (오른쪽 정렬) */}
       <div style={{ 
         display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
+        justifyContent: 'flex-end',
         marginBottom: '20px',
-        gap: '20px'  // 간격
       }}>
-        {/* 검색 영역 */}
-        <SearchSection style={{ flex: 1 }}>
-          <SearchLabel>공지사항</SearchLabel>
-          <SearchBox>
-            <input
-              type="text"
-              placeholder="검색어를 입력하세요"
-              value={searchKeyword}
-              onChange={handleSearchChange}
-              style={{
-                border: 'none',
-                outline: 'none',
-                width: '100%',
-                background: 'transparent'
-              }}
-            />
-            {searchKeyword && (
-              <ClearButton onClick={handleClearSearch}>×</ClearButton>
-            )}
-          </SearchBox>
-        </SearchSection>
-
-        {/* 글쓰기 버튼 */}
         <WriteButton onClick={handleWriteClick}>
           글쓰기
         </WriteButton>
